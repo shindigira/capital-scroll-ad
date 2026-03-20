@@ -5009,3 +5009,454 @@ If you want, I can also add a minimal `vercel.json` so these are pre-configured 
 _**User**_
 
 what to fillout in build and output settings, see image
+
+---
+
+_**Agent (premium)**_
+
+Use these exact values:
+
+- **Build Command:** `npm run build`
+- **Output Directory:** `build`
+- **Install Command:** `npm install`
+
+Keep:
+- **Application Preset:** `Other` (that’s fine)
+- **Root Directory:** `./` (repo root)
+
+Then click Deploy.
+
+If it asks for Node version, use `18.x` or `20.x` (either works).
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (premium)**_
+
+I’ll run the git checks, commit all current changes with a concise message, and push the branch. I’m pulling status/diff/log first to ensure the commit text matches exactly what changed.
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short</summary>
+
+```bash
+git status --short
+```
+
+```
+ M .specstory/history/2026-03-20_20-35-19Z-one-page-landing-page-design-and-development.md
+ M .specstory/statistics.json
+ M package.json
+?? scripts/
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git diff --staged; git diff</summary>
+
+```bash
+git diff --staged; git diff
+```
+
+```
+diff --git a/.specstory/history/2026-03-20_20-35-19Z-one-page-landing-page-design-and-development.md b/.specstory/history/2026-03-20_20-35-19Z-one-page-landing-page-design-and-development.md
+index 4a128d3..3f8e44d 100644
+--- a/.specstory/history/2026-03-20_20-35-19Z-one-page-landing-page-design-and-development.md
++++ b/.specstory/history/2026-03-20_20-35-19Z-one-page-landing-page-design-and-development.md
+@@ -4705,3 +4705,307 @@ d342b2a Move frontend design guidance back into a reusable skill file.
+ &lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
+ 
+ &lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git push&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++git push
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++fatal: The current branch fifth-try has no upstream branch.
++To push the current branch and set the remote as upstream, use
++
++    git push --set-upstream origin fifth-try
++
++To have this happen automatically for branches without a tracking
++upstream, see 'push.autoSetupRemote' in 'git help config'.
++
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git push origin fifth-try&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++git push origin fifth-try
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++Everything up-to-date
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++No new changes were available to commit.
++
++- &#96;git status --short&#96; returned clean (nothing to add/commit).
++- Ran push anyway: &#96;git push origin fifth-try&#96;
++- Remote result: **Everything up-to-date**
++
++If you expected changes, save files in the editor and I can run &#96;add/commit/push&#96; immediately again.
++
++---
++
++_**User**_
++
++going to deploy on vercel so i need a build folder
++
++---
++
++_**Agent (premium)**_
++
++I’ll set up a proper &#96;build/&#96; output pipeline for this static site (HTML/CSS/JS + frames/assets), so you can deploy that folder on Vercel. I’m checking the current &#96;package.json&#96; and repo layout first, then I’ll add a build script and generate the folder.
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/package.json&lt;/summary&gt;
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **read_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/.gitignore&lt;/summary&gt;
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **read_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: ls -la&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++ls -la
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++total 20712
++drwxr-xr-x   18 st  staff       576 Mar 20 17:11 .
++drwxr-xr-x   41 st  staff      1312 Mar 20 11:00 ..
++drwxr-xr-x    5 st  staff       160 Mar 20 11:28 .cursor
++-rw-r--r--@   1 st  staff      6148 Mar 20 16:18 .DS_Store
++drwxr-xr-x   15 st  staff       480 Mar 20 17:11 .git
++-rw-r--r--    1 st  staff       249 Mar 20 17:08 .gitignore
++drwxr-xr-x    6 st  staff       192 Mar 20 17:11 .specstory
++drwxr-xr-x    3 st  staff        96 Mar 20 11:05 .vscode
++-rw-r--r--    1 st  staff     11457 Mar 20 17:11 capital-one-logo-png_seeklogo-425557.png
++-rw-r--r--    1 st  staff  10539958 Mar 20 17:11 commercial.mp4
++drwxr-xr-x  195 st  staff      6240 Mar 20 17:11 frames
++-rw-r--r--    1 st  staff      7372 Mar 20 17:11 index.html
++drwxr-xr-x@   4 st  staff       128 Mar 20 11:03 node_modules
++-rw-r--r--@   1 st  staff       614 Mar 20 11:03 package-lock.json
++-rw-r--r--@   1 st  staff       568 Mar 20 11:03 package.json
++-rw-r--r--    1 st  staff        19 Mar 20 11:00 README.md
++-rw-r--r--    1 st  staff      6914 Mar 20 17:11 script.js
++-rw-r--r--    1 st  staff      7080 Mar 20 17:11 styles.css
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++I’m implementing a repeatable build step now (not just a one-off copy), so &#96;npm run build&#96; will always generate a fresh &#96;build/&#96; directory with everything needed for deploy.
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;
++
++&lt;details&gt;&lt;summary&gt;Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/package.json&lt;/summary&gt;
++
++&lt;/details&gt;
++
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **edit_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;
++
++&lt;details&gt;&lt;summary&gt;Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/scripts/build.js&lt;/summary&gt;
++
++&lt;/details&gt;
++
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **edit_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: npm run build &amp;&amp; ls -la "build" &amp;&amp; ls -la "build/frames" | rg "frame_" -n | wc -l&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++npm run build &amp;&amp; ls -la "build" &amp;&amp; ls -la "build/frames" | rg "frame_" -n | wc -l
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++
++&amp;gt; capital-scroll-ad@1.0.0 build
++&amp;gt; node scripts/build.js
++
++Build complete: build/
++total 72
++drwxr-xr-x@   7 st  staff    224 Mar 20 17:12 .
++drwxr-xr-x   20 st  staff    640 Mar 20 17:12 ..
++-rw-r--r--@   1 st  staff  11457 Mar 20 17:12 capital-one-logo-png_seeklogo-425557.png
++drwxr-xr-x@ 195 st  staff   6240 Mar 20 17:12 frames
++-rw-r--r--@   1 st  staff   7372 Mar 20 17:12 index.html
++-rw-r--r--@   1 st  staff   6914 Mar 20 17:12 script.js
++-rw-r--r--@   1 st  staff   7080 Mar 20 17:12 styles.css
++       0
++npm warn Unknown env config "devdir". This will stop working in the next major version of npm.
++(eval):1: command not found: rg
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: ls "build/frames" | wc -l&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++ls "build/frames" | wc -l
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++     193
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="read_lints"&gt;
++&lt;details&gt;
++&lt;summary&gt;Tool use: **read_lints**&lt;/summary&gt;
++
++
++Parameters:
++
++&#96;&#96;&#96;json
++{
++  "paths": [
++    "/Users/st/Projects/capital-scroll-ad/package.json",
++    "/Users/st/Projects/capital-scroll-ad/scripts/build.js"
++  ]
++}
++&#96;&#96;&#96;
++Result:
++
++&#96;&#96;&#96;json
++{
++  "linterErrorsByFile": [
++    {
++      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/package.json"
++    },
++    {
++      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/scripts/build.js"
++    }
++  ]
++}
++&#96;&#96;&#96;
++Status: **completed**
++
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="read_lints"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **read_lints**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (premium)**_
++
++Set up a real &#96;build/&#96; pipeline for Vercel and generated the folder.
++
++### What I changed
++- Updated &#96;package.json&#96; scripts:
++  - &#96;build&#96;: &#96;node scripts/build.js&#96;
++  - &#96;clean&#96;: removes &#96;build/&#96;
++- Added &#96;scripts/build.js&#96;:
++  - clears old &#96;build/&#96;
++  - copies deploy assets into &#96;build/&#96;:
++    - &#96;index.html&#96;
++    - &#96;styles.css&#96;
++    - &#96;script.js&#96;
++    - &#96;frames/&#96;
++    - &#96;capital-one-logo-png_seeklogo-425557.png&#96;
++
++### Verified
++- Ran &#96;npm run build&#96; successfully.
++- &#96;build/&#96; now exists with all files.
++- Verified &#96;build/frames&#96; contains &#96;193&#96; frames.
++
++### Deploy on Vercel
++- In Vercel project settings:
++  - **Build Command:** &#96;npm run build&#96;
++  - **Output Directory:** &#96;build&#96;
++
++If you want, I can also add a minimal &#96;vercel.json&#96; so these are pre-configured in repo.
++
++---
++
++_**User**_
++
++what to fillout in build and output settings, see image
+diff --git a/.specstory/statistics.json b/.specstory/statistics.json
+index 3bb6674..4291e22 100644
+--- a/.specstory/statistics.json
++++ b/.specstory/statistics.json
+@@ -19,13 +19,13 @@
+       "last_updated": "2026-03-20T19:49:23Z"
+     },
+     "ce4b4cc8-5445-4626-b569-ee25a3ec0a0c": {
+-      "user_message_count": 10,
+-      "agent_message_count": 84,
++      "user_message_count": 12,
++      "agent_message_count": 98,
+       "start_timestamp": "2026-03-20T16:35:19-04:00",
+       "end_timestamp": "2026-03-20T16:35:19-04:00",
+-      "markdown_size_bytes": 150507,
++      "markdown_size_bytes": 158820,
+       "provider": "cursoride",
+-      "last_updated": "2026-03-20T21:04:47Z"
++      "last_updated": "2026-03-20T21:13:47Z"
+     },
+     "d4ef8aad-2593-41be-94d6-a60b2d6d55c2": {
+       "user_message_count": 3,
+diff --git a/package.json b/package.json
+index d85ba15..0b36bef 100644
+--- a/package.json
++++ b/package.json
+@@ -4,6 +4,8 @@
+   "description": "",
+   "main": "index.js",
+   "scripts": {
++    "build": "node scripts/build.js",
++    "clean": "node -e \"require('fs').rmSync('build',{recursive:true,force:true})\"",
+     "test": "echo \"Error: no test specified\" &amp;&amp; exit 1"
+   },
+   "repository": {
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git log --oneline -n 10</summary>
+
+```bash
+git log --oneline -n 10
+```
+
+```
+4cad441 specstory
+f568819 Refine scroll storytelling presentation and branding.
+6c3589e Refresh session artifacts and remove outdated product spec.
+f5be160 Add a premium scroll-driven one-page landing experience with a pinned canvas narrative.
+d014eda restart
+9d222e4 updated product_spec md
+d342b2a Move frontend design guidance back into a reusable skill file.
+2b18322 Refresh specstory history and session statistics.
+379e98a Move frontend design guidance from skill into an always-applied Cursor rule.
+01d8176 Update product spec with required video prompt and inspiration guidance.
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
