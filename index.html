@@ -1,186 +1,168 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capital One | Precision In Motion</title>
-  <meta name="description"
-    content="A premium, scroll-driven product landing page with cinematic storytelling and refined motion." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-
-<body>
-  <div id="loader" aria-live="polite" aria-label="Loading animation frames">
-    <div class="loader-inner">
-      <p class="loader-label">Loading Story Engine</p>
-      <div class="loader-bar">
-        <span id="loader-fill"></span>
-      </div>
-      <p id="loader-progress">0%</p>
-    </div>
-  </div>
-
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="#" aria-label="Capital One home">
-        <img src="capital-one-logo-png_seeklogo-425557.png" alt="Capital One" />
-      </a>
-      <a class="header-cta" href="#cta">Book a Demo</a>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero section-shell" id="hero">
-      <div class="section-inner">
-        <p class="eyebrow">Enterprise product narrative</p>
-        <h1>Financial clarity that moves at market speed.</h1>
-        <p class="lead">
-          One operational layer for forecasting, execution, and reporting.
-          Built for teams that value precision, confidence, and momentum.
-        </p>
-        <a href="#story" class="button">Explore the Story</a>
-      </div>
-    </section>
-
-    <section class="story" id="story" aria-label="Scroll storytelling animation">
-      <div class="story-track">
-        <div class="story-stage">
-          <canvas id="story-canvas" aria-hidden="true"></canvas>
-          <div class="story-overlay" id="story-overlay" aria-hidden="true"></div>
-
-          <article class="callout callout-left" data-start="0.08" data-end="0.24">
-            <p class="callout-label">Refined First Impression</p>
-            <h3>
-              A deep navy card face with chip and contactless icon introduces a
-              clean, premium entry point.
-            </h3>
-          </article>
-
-          <article class="callout callout-right" data-start="0.30" data-end="0.48">
-            <p class="callout-label">Layered Card Family</p>
-            <h3>
-              As the stack expands, subtle edge colors reveal multiple products
-              built for different credit journeys.
-            </h3>
-          </article>
-
-          <article class="callout callout-left" data-start="0.56" data-end="0.72">
-            <p class="callout-label">Distinct Product Personalities</p>
-            <h3>
-              SavorOne, Platinum, and Quicksilver One each keep a unique finish
-              while maintaining one cohesive brand language.
-            </h3>
-          </article>
-
-          <article class="callout callout-right" data-start="0.76" data-end="0.94">
-            <p class="callout-label">Built for Everyday Use</p>
-            <h3>
-              Clear numbering, visible chip placement, and contactless cues keep
-              the experience intuitive at every touchpoint.
-            </h3>
-          </article>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capital One | Scroll Story</title>
+    <meta
+      name="description"
+      content="A smarter way to experience credit through a smooth scroll-driven story."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="navbar" aria-label="Primary">
+      <div class="navbar-inner">
+        <a href="#" class="navbar-logo" aria-label="Capital One home">
+          <img src="capital-one-logo-png_seeklogo-425557.png" alt="Capital One" />
+        </a>
+        <div class="navbar-links">
+          <a href="#story">Story</a>
+          <a href="#cards-section">Cards</a>
+          <a href="#cta-section" class="nav-cta">Get started</a>
         </div>
       </div>
-    </section>
+    </nav>
 
-    <section class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>High Signal</span>
-        <span>Low Friction</span>
-        <span>Trusted Decisions</span>
-        <span>High Signal</span>
-        <span>Low Friction</span>
-        <span>Trusted Decisions</span>
+    <header class="hero">
+      <p class="hero-eyebrow">Premium credit experiences</p>
+      <h1>A smarter way to experience credit.</h1>
+      <p class="hero-body">
+        Discover a modern portfolio of credit cards built around flexibility,
+        rewards, and confidence for everyday life.
+      </p>
+      <div class="scroll-cue" aria-hidden="true">
+        <span>Scroll to explore</span>
+        <span class="scroll-cue-line"></span>
       </div>
-    </section>
+    </header>
 
-    <section class="support section-shell" data-section data-animation="slide-left">
-      <div class="section-inner align-left">
-        <p class="section-label">Why teams switch</p>
-        <h2 class="section-heading">From fragmented tools to one decisive flow.</h2>
-        <p class="section-body">
-          Capital One unifies planning, controls, and live performance so your
-          operators spend less time reconciling and more time steering outcomes.
-        </p>
-        <a href="#cta" class="text-link section-cta">See implementation options</a>
-      </div>
-    </section>
+    <main>
+      <section id="story" class="story-intro">
+        <div class="section-inner">
+          <p class="section-eyebrow">001 / The Story</p>
+          <h2>From icon to institution to everyday utility.</h2>
+        </div>
+      </section>
 
-    <section class="stats-strip section-shell" data-section data-animation="fade-up">
-      <div class="section-inner">
-        <p class="section-label">Measured impact</p>
-        <div class="stats-grid">
-          <div class="stat">
-            <p class="stat-number" data-value="43" data-decimals="0">0</p>
-            <p class="stat-unit">%</p>
-            <p class="stat-caption">Faster reporting cycles</p>
-          </div>
-          <div class="stat">
-            <p class="stat-number" data-value="2.8" data-decimals="1">0</p>
-            <p class="stat-unit">x</p>
-            <p class="stat-caption">Operational throughput</p>
-          </div>
-          <div class="stat">
-            <p class="stat-number" data-value="99.2" data-decimals="1">0</p>
-            <p class="stat-unit">%</p>
-            <p class="stat-caption">Forecast confidence</p>
+      <section class="sequence-section">
+        <div class="sequence-pin" aria-label="Pinned animation sequence">
+          <div class="sequence-shell">
+            <canvas id="sequence-canvas" aria-hidden="true"></canvas>
+
+            <article class="callout callout--left" data-callout="barkley">
+              <p class="callout-label">Charles Barkley</p>
+              <p>
+                One of basketball's most recognizable figures, known for his
+                Hall of Fame career, larger-than-life presence, and decades
+                of influence across sports and media.
+              </p>
+            </article>
+
+            <article class="callout callout--right" data-callout="fairbank">
+              <p class="callout-label">Richard Fairbank</p>
+              <p>
+                The longtime founder and leader of Capital One, widely
+                recognized for helping shape the company into one of the most
+                prominent names in consumer finance.
+              </p>
+            </article>
+
+            <article class="callout callout--bottom" data-callout="trusted">
+              <p class="callout-label">Trusted by millions</p>
+              <p>
+                Capital One cards combine everyday usability with strong
+                rewards, flexible options, and a trusted brand experience
+                designed for modern consumers.
+              </p>
+            </article>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="features section-shell" data-section data-animation="slide-right">
-      <div class="section-inner align-right">
-        <p class="section-label">Feature highlights</p>
-        <h2 class="section-heading">Built to operate under pressure.</h2>
-        <div class="feature-grid">
-          <article class="feature-card">
-            <h3>Dynamic Scenarioing</h3>
-            <p>
-              Model opportunities and downside paths instantly without rebuilding
-              your planning stack.
-            </p>
-          </article>
-          <article class="feature-card">
-            <h3>Decision Alerts</h3>
-            <p>
-              Trigger high-priority notifications when leading indicators drift
-              beyond policy thresholds.
-            </p>
-          </article>
-          <article class="feature-card">
-            <h3>Executive Narrative</h3>
-            <p>
-              Turn operational detail into board-ready stories with context,
-              confidence bands, and action framing.
-            </p>
-          </article>
+      <section class="stats-band">
+        <div class="stats-row">
+          <div class="stat-item">
+            <p class="stat-number"><span data-count="100">0</span><span class="stat-suffix">M+</span></p>
+            <p class="stat-label">Customers served</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-number"><span data-count="4">0</span><span class="stat-suffix">x</span></p>
+            <p class="stat-label">Rewards categories</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-number"><span data-count="0">0</span><span class="stat-suffix">%</span></p>
+            <p class="stat-label">Annual fee on select cards</p>
+          </div>
         </div>
-        <a href="#cta" class="text-link section-cta">Explore all capabilities</a>
-      </div>
-    </section>
+        <div class="marquee-wrap">
+          <p class="marquee-text" aria-hidden="true">
+            Confidence in every swipe &mdash; Confidence in every swipe &mdash; Confidence in every swipe &mdash;
+          </p>
+        </div>
+      </section>
 
-    <section class="final-cta section-shell" id="cta" data-section data-animation="scale-up" data-persist="true">
-      <div class="section-inner centered">
-        <p class="section-label">Ready to launch</p>
-        <h2 class="section-heading">Move from analysis to confident action.</h2>
-        <p class="section-body">
-          Deploy in weeks with guided onboarding, migration support, and an
-          operating model your team can trust from day one.
-        </p>
-        <a href="#" class="button button-dark section-cta">Schedule a Strategy Call</a>
-      </div>
-    </section>
-  </main>
+      <section id="cards-section" class="cards-section">
+        <div class="section-inner">
+          <p class="section-eyebrow">002 / Card Highlights</p>
+          <h2>Designed for every kind of spender.</h2>
+          <div class="cards-grid">
+            <article class="card-item">
+              <h3>SavorOne</h3>
+              <p>
+                Made for everyday spending with rewarding value across the
+                moments that matter most.
+              </p>
+            </article>
+            <article class="card-item">
+              <h3>Platinum</h3>
+              <p>
+                A straightforward credit option designed for simplicity,
+                confidence, and dependable everyday use.
+              </p>
+            </article>
+            <article class="card-item">
+              <h3>Venture</h3>
+              <p>
+                Built for people who value travel, flexibility, and rewards
+                that go further.
+              </p>
+            </article>
+            <article class="card-item">
+              <h3>QuickSilver</h3>
+              <p>
+                Simple unlimited cash back with a clean, easy-to-understand
+                experience.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-  <script src="script.js"></script>
-</body>
+      <section id="cta-section" class="cta-section">
+        <div class="section-inner">
+          <p class="section-eyebrow">003 / Take the next step</p>
+          <h2>Choose a card built for how you live.</h2>
+          <p>
+            From everyday simplicity to travel-focused rewards, explore credit
+            options designed to support your goals with confidence.
+          </p>
+          <div class="cta-actions">
+            <a href="#" class="btn btn-primary">Explore cards</a>
+            <a href="#" class="btn btn-secondary">Learn more</a>
+          </div>
+        </div>
+      </section>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
