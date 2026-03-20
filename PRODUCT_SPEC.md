@@ -2,19 +2,31 @@
 
 ## Objective
 
-Build a modern, professional one-page product landing page that delivers a premium, scroll-driven credit card commercial experience centered around the local video file `commercial.mp4`.
+Build a modern, professional one-page product landing page that delivers a premium, scroll-driven credit card commercial experience centered around a user-provided local `.mp4` file.
 
 Use both skills:
 - `/video-to-website`
 - `/frontend-design`
 
+Inspiration reference:
+- [Apple AirPods Pro](https://www.apple.com/airpods-pro/) for overall premium layout rhythm, typography-led hierarchy, and scroll animation quality.
+
 ## Product Vision
 
-Create a polished, minimal, high-end fintech marketing page where the storytelling is driven by smooth GSAP scroll choreography and clean typography on a white canvas. The entire page should feel fluid and continuous, with the white website background visually blending into the white background in `commercial.mp4`.
+Create a polished, minimal, high-end fintech marketing page where the storytelling is driven by smooth GSAP scroll choreography and clean typography on a white canvas. The entire page should feel fluid and continuous, with the white website background visually blending into the white background in the selected `.mp4` source.
+
+## Input Requirement (Mandatory)
+
+Before implementation begins, prompt the user for the local `.mp4` file path if one is not explicitly provided in the request.
+
+- Required prompt behavior:
+  - Ask for the source video path (for example: `commercial.mp4` or an absolute file path).
+  - Confirm the selected file before frame extraction and animation setup.
+  - Do not proceed with build steps until the video input is confirmed.
 
 ## Core Experience Goals
 
-- Deliver a smooth, premium scroll narrative around `commercial.mp4`
+- Deliver a smooth, premium scroll narrative around the user-selected `.mp4`
 - Keep a white background across the entire page
 - Ensure white page surfaces and video background feel visually unified
 - Maintain high text readability (dark text, strong contrast, clean spacing)
@@ -24,22 +36,21 @@ Create a polished, minimal, high-end fintech marketing page where the storytelli
 ## Technical Requirements
 
 - Use GSAP with ScrollTrigger
-- Build a strong scroll-driven hero using `commercial.mp4`
+- Build a strong scroll-driven hero using the selected `.mp4`
 - Pin sections where appropriate
 - Sync text callouts to scroll progress
 - Ensure transitions between sections are smooth and intentional
 - Optimize for performance and scroll smoothness
 - Implement responsive, mobile-friendly behavior
 - Keep code clean, maintainable, and production quality
-- Prefer modern React/Next.js if the project supports it
-- Use Tailwind if available
+- Use [Apple AirPods Pro](https://www.apple.com/airpods-pro/) as a benchmark for premium scroll pacing and visual polish (while keeping branding/content specific to this project)
 
 ## Page Information Architecture
 
 ### 1) Hero / Scroll Experience
 
 - Full-width premium intro section
-- `commercial.mp4` as primary visual centerpiece
+- User-provided `.mp4` as primary visual centerpiece
 - White background (no dark theme transitions)
 - Video should feel embedded in layout, not boxed
 - Include subtle premium headline + supporting copy
@@ -96,6 +107,7 @@ Requirements:
 - Motion should feel intentional and expensive
 - Avoid over-animation
 - Prioritize readability, pacing, and smoothness
+- Match the level of smooth narrative motion and transition quality seen in [Apple AirPods Pro](https://www.apple.com/airpods-pro/) without copying brand-specific content
 
 ## Content Direction
 
@@ -114,7 +126,7 @@ For card copy:
 
 ## Implementation Notes
 
-- Assume `commercial.mp4` is available locally and must be used
+- Prompt for and confirm the local `.mp4` input before implementation
 - Build full one-page implementation (not partial)
 - Deliver complete launch-ready layout and behavior
 - Include all required components, styling, and GSAP logic
