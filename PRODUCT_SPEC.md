@@ -1,152 +1,288 @@
-# Product Spec: Capital One-Style Scroll Landing Page
 
-## Objective
+---
 
-Build a modern, professional one-page product landing page that delivers a premium, scroll-driven credit card commercial experience centered around a user-provided local `.mp4` file.
+## 5. Page Structure
 
-Use both skills:
-- `/video-to-website`
-- `/frontend-design`
+### Section 1: Intro / Hero
 
-Inspiration reference:
-- [Apple AirPods Pro](https://www.apple.com/airpods-pro/) for overall premium layout rhythm, typography-led hierarchy, and scroll animation quality.
+**Purpose**
+- Introduce product experience
+- Establish premium tone
+- Lead into scroll animation
 
-## Product Vision
+**Content**
+- Eyebrow label
+- Large headline
+- Supporting paragraph
+- Scroll indicator
 
-Create a polished, minimal, high-end fintech marketing page where the storytelling is driven by smooth GSAP scroll choreography and clean typography on a white canvas. The entire page should feel fluid and continuous, with the white website background visually blending into the white background in the selected `.mp4` source.
+**Copy**
 
-## Input Requirement (Mandatory)
+Eyebrow  
+Modern credit, reimagined  
 
-Before implementation begins, prompt the user for the local `.mp4` file path if one is not explicitly provided in the request.
+Headline  
+A premium card experience, built frame by frame.  
 
-- Required prompt behavior:
-  - Ask for the source video path (for example: `commercial.mp4` or an absolute file path).
-  - Confirm the selected file before frame extraction and animation setup.
-  - Do not proceed with build steps until the video input is confirmed.
+Body  
+Explore a smooth, scroll-driven product story designed around clarity, trust, and everyday value.  
 
-## Core Experience Goals
+---
 
-- Deliver a smooth, premium scroll narrative around the user-selected `.mp4`
-- Keep a white background across the entire page
-- Ensure white page surfaces and video background feel visually unified
-- Maintain high text readability (dark text, strong contrast, clean spacing)
-- Present the brand as trustworthy, modern, and premium
-- Use tasteful, professional motion (avoid gimmicky animation)
+### Section 2: Pinned Frame Sequence Story
 
-## Technical Requirements
+**Purpose**
+- Core scroll-driven experience
+- Canvas renders animation frames
+- Callouts tied to frame ranges
 
-- Use GSAP with ScrollTrigger
-- Build a strong scroll-driven hero using the selected `.mp4`
-- Pin sections where appropriate
-- Sync text callouts to scroll progress
-- Ensure transitions between sections are smooth and intentional
-- Optimize for performance and scroll smoothness
-- Implement responsive, mobile-friendly behavior
-- Keep code clean, maintainable, and production quality
-- Use [Apple AirPods Pro](https://www.apple.com/airpods-pro/) as a benchmark for premium scroll pacing and visual polish (while keeping branding/content specific to this project)
+**Behavior**
+- Section is pinned
+- Scroll controls frame rendering
+- Callouts appear/disappear at defined ranges
 
-## Page Information Architecture
+**Structure**
+- canvas container
+- floating callout layer
+- optional progress indicator
 
-### 1) Hero / Scroll Experience
+---
 
-- Full-width premium intro section
-- User-provided `.mp4` as primary visual centerpiece
-- White background (no dark theme transitions)
-- Video should feel embedded in layout, not boxed
-- Include subtle premium headline + supporting copy
-- As scroll begins, video area becomes the main storytelling device
+### Section 3: Card Variant Highlights
 
-### 2) Scroll-Driven Product Story
+**Purpose**
+- Transition from cinematic → product clarity
 
-- Drive sequence with GSAP ScrollTrigger
-- Animate video progression and surrounding content together
-- Add timed text callouts that appear/disappear at defined scroll points
-- Callouts explain why Capital One is strong and card advantages
-- Keep copy concise, premium, and easy to scan
-- Use elegant fade/translate/opacity transitions
-- Ensure text never fights visually with the video
-
-### 3) Credit Card Benefits (Late Scroll)
-
-Near the end of scroll, transition into card-focused highlights for:
+**Cards**
 - SavorOne
 - Platinum
 - Venture
 - QuickSilver
 
-Requirements:
-- Show card frames/cards appearing near end of sequence
-- Pair each card with concise premium callout copy
-- Maintain clean white presentation and high legibility
-- Make transition from video story to card highlights feel seamless and intentional
+Must feel like continuation of scroll story (not abrupt).
 
-### 4) Final CTA
+---
 
-- Clean premium closing section
-- Strong headline
-- Short supporting copy
-- Professional CTA button(s)
-- Maintain the same white, fluid visual language
+### Section 4: Final CTA
 
-## Visual Design Direction
+**Purpose**
+- Close with clarity and confidence
+- Reinforce product value
 
-- White background across the entire page
-- Minimal, premium, modern fintech aesthetic
-- Strong typographic hierarchy
-- Subtle gray separators/spacing (no heavy borders)
-- Elegant composition and spacing rhythm
-- Dark text for clarity and readability
-- No visual clutter
-- Final result should feel launch-ready for a major brand
+---
 
-## Motion Direction
+## 6. Frame Sequence Design Logic
 
-- Smooth GSAP ScrollTrigger choreography throughout
-- Pinned scroll sections where useful
-- Text callouts appear/disappear gracefully
-- Motion should feel intentional and expensive
-- Avoid over-animation
-- Prioritize readability, pacing, and smoothness
-- Match the level of smooth narrative motion and transition quality seen in [Apple AirPods Pro](https://www.apple.com/airpods-pro/) without copying brand-specific content
+### Phase A: Chip Introduction
+Frames: **1–30**
 
-## Content Direction
+- abstract chip visible
+- subtle pulse / motion
+- centered on white background
 
-Use polished marketing copy that emphasizes:
-- trust
-- flexibility
-- rewards
-- simplicity
-- everyday value
-- premium experience
+Purpose:
+Establish technology foundation
 
-For card copy:
-- Keep concise and premium
-- Focus on practical user benefits
-- Avoid dense paragraphs
+---
 
-## Implementation Notes
+### Phase B: Morph Transition
+Frames: **31–75**
 
-- Prompt for and confirm the local `.mp4` input before implementation
-- Build full one-page implementation (not partial)
-- Deliver complete launch-ready layout and behavior
-- Include all required components, styling, and GSAP logic
-- Add comments around primary animation orchestration for maintainability
-- Ensure white page background and video background blend visually
+- chip transforms into card
+- rectangular form emerges
+- smooth readable motion
 
-## Quality Bar / Acceptance Criteria
+Purpose:
+Technology → product transition
 
-- Scroll experience is smooth on desktop and acceptable on mobile
-- Hero-to-story transitions feel continuous
-- Callouts are timed and readable throughout
-- Card-specific highlights for all four required cards are present
-- Final CTA is clear, premium, and conversion-oriented
-- White-on-white blending between page and video feels intentional
-- Code structure is clean, maintainable, and production quality
+---
 
-## Deliverables
+### Phase C: Full Card Reveal
+Frames: **76–110**
 
-- Complete one-page implementation using the existing project stack
-- Structured sections matching this spec
-- GSAP + ScrollTrigger animation logic
-- Responsive behavior and performance-conscious implementation
-- Final polished UI and production-ready code organization
+- full card visible
+- upright orientation
+- centered, front-facing
+
+Purpose:
+Hero product moment
+
+---
+
+### Phase D: Held Card Moment
+Frames: **111–140**
+
+- repeated or nearly identical frames
+- minimal motion
+
+Purpose:
+Create stable pause for callouts
+
+---
+
+### Phase E: Finishing Motion
+Frames: **141–160+**
+
+- subtle settle or micro-motion
+- no large movement
+
+Purpose:
+Smooth exit
+
+---
+
+## 7. ScrollTrigger Frame Mapping Strategy
+
+### Key Principle
+
+This is NOT video playback.
+
+Instead:
+- scroll position controls frame
+- certain ranges are stretched for emphasis
+- repeated frames create visual pause
+
+---
+
+### Scroll Allocation
+
+#### Segment 1: Chip
+Scroll: **0–20%**
+Frames: **1–30**
+
+#### Segment 2: Morph
+Scroll: **20–55%**
+Frames: **31–75**
+
+#### Segment 3: Card Reveal
+Scroll: **55–70%**
+Frames: **76–110**
+
+#### Segment 4: Held Card
+Scroll: **70–90%**
+Frames: **111–140**
+
+#### Segment 5: Exit
+Scroll: **90–100%**
+Frames: **141–160**
+
+---
+
+### Desired Experience
+
+- not linear playback
+- not rushed
+- cinematic pacing
+- controlled progression
+- intentional pauses
+
+---
+
+## 8. Callout Strategy
+
+Callouts are tied to **frame ranges**, not time.
+
+### Behavior
+
+Each callout:
+- starts hidden
+- fades in
+- floats slightly
+- remains readable
+- fades out
+
+---
+
+### Animation Style
+
+- opacity: `0 → 1 → 0`
+- translateY: `24px → 0 → -12px`
+- optional scale: `0.98 → 1`
+- smooth easing only
+
+---
+
+### Visual Style
+
+- white panel
+- subtle border or shadow
+- rounded corners
+- dark readable text
+- premium spacing
+
+---
+
+## 9. Callouts Mapped to Frames
+
+### Callout 1 — Chip Phase
+Frames: **10–30**
+
+Label  
+Built from the core  
+
+Copy  
+Modern payment experiences begin with secure, intelligent infrastructure designed for speed, trust, and everyday reliability.  
+
+Behavior  
+- appears during chip visibility  
+- exits before morph dominates  
+
+---
+
+### Callout 2 — Morph Phase
+Frames: **45–75**
+
+Label  
+Designed to evolve  
+
+Copy  
+What begins as payment technology becomes a product shaped around real-world usability, flexibility, and intuitive everyday value.  
+
+---
+
+### Callout 3 — Card Phase
+Frames: **105–140**
+
+Label  
+Made for everyday value  
+
+Copy  
+A premium credit experience should feel clear, modern, and rewarding — from the first glance to the final transaction.  
+
+---
+
+## 10. Implementation Notes (CRITICAL)
+
+### Canvas Setup
+- single `<canvas>` element
+- fixed aspect ratio
+- centered layout
+
+### Frame Handling
+- preload all frames before animation starts
+- store in array
+- reuse images (no re-fetching)
+
+### ScrollTrigger
+- pin the animation section
+- use `scrub: true`
+- map scroll progress → frame index
+
+### Performance
+- use `drawImage` only
+- avoid layout thrashing
+- avoid DOM updates during scroll
+- keep animations GPU-friendly
+
+---
+
+## 11. Final Experience Goals
+
+The result should feel:
+
+- Apple-level smooth
+- controlled and cinematic
+- minimal and clean
+- readable and professional
+- intentional and premium
+- production-ready
