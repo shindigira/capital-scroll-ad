@@ -47,8 +47,12 @@ function drawFrame(index) {
     dh = dw / imgR;
   }
 
-  ctx.clearRect(0, 0, cw, ch);
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = "#f1f0ec";
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.globalCompositeOperation = "multiply";
   ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+  ctx.globalCompositeOperation = "source-over";
 }
 
 function resizeCanvas() {
