@@ -1,15 +1,8 @@
 {
 	"allowedCommands": [
-		"npm install",
-		"pnpm install",
-		"yarn install",
-		"npm run dev",
-		"pnpm dev",
-		"npm test",
-		"pnpm test",
-		"git add",
-		"git commit",
-		"git status",
-		"git diff"
+		"npm *",
+		"pnpm *",
+		"yarn *",
+		"git *"
 	]
 }
