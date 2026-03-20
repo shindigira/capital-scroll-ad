@@ -1382,3 +1382,522 @@ error: could not write config file .git/config: Operation not permitted
 <summary>Tool use: **run_terminal_command_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status -sb && git rev-parse --short HEAD</summary>
+
+```bash
+git status -sb && git rev-parse --short HEAD
+```
+
+```
+## fourth-try...origin/fourth-try
+ M .specstory/statistics.json
+ D PRODUCT_SPEC.md
+?? .specstory/history/2026-03-20_20-05-55Z-higgsfield-animation-landing-page-implementation.md
+?? .specstory/history/2026-03-20_20-10-41Z-one-page-landing-page-design-and-development.md
+?? commercial.mp4
+f5be160
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+Committed and pushed.
+
+- **Commit:** `f5be160`
+- **Branch:** `fourth-try`
+- **Remote push:** `origin/fourth-try` updated successfully
+
+Committed files were only:
+- `index.html`
+- `styles.css`
+- `script.js`
+- `frames/` (193 frame images)
+
+Still uncommitted in your working tree (left untouched):
+- `.specstory/statistics.json` (modified)
+- `PRODUCT_SPEC.md` (deleted)
+- `.specstory/history/...` (untracked)
+- `commercial.mp4` (untracked)
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (premium)**_
+
+I’ll commit and push the remaining working-tree changes now. I’m checking current status, diff, and recent commit style first, then I’ll stage everything that’s left and push.
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short</summary>
+
+```bash
+git status --short
+```
+
+```
+ M .specstory/statistics.json
+ D PRODUCT_SPEC.md
+?? .specstory/history/2026-03-20_20-05-55Z-higgsfield-animation-landing-page-implementation.md
+?? .specstory/history/2026-03-20_20-10-41Z-one-page-landing-page-design-and-development.md
+?? commercial.mp4
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git diff --staged; git diff</summary>
+
+```bash
+git diff --staged; git diff
+```
+
+```
+diff --git a/.specstory/statistics.json b/.specstory/statistics.json
+index e690258..0ee40b8 100644
+--- a/.specstory/statistics.json
++++ b/.specstory/statistics.json
+@@ -1,5 +1,14 @@
+ {
+   "sessions": {
++    "22377321-d6f4-4b0f-8c3a-41d51a9e63fd": {
++      "user_message_count": 1,
++      "agent_message_count": 8,
++      "start_timestamp": "2026-03-20T16:05:55-04:00",
++      "end_timestamp": "2026-03-20T16:05:55-04:00",
++      "markdown_size_bytes": 6675,
++      "provider": "cursoride",
++      "last_updated": "2026-03-20T20:07:54Z"
++    },
+     "88b6092e-a36c-45c5-b972-2838d4c6842f": {
+       "user_message_count": 32,
+       "agent_message_count": 264,
+@@ -9,6 +18,15 @@
+       "provider": "cursoride",
+       "last_updated": "2026-03-20T19:49:23Z"
+     },
++    "d4ef8aad-2593-41be-94d6-a60b2d6d55c2": {
++      "user_message_count": 2,
++      "agent_message_count": 25,
++      "start_timestamp": "2026-03-20T16:10:41-04:00",
++      "end_timestamp": "2026-03-20T16:10:41-04:00",
++      "markdown_size_bytes": 46102,
++      "provider": "cursoride",
++      "last_updated": "2026-03-20T20:18:44Z"
++    },
+     "e3ea8a8f-a4b5-42e7-89f8-90871e81077d": {
+       "user_message_count": 15,
+       "agent_message_count": 98,
+diff --git a/PRODUCT_SPEC.md b/PRODUCT_SPEC.md
+deleted file mode 100644
+index 7ff09f5..0000000
+--- a/PRODUCT_SPEC.md
++++ /dev/null
+@@ -1,288 +0,0 @@
+-
+----
+-
+-## 5. Page Structure
+-
+-### Section 1: Intro / Hero
+-
+-**Purpose**
+-- Introduce product experience
+-- Establish premium tone
+-- Lead into scroll animation
+-
+-**Content**
+-- Eyebrow label
+-- Large headline
+-- Supporting paragraph
+-- Scroll indicator
+-
+-**Copy**
+-
+-Eyebrow  
+-Modern credit, reimagined  
+-
+-Headline  
+-A premium card experience, built frame by frame.  
+-
+-Body  
+-Explore a smooth, scroll-driven product story designed around clarity, trust, and everyday value.  
+-
+----
+-
+-### Section 2: Pinned Frame Sequence Story
+-
+-**Purpose**
+-- Core scroll-driven experience
+-- Canvas renders animation frames
+-- Callouts tied to frame ranges
+-
+-**Behavior**
+-- Section is pinned
+-- Scroll controls frame rendering
+-- Callouts appear/disappear at defined ranges
+-
+-**Structure**
+-- canvas container
+-- floating callout layer
+-- optional progress indicator
+-
+----
+-
+-### Section 3: Card Variant Highlights
+-
+-**Purpose**
+-- Transition from cinematic → product clarity
+-
+-**Cards**
+-- SavorOne
+-- Platinum
+-- Venture
+-- QuickSilver
+-
+-Must feel like continuation of scroll story (not abrupt).
+-
+----
+-
+-### Section 4: Final CTA
+-
+-**Purpose**
+-- Close with clarity and confidence
+-- Reinforce product value
+-
+----
+-
+-## 6. Frame Sequence Design Logic
+-
+-### Phase A: Chip Introduction
+-Frames: **1–30**
+-
+-- abstract chip visible
+-- subtle pulse / motion
+-- centered on white background
+-
+-Purpose:
+-Establish technology foundation
+-
+----
+-
+-### Phase B: Morph Transition
+-Frames: **31–75**
+-
+-- chip transforms into card
+-- rectangular form emerges
+-- smooth readable motion
+-
+-Purpose:
+-Technology → product transition
+-
+----
+-
+-### Phase C: Full Card Reveal
+-Frames: **76–110**
+-
+-- full card visible
+-- upright orientation
+-- centered, front-facing
+-
+-Purpose:
+-Hero product moment
+-
+----
+-
+-### Phase D: Held Card Moment
+-Frames: **111–140**
+-
+-- repeated or nearly identical frames
+-- minimal motion
+-
+-Purpose:
+-Create stable pause for callouts
+-
+----
+-
+-### Phase E: Finishing Motion
+-Frames: **141–160+**
+-
+-- subtle settle or micro-motion
+-- no large movement
+-
+-Purpose:
+-Smooth exit
+-
+----
+-
+-## 7. ScrollTrigger Frame Mapping Strategy
+-
+-### Key Principle
+-
+-This is NOT video playback.
+-
+-Instead:
+-- scroll position controls frame
+-- certain ranges are stretched for emphasis
+-- repeated frames create visual pause
+-
+----
+-
+-### Scroll Allocation
+-
+-#### Segment 1: Chip
+-Scroll: **0–20%**
+-Frames: **1–30**
+-
+-#### Segment 2: Morph
+-Scroll: **20–55%**
+-Frames: **31–75**
+-
+-#### Segment 3: Card Reveal
+-Scroll: **55–70%**
+-Frames: **76–110**
+-
+-#### Segment 4: Held Card
+-Scroll: **70–90%**
+-Frames: **111–140**
+-
+-#### Segment 5: Exit
+-Scroll: **90–100%**
+-Frames: **141–160**
+-
+----
+-
+-### Desired Experience
+-
+-- not linear playback
+-- not rushed
+-- cinematic pacing
+-- controlled progression
+-- intentional pauses
+-
+----
+-
+-## 8. Callout Strategy
+-
+-Callouts are tied to **frame ranges**, not time.
+-
+-### Behavior
+-
+-Each callout:
+-- starts hidden
+-- fades in
+-- floats slightly
+-- remains readable
+-- fades out
+-
+----
+-
+-### Animation Style
+-
+-- opacity: &#96;0 → 1 → 0&#96;
+-- translateY: &#96;24px → 0 → -12px&#96;
+-- optional scale: &#96;0.98 → 1&#96;
+-- smooth easing only
+-
+----
+-
+-### Visual Style
+-
+-- white panel
+-- subtle border or shadow
+-- rounded corners
+-- dark readable text
+-- premium spacing
+-
+----
+-
+-## 9. Callouts Mapped to Frames
+-
+-### Callout 1 — Chip Phase
+-Frames: **10–30**
+-
+-Label  
+-Built from the core  
+-
+-Copy  
+-Modern payment experiences begin with secure, intelligent infrastructure designed for speed, trust, and everyday reliability.  
+-
+-Behavior  
+-- appears during chip visibility  
+-- exits before morph dominates  
+-
+----
+-
+-### Callout 2 — Morph Phase
+-Frames: **45–75**
+-
+-Label  
+-Designed to evolve  
+-
+-Copy  
+-What begins as payment technology becomes a product shaped around real-world usability, flexibility, and intuitive everyday value.  
+-
+----
+-
+-### Callout 3 — Card Phase
+-Frames: **105–140**
+-
+-Label  
+-Made for everyday value  
+-
+-Copy  
+-A premium credit experience should feel clear, modern, and rewarding — from the first glance to the final transaction.  
+-
+----
+-
+-## 10. Implementation Notes (CRITICAL)
+-
+-### Canvas Setup
+-- single &#96;&lt;canvas&gt;&#96; element
+-- fixed aspect ratio
+-- centered layout
+-
+-### Frame Handling
+-- preload all frames before animation starts
+-- store in array
+-- reuse images (no re-fetching)
+-
+-### ScrollTrigger
+-- pin the animation section
+-- use &#96;scrub: true&#96;
+-- map scroll progress → frame index
+-
+-### Performance
+-- use &#96;drawImage&#96; only
+-- avoid layout thrashing
+-- avoid DOM updates during scroll
+-- keep animations GPU-friendly
+-
+----
+-
+-## 11. Final Experience Goals
+-
+-The result should feel:
+-
+-- Apple-level smooth
+-- controlled and cinematic
+-- minimal and clean
+-- readable and professional
+-- intentional and premium
+-- production-ready
+\ No newline at end of file
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git log --oneline -8</summary>
+
+```bash
+git log --oneline -8
+```
+
+```
+f5be160 Add a premium scroll-driven one-page landing experience with a pinned canvas narrative.
+d014eda restart
+9d222e4 updated product_spec md
+d342b2a Move frontend design guidance back into a reusable skill file.
+2b18322 Refresh specstory history and session statistics.
+379e98a Move frontend design guidance from skill into an always-applied Cursor rule.
+01d8176 Update product spec with required video prompt and inspiration guidance.
+0648558 Add product spec document for premium scroll landing page implementation.
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git add -A && git commit -m "$(cat <<'EOF'
+Refresh session artifacts and remove outdated product spec.
+
+This records updated specstory history/statistics, removes the obsolete PRODUCT_SPEC.md, and adds the commercial source video asset.
+EOF
+)" && git status -sb</summary>
+
+```bash
+git add -A && git commit -m "$(cat <<'EOF'
+Refresh session artifacts and remove outdated product spec.
+
+This records updated specstory history/statistics, removes the obsolete PRODUCT_SPEC.md, and adds the commercial source video asset.
+EOF
+)" && git status -sb
+```
+
+```
+[fourth-try 6c3589e] Refresh session artifacts and remove outdated product spec.
+ 5 files changed, 1589 insertions(+), 288 deletions(-)
+ create mode 100644 .specstory/history/2026-03-20_20-05-55Z-higgsfield-animation-landing-page-implementation.md
+ create mode 100644 .specstory/history/2026-03-20_20-10-41Z-one-page-landing-page-design-and-development.md
+ delete mode 100644 PRODUCT_SPEC.md
+ create mode 100644 commercial.mp4
+## fourth-try...origin/fourth-try [ahead 1]
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+Commit is in place and I’m pushing this latest commit to `origin/fourth-try` now, then I’ll confirm final branch status.
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git push</summary>
+
+```bash
+git push
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>

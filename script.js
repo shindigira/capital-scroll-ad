@@ -2,286 +2,92 @@ gsap.registerPlugin(ScrollTrigger);
 
 const FRAME_COUNT = 193;
 const CRITICAL_FRAMES = 14;
-const FRAME_SPEED = 2.05;
 const IMAGE_SCALE = 0.88;
+const STORY_SCROLL_LENGTH = 6; // Multiplier of viewport height.
 
+const canvas = document.getElementById("story-canvas");
+const context = canvas.getContext("2d");
 const loader = document.getElementById("loader");
-const loaderBar = document.getElementById("loaderBar");
-const loaderProgress = document.getElementById("loaderProgress");
-const canvas = document.getElementById("storyCanvas");
-const canvasMask = document.getElementById("canvasMask");
-const canvasOverlay = document.getElementById("canvasOverlay");
-const ctx = canvas.getContext("2d");
+const loaderFill = document.getElementById("loader-fill");
+const loaderProgress = document.getElementById("loader-progress");
+const callouts = Array.from(document.querySelectorAll(".callout"));
 
-const frameImages = new Array(FRAME_COUNT);
-let loadedCount = 0;
-let currentFrame = 0;
-let hasStarted = false;
-
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const frames = new Array(FRAME_COUNT).fill(null);
+const frameState = { frame: 0 };
 
 function framePath(index) {
   return `frames/frame_${String(index + 1).padStart(4, "0")}.jpg`;
 }
 
-function updateLoadingUI() {
-  const percent = Math.round((loadedCount / FRAME_COUNT) * 100);
-  loaderBar.style.width = `${percent}%`;
-  loaderProgress.textContent = `${percent}%`;
+function updateLoader(loaded, total) {
+  const progress = Math.round((loaded / total) * 100);
+  loaderFill.style.width = `${progress}%`;
+  loaderProgress.textContent = `${progress}%`;
 }
 
 function loadFrame(index) {
-  if (frameImages[index]) {
-    return Promise.resolve(frameImages[index]);
-  }
-
   return new Promise((resolve) => {
-    const image = new Image();
-    image.src = framePath(index);
-    image.onload = () => {
-      frameImages[index] = image;
-      loadedCount += 1;
-      updateLoadingUI();
-      resolve(image);
+    if (frames[index]) {
+      resolve(frames[index]);
+      return;
+    }
+
+    const img = new Image();
+    img.src = framePath(index);
+
+    img.onload = () => {
+      frames[index] = img;
+      resolve(img);
     };
-    image.onerror = () => {
-      resolve(null);
-    };
+
+    img.onerror = () => resolve(null);
   });
-}
-
-function findNearestLoadedFrame(targetIndex) {
-  if (frameImages[targetIndex]) {
-    return frameImages[targetIndex];
-  }
-
-  for (let offset = 1; offset < FRAME_COUNT; offset += 1) {
-    const before = targetIndex - offset;
-    const after = targetIndex + offset;
-
-    if (before >= 0 && frameImages[before]) {
-      return frameImages[before];
-    }
-    if (after < FRAME_COUNT && frameImages[after]) {
-      return frameImages[after];
-    }
-  }
-
-  return null;
 }
 
 function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const { width, height } = canvas.getBoundingClientRect();
 
-  canvas.width = Math.round(width * dpr);
-  canvas.height = Math.round(height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvas.width = Math.floor(width * dpr);
+  canvas.height = Math.floor(height * dpr);
+  context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  drawFrame(currentFrame);
+  drawFrame(Math.round(frameState.frame));
 }
 
 function drawFrame(index) {
-  const image = findNearestLoadedFrame(index);
-  currentFrame = index;
+  const img = frames[index];
+  if (!img || !canvas.width || !canvas.height) return;
 
-  if (!image) return;
+  const { width: cw, height: ch } = canvas.getBoundingClientRect();
+  const widthRatio = cw / img.width;
+  const heightRatio = ch / img.height;
 
-  const canvasWidth = canvas.clientWidth;
-  const canvasHeight = canvas.clientHeight;
-  const imageAspect = image.width / image.height;
-  const canvasAspect = canvasWidth / canvasHeight;
+  // Padded cover keeps cinematic framing while avoiding edge artifacts.
+  const scale = Math.max(widthRatio, heightRatio) * IMAGE_SCALE;
+  const drawWidth = img.width * scale;
+  const drawHeight = img.height * scale;
+  const drawX = (cw - drawWidth) * 0.5;
+  const drawY = (ch - drawHeight) * 0.5;
 
-  let drawWidth;
-  let drawHeight;
-
-  if (imageAspect > canvasAspect) {
-    drawHeight = canvasHeight * IMAGE_SCALE;
-    drawWidth = drawHeight * imageAspect;
-  } else {
-    drawWidth = canvasWidth * IMAGE_SCALE;
-    drawHeight = drawWidth / imageAspect;
-  }
-
-  const x = (canvasWidth - drawWidth) * 0.5;
-  const y = (canvasHeight - drawHeight) * 0.5;
-
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  ctx.fillStyle = "#f7f8fa";
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-  ctx.drawImage(image, x, y, drawWidth, drawHeight);
-}
-
-function hideLoader() {
-  loader.classList.add("hidden");
-}
-
-function revealMask(progress) {
-  const revealProgress = clamp((progress - 0.01) / 0.15, 0, 1);
-  const radius = 14 + revealProgress * 170;
-  canvasMask.style.clipPath = `circle(${radius}% at 50% 50%)`;
-}
-
-function updateOverlay(progress) {
-  const fadeInStart = 0.56;
-  const fadeInEnd = 0.66;
-  const fadeOutStart = 0.82;
-  const fadeOutEnd = 0.92;
-
-  let opacity = 0;
-  if (progress >= fadeInStart && progress <= fadeInEnd) {
-    opacity = (progress - fadeInStart) / (fadeInEnd - fadeInStart);
-  } else if (progress > fadeInEnd && progress < fadeOutStart) {
-    opacity = 1;
-  } else if (progress >= fadeOutStart && progress <= fadeOutEnd) {
-    opacity = 1 - (progress - fadeOutStart) / (fadeOutEnd - fadeOutStart);
-  }
-
-  canvasOverlay.style.opacity = `${opacity * 0.26}`;
+  context.clearRect(0, 0, cw, ch);
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, cw, ch);
+  context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
 }
 
 function updateCallouts(progress) {
-  const callouts = document.querySelectorAll(".callout");
-
   callouts.forEach((callout) => {
-    const start = Number(callout.dataset.start);
-    const end = Number(callout.dataset.end);
-    const edge = 0.06;
-    let alpha = 0;
-
-    if (progress >= start && progress <= end) {
-      const inAmount = clamp((progress - start) / edge, 0, 1);
-      const outAmount = clamp((end - progress) / edge, 0, 1);
-      alpha = Math.min(inAmount, outAmount, 1);
-    }
-
-    callout.style.opacity = String(alpha);
-    callout.style.transform = `translateY(${(1 - alpha) * 26}px)`;
+    const start = parseFloat(callout.dataset.start || "0");
+    const end = parseFloat(callout.dataset.end || "1");
+    const isActive = progress >= start && progress <= end;
+    callout.classList.toggle("is-active", isActive);
   });
 }
 
-function initPinnedStory() {
-  /* Main pinned ScrollTrigger:
-   * - Pins the storytelling stage.
-   * - Maps scrubbed scroll progress to canvas frame index.
-   * - Drives callout timing, hero-to-canvas reveal, and dark overlay moments.
-   */
-  ScrollTrigger.create({
-    trigger: ".story-section",
-    start: "top top",
-    end: "bottom bottom",
-    scrub: 0.9,
-    pin: ".story-stage",
-    anticipatePin: 1,
-    onUpdate: (self) => {
-      const accelerated = clamp(self.progress * FRAME_SPEED, 0, 1);
-      const frameIndex = Math.round(accelerated * (FRAME_COUNT - 1));
-      drawFrame(frameIndex);
-      revealMask(self.progress);
-      updateOverlay(self.progress);
-      updateCallouts(self.progress);
-    }
-  });
-}
-
-function sectionAnimationVars(type) {
-  switch (type) {
-    case "slide-right":
-      return { x: 80, y: 0, opacity: 0 };
-    case "slide-left":
-      return { x: -80, y: 0, opacity: 0 };
-    case "scale-up":
-      return { scale: 0.9, y: 10, opacity: 0 };
-    case "rotate-in":
-      return { y: 40, rotation: 3, opacity: 0 };
-    case "clip-reveal":
-      return { clipPath: "inset(0 0 100% 0)", opacity: 1 };
-    case "stagger-up":
-      return { y: 65, opacity: 0 };
-    case "fade-up":
-    default:
-      return { y: 50, opacity: 0 };
-  }
-}
-
-function animateSections() {
-  document.querySelectorAll("[data-animation]").forEach((section) => {
-    const type = section.dataset.animation || "fade-up";
-    const persist = section.dataset.persist === "true";
-    const fromVars = sectionAnimationVars(type);
-
-    const label = section.querySelector(".eyebrow");
-    const heading = section.querySelector(".section-title, h2, h3");
-    const body = section.querySelector(".section-copy, p");
-    const cta = section.querySelector(".btn");
-    const cards = [...section.querySelectorAll(".feature-card")];
-
-    const tl = gsap.timeline({
-      defaults: { duration: 0.9, ease: "power3.out" },
-      scrollTrigger: {
-        trigger: section,
-        start: "top 78%",
-        toggleActions: persist ? "play none none none" : "play none none reverse"
-      }
-    });
-
-    if (label) {
-      tl.from(label, { ...fromVars, duration: 0.7 }, 0);
-    }
-    if (heading) {
-      tl.from(heading, { ...fromVars, duration: 0.95 }, 0.1);
-    }
-    if (body) {
-      tl.from(body, { ...fromVars, duration: 0.95 }, 0.2);
-    }
-    if (cta) {
-      tl.from(cta, { ...fromVars, duration: 0.75 }, 0.3);
-    }
-    if (cards.length) {
-      tl.from(cards, { ...fromVars, stagger: 0.1, duration: 0.8 }, 0.28);
-    }
-  });
-}
-
-function animateCounters() {
-  document.querySelectorAll(".stat-number").forEach((node) => {
-    const targetValue = Number(node.dataset.value || "0");
-    const decimals = Number(node.dataset.decimals || "0");
-    const value = { current: 0 };
-
-    gsap.to(value, {
-      current: targetValue,
-      duration: 1.7,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: node,
-        start: "top 85%",
-        toggleActions: "play none none none"
-      },
-      onUpdate: () => {
-        node.textContent = value.current.toFixed(decimals);
-      }
-    });
-  });
-}
-
-function animateMarquee() {
-  gsap.to("#marqueeTrack", {
-    xPercent: -28,
-    ease: "none",
-    scrollTrigger: {
-      trigger: ".marquee-wrap",
-      start: "top bottom",
-      end: "bottom top",
-      scrub: true
-    }
-  });
-}
-
-function initLenis() {
+function setupLenis() {
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: 1.15,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true
   });
@@ -291,64 +97,156 @@ function initLenis() {
   gsap.ticker.lagSmoothing(0);
 }
 
-async function preloadCriticalFrames() {
-  const criticalTasks = [];
+function setupStoryScroll() {
+  // Main pinned ScrollTrigger that maps scroll progress to frame playback.
+  gsap.to(frameState, {
+    frame: FRAME_COUNT - 1,
+    ease: "none",
+    onUpdate: () => drawFrame(Math.round(frameState.frame)),
+    scrollTrigger: {
+      trigger: "#story",
+      start: "top top",
+      end: `+=${window.innerHeight * STORY_SCROLL_LENGTH}`,
+      pin: ".story-stage",
+      scrub: 0.35,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const progress = self.progress;
 
-  for (let index = 0; index < CRITICAL_FRAMES; index += 1) {
-    criticalTasks.push(loadFrame(index));
-  }
-
-  await Promise.all(criticalTasks);
-}
-
-function loadRemainingFrames() {
-  const queue = [];
-  for (let index = CRITICAL_FRAMES; index < FRAME_COUNT; index += 1) {
-    queue.push(index);
-  }
-
-  const next = () => {
-    const current = queue.shift();
-    if (current === undefined) return;
-
-    loadFrame(current).finally(() => {
-      if ("requestIdleCallback" in window) {
-        window.requestIdleCallback(next, { timeout: 180 });
-      } else {
-        window.setTimeout(next, 12);
+        // Callout system: each panel is activated by scroll window without opacity animation.
+        updateCallouts(progress);
       }
-    });
-  };
+    }
+  });
 
-  next();
-}
-
-function initExperience() {
-  if (hasStarted) return;
-  hasStarted = true;
-
-  resizeCanvas();
-  drawFrame(0);
-  hideLoader();
-  initLenis();
-  initPinnedStory();
-  animateSections();
-  animateCounters();
-  animateMarquee();
-  ScrollTrigger.refresh();
-
-  window.addEventListener("resize", () => {
-    resizeCanvas();
-    ScrollTrigger.refresh();
+  // Hero to canvas reveal transition.
+  gsap.to(".story-stage", {
+    clipPath: "circle(140% at 50% 50%)",
+    ease: "none",
+    scrollTrigger: {
+      trigger: "#story",
+      start: "top 85%",
+      end: "top 20%",
+      scrub: true
+    }
   });
 }
 
-(async function start() {
-  try {
-    await preloadCriticalFrames();
-    initExperience();
-    loadRemainingFrames();
-  } catch {
-    loaderProgress.textContent = "Unable to load frames";
+function getSectionAnimationVars(animationType) {
+  switch (animationType) {
+    case "slide-left":
+      return { x: -90, y: 20, autoAlpha: 0 };
+    case "slide-right":
+      return { x: 90, y: 20, autoAlpha: 0 };
+    case "scale-up":
+      return { scale: 0.9, y: 20, autoAlpha: 0 };
+    case "rotate-in":
+      return { rotation: 3, y: 35, autoAlpha: 0 };
+    default:
+      return { y: 50, autoAlpha: 0 };
   }
-})();
+}
+
+function setupSectionAnimations() {
+  const sections = Array.from(document.querySelectorAll("[data-section]"));
+
+  sections.forEach((section) => {
+    const animationType = section.dataset.animation || "fade-up";
+    const fromVars = getSectionAnimationVars(animationType);
+    const label = section.querySelector(".section-label");
+    const heading = section.querySelector(".section-heading");
+    const body = section.querySelector(".section-body");
+    const cta = section.querySelector(".section-cta");
+    const cards = section.querySelectorAll(".feature-card, .stat");
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top 78%",
+        once: section.dataset.persist === "true"
+      }
+    });
+
+    if (label) tl.from(label, { ...fromVars, duration: 0.55 });
+    if (heading) tl.from(heading, { ...fromVars, duration: 0.7 }, "-=0.24");
+    if (body) tl.from(body, { ...fromVars, duration: 0.65 }, "-=0.3");
+    if (cards.length) tl.from(cards, { y: 28, autoAlpha: 0, stagger: 0.1, duration: 0.6 }, "-=0.3");
+    if (cta) tl.from(cta, { y: 22, autoAlpha: 0, duration: 0.5 }, "-=0.25");
+  });
+}
+
+function setupMarquee() {
+  gsap.to(".marquee-track", {
+    xPercent: -28,
+    ease: "none",
+    scrollTrigger: {
+      trigger: ".marquee",
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 0.8
+    }
+  });
+}
+
+function setupCounters() {
+  const counters = Array.from(document.querySelectorAll(".stat-number"));
+
+  counters.forEach((counter) => {
+    const value = parseFloat(counter.dataset.value || "0");
+    const decimals = parseInt(counter.dataset.decimals || "0", 10);
+    const proxy = { current: 0 };
+
+    gsap.to(proxy, {
+      current: value,
+      duration: 1.7,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: counter,
+        start: "top 84%",
+        toggleActions: "play none none none"
+      },
+      onUpdate: () => {
+        counter.textContent = proxy.current.toFixed(decimals);
+      }
+    });
+  });
+}
+
+async function preloadFrames() {
+  let loaded = 0;
+
+  for (let i = 0; i < CRITICAL_FRAMES; i += 1) {
+    await loadFrame(i);
+    loaded += 1;
+    updateLoader(loaded, FRAME_COUNT);
+  }
+
+  for (let i = CRITICAL_FRAMES; i < FRAME_COUNT; i += 1) {
+    loadFrame(i).then(() => {
+      loaded += 1;
+      updateLoader(loaded, FRAME_COUNT);
+    });
+  }
+}
+
+async function init() {
+  setupLenis();
+  await preloadFrames();
+  resizeCanvas();
+  drawFrame(0);
+
+  setupStoryScroll();
+  setupSectionAnimations();
+  setupMarquee();
+  setupCounters();
+
+  loader.classList.add("is-hidden");
+  ScrollTrigger.refresh();
+}
+
+window.addEventListener("resize", () => {
+  resizeCanvas();
+  ScrollTrigger.refresh();
+});
+
+init();

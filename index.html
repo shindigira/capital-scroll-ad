@@ -1,181 +1,186 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capital Scroll | Precision Product Story</title>
-    <meta
-      name="description"
-      content="A premium, scroll-driven product narrative built with canvas, GSAP ScrollTrigger, and refined typography."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div id="loader" aria-live="polite">
-      <div class="loader-shell">
-        <p class="loader-label">Loading story frames</p>
-        <div class="loader-track">
-          <span class="loader-bar" id="loaderBar"></span>
-        </div>
-        <p class="loader-progress" id="loaderProgress">0%</p>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capital One | Precision In Motion</title>
+  <meta name="description"
+    content="A premium, scroll-driven product landing page with cinematic storytelling and refined motion." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="loader" aria-live="polite" aria-label="Loading animation frames">
+    <div class="loader-inner">
+      <p class="loader-label">Loading Story Engine</p>
+      <div class="loader-bar">
+        <span id="loader-fill"></span>
       </div>
+      <p id="loader-progress">0%</p>
     </div>
+  </div>
 
-    <header class="site-header">
-      <div class="container header-row">
-        <p class="brand">Capital</p>
-        <a href="#final-cta" class="header-link">Book a demo</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#" aria-label="Capital One home">
+        <img src="capital-one-logo-png_seeklogo-425557.png" alt="Capital One" />
+      </a>
+      <a class="header-cta" href="#cta">Book a Demo</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section-shell" id="hero">
+      <div class="section-inner">
+        <p class="eyebrow">Enterprise product narrative</p>
+        <h1>Financial clarity that moves at market speed.</h1>
+        <p class="lead">
+          One operational layer for forecasting, execution, and reporting.
+          Built for teams that value precision, confidence, and momentum.
+        </p>
+        <a href="#story" class="button">Explore the Story</a>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section class="hero section-intro">
-        <div class="container hero-inner">
-          <p class="eyebrow">Reimagined Product Storytelling</p>
-          <h1 class="hero-title">Make every scroll feel like intent.</h1>
-          <p class="hero-copy">
-            Capital transforms complex financial workflows into one coherent,
-            confidence-building user journey with cinematic clarity.
-          </p>
-          <a class="btn btn-primary" href="#story">Start the experience</a>
-        </div>
-      </section>
-
-      <section id="story" class="story-section" aria-label="Pinned product narrative">
+    <section class="story" id="story" aria-label="Scroll storytelling animation">
+      <div class="story-track">
         <div class="story-stage">
-          <div class="canvas-mask" id="canvasMask">
-            <canvas id="storyCanvas"></canvas>
-            <div class="canvas-overlay" id="canvasOverlay"></div>
-          </div>
+          <canvas id="story-canvas" aria-hidden="true"></canvas>
+          <div class="story-overlay" id="story-overlay" aria-hidden="true"></div>
 
-          <div class="story-callouts" aria-hidden="true">
-            <article class="callout align-left" data-start="0.06" data-end="0.24">
-              <p class="callout-kicker">Signal</p>
-              <h3>Every surface is data-backed.</h3>
-              <p>
-                Contextual metrics appear exactly when needed, reducing
-                hesitation during high-value decisions.
-              </p>
-            </article>
-            <article class="callout align-right" data-start="0.26" data-end="0.46">
-              <p class="callout-kicker">Control</p>
-              <h3>Scenario modeling in real time.</h3>
-              <p>
-                Teams can explore outcomes instantly and move from assumption to
-                aligned action in one workspace.
-              </p>
-            </article>
-            <article class="callout align-left" data-start="0.5" data-end="0.7">
-              <p class="callout-kicker">Trust</p>
-              <h3>Audit-ready by default.</h3>
-              <p>
-                Built-in governance and approvals create transparency without
-                slowing down operations.
-              </p>
-            </article>
-            <article class="callout align-right" data-start="0.72" data-end="0.94">
-              <p class="callout-kicker">Momentum</p>
-              <h3>From insight to execution.</h3>
-              <p>
-                Scroll through the narrative, then enter your implementation
-                plan with a single guided flow.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="marquee-wrap">
-        <div class="marquee-track" id="marqueeTrack">
-          <span>Clarity at Scale</span>
-          <span>Clarity at Scale</span>
-          <span>Clarity at Scale</span>
-        </div>
-      </section>
-
-      <section class="content-section align-left" data-animation="fade-up">
-        <div class="container section-inner">
-          <p class="eyebrow">Why teams switch</p>
-          <h2 class="section-title">A focused system for modern financial operations.</h2>
-          <p class="section-copy">
-            Replace fragmented tooling with one cohesive control plane built for
-            strategic planning, forecasting, and performance visibility.
-          </p>
-          <a href="#final-cta" class="btn btn-secondary">See implementation model</a>
-        </div>
-      </section>
-
-      <section class="stats-row">
-        <div class="container stats-grid">
-          <article class="stat-item">
-            <p class="stat-number" data-value="97" data-decimals="0">0</p>
-            <p class="stat-label">Forecast confidence</p>
+          <article class="callout callout-left" data-start="0.08" data-end="0.24">
+            <p class="callout-label">Refined First Impression</p>
+            <h3>
+              A deep navy card face with chip and contactless icon introduces a
+              clean, premium entry point.
+            </h3>
           </article>
-          <article class="stat-item">
-            <p class="stat-number" data-value="2.4" data-decimals="1">0</p>
-            <p class="stat-label">x planning speed</p>
+
+          <article class="callout callout-right" data-start="0.30" data-end="0.48">
+            <p class="callout-label">Layered Card Family</p>
+            <h3>
+              As the stack expands, subtle edge colors reveal multiple products
+              built for different credit journeys.
+            </h3>
           </article>
-          <article class="stat-item">
+
+          <article class="callout callout-left" data-start="0.56" data-end="0.72">
+            <p class="callout-label">Distinct Product Personalities</p>
+            <h3>
+              SavorOne, Platinum, and Quicksilver One each keep a unique finish
+              while maintaining one cohesive brand language.
+            </h3>
+          </article>
+
+          <article class="callout callout-right" data-start="0.76" data-end="0.94">
+            <p class="callout-label">Built for Everyday Use</p>
+            <h3>
+              Clear numbering, visible chip placement, and contactless cues keep
+              the experience intuitive at every touchpoint.
+            </h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>High Signal</span>
+        <span>Low Friction</span>
+        <span>Trusted Decisions</span>
+        <span>High Signal</span>
+        <span>Low Friction</span>
+        <span>Trusted Decisions</span>
+      </div>
+    </section>
+
+    <section class="support section-shell" data-section data-animation="slide-left">
+      <div class="section-inner align-left">
+        <p class="section-label">Why teams switch</p>
+        <h2 class="section-heading">From fragmented tools to one decisive flow.</h2>
+        <p class="section-body">
+          Capital One unifies planning, controls, and live performance so your
+          operators spend less time reconciling and more time steering outcomes.
+        </p>
+        <a href="#cta" class="text-link section-cta">See implementation options</a>
+      </div>
+    </section>
+
+    <section class="stats-strip section-shell" data-section data-animation="fade-up">
+      <div class="section-inner">
+        <p class="section-label">Measured impact</p>
+        <div class="stats-grid">
+          <div class="stat">
             <p class="stat-number" data-value="43" data-decimals="0">0</p>
-            <p class="stat-label">days saved per quarter</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="content-section align-right" data-animation="slide-right">
-        <div class="container section-inner">
-          <p class="eyebrow">Purpose-built benefits</p>
-          <h2 class="section-title">Precision controls for teams that scale responsibly.</h2>
-          <p class="section-copy">
-            Enforce standards, orchestrate approvals, and keep leadership aligned
-            with a single source of truth.
-          </p>
-          <a href="#final-cta" class="btn btn-secondary">Explore the platform</a>
-        </div>
-      </section>
-
-      <section class="features-section" data-animation="stagger-up">
-        <div class="container">
-          <p class="eyebrow">Feature highlights</p>
-          <h2 class="section-title">Designed for performance at every layer.</h2>
-          <div class="features-grid">
-            <article class="feature-card">
-              <h3>Live Scenario Engine</h3>
-              <p>Model best, base, and worst outcomes without leaving context.</p>
-            </article>
-            <article class="feature-card">
-              <h3>Intelligent Workflows</h3>
-              <p>Automate recurring approvals while preserving exception control.</p>
-            </article>
-            <article class="feature-card">
-              <h3>Executive Narrative</h3>
-              <p>Convert operational detail into board-ready storyline instantly.</p>
-            </article>
+            <p class="stat-unit">%</p>
+            <p class="stat-caption">Faster reporting cycles</p>
+          </div>
+          <div class="stat">
+            <p class="stat-number" data-value="2.8" data-decimals="1">0</p>
+            <p class="stat-unit">x</p>
+            <p class="stat-caption">Operational throughput</p>
+          </div>
+          <div class="stat">
+            <p class="stat-number" data-value="99.2" data-decimals="1">0</p>
+            <p class="stat-unit">%</p>
+            <p class="stat-caption">Forecast confidence</p>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="final-cta" class="final-cta" data-animation="clip-reveal" data-persist="true">
-        <div class="container cta-inner">
-          <p class="eyebrow">Ready to move faster?</p>
-          <h2 class="section-title">Build your next planning cycle on Capital.</h2>
-          <p class="section-copy">
-            Get a tailored walkthrough for your team and deployment timeline.
-          </p>
-          <a class="btn btn-primary" href="#">Request a private demo</a>
+    <section class="features section-shell" data-section data-animation="slide-right">
+      <div class="section-inner align-right">
+        <p class="section-label">Feature highlights</p>
+        <h2 class="section-heading">Built to operate under pressure.</h2>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>Dynamic Scenarioing</h3>
+            <p>
+              Model opportunities and downside paths instantly without rebuilding
+              your planning stack.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3>Decision Alerts</h3>
+            <p>
+              Trigger high-priority notifications when leading indicators drift
+              beyond policy thresholds.
+            </p>
+          </article>
+          <article class="feature-card">
+            <h3>Executive Narrative</h3>
+            <p>
+              Turn operational detail into board-ready stories with context,
+              confidence bands, and action framing.
+            </p>
+          </article>
         </div>
-      </section>
-    </main>
+        <a href="#cta" class="text-link section-cta">Explore all capabilities</a>
+      </div>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+    <section class="final-cta section-shell" id="cta" data-section data-animation="scale-up" data-persist="true">
+      <div class="section-inner centered">
+        <p class="section-label">Ready to launch</p>
+        <h2 class="section-heading">Move from analysis to confident action.</h2>
+        <p class="section-body">
+          Deploy in weeks with guided onboarding, migration support, and an
+          operating model your team can trust from day one.
+        </p>
+        <a href="#" class="button button-dark section-cta">Schedule a Strategy Call</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>
