@@ -3879,7 +3879,7 @@ _**User**_
 
 Use the /video-to-website and /frontend-design 
 
-the frames are already generated in @frames/ so can skip the ffprobe and ffmpeg steps
+the frames are already generated in @frames so can skip the ffprobe and ffmpeg steps
 
 Build a one-page landing page using only:
 - vanilla HTML
@@ -4055,3 +4055,132 @@ scripts
 <summary>Tool use: **run_terminal_command_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/index.html",
+    "/Users/st/Projects/capital-scroll-ad/styles.css",
+    "/Users/st/Projects/capital-scroll-ad/script.js"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+Implemented the full canvas-based scroll story using your already-generated `frames/` (no ffmpeg/ffprobe step), with vanilla HTML/CSS/JS + GSAP/ScrollTrigger only.
+
+### Generated/updated files
+- `index.html`
+- `styles.css`
+- `script.js`
+
+### What this now does
+- Uses a **single `canvas`** (`#story-canvas`) for the main animation
+- Preloads frame images from `frames/frame_0001.webp` ... `frame_0146.webp`
+- Pins the scroll story section and maps scroll progress to frame index
+- Uses smooth acceleration (`FRAME_SPEED = 2.0`) for responsive cinematic pacing
+- Adds three floating callouts with requested copy and timing windows:
+  - Charles Barkley (`15%–35%`)
+  - Richard Fairbank (`35%–55%`)
+  - Trusted by millions (`55%–78%`)
+- Keeps design premium/minimal:
+  - white background throughout
+  - dark readable text
+  - subtle card styling, rounded corners, soft shadows
+- Includes required sections:
+  1. Hero
+  2. Pinned scroll animation section
+  3. Card highlights
+  4. Final CTA
+- Adds semantic footer
+
+### Notes on JS comments
+`script.js` includes clear comments for:
+- frame preloading
+- canvas rendering
+- ScrollTrigger setup
+- callout timing
+
+If you want, I can do one final timing pass to align each callout to exact visual beats in your `commercial.mp4` sequence (by tuning the `data-start/data-end` ranges).
