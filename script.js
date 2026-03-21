@@ -166,14 +166,16 @@ function animateStats() {
 /* ── ScrollTrigger setup ── */
 
 function setupScrollStory() {
-  const scrubHeight = FRAME_COUNT * 36;
+  const scrubHeight = FRAME_COUNT * 64;
+
+  gsap.set(".sequence-section", { height: scrubHeight });
 
   ScrollTrigger.create({
     trigger: ".sequence-section",
     start: "top top",
     end: `+=${scrubHeight}`,
     pin: ".sequence-pin",
-    pinSpacing: true,
+    pinSpacing: false,
     scrub: 0.4,
     anticipatePin: 1,
     onUpdate: (self) => {
@@ -185,7 +187,9 @@ function setupScrollStory() {
       state.frame = next;
       drawFrame(next);
       updateCallouts(next);
-    }
+    },
+    onLeave: () => gsap.set(".sequence-pin", { autoAlpha: 0 }),
+    onEnterBack: () => gsap.set(".sequence-pin", { autoAlpha: 1 })
   });
 
   gsap.from(".story-intro .section-eyebrow", {
