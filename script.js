@@ -78,11 +78,17 @@ function drawFrame(index) {
 	ctx.globalCompositeOperation = "source-over";
 }
 
-function resizeCanvas() {
+function resizeCanvas(retryCount = 0) {
 	const dpr = Math.min(window.devicePixelRatio || 1, 2);
 	const w = canvas.clientWidth;
 	const h = canvas.clientHeight;
-	if (w < 2 || h < 2) return;
+	/* Pin / layout on mobile can briefly report 0×0; retry next frame before giving up */
+	if (w < 2 || h < 2) {
+		if (retryCount < 5) {
+			requestAnimationFrame(() => resizeCanvas(retryCount + 1));
+		}
+		return;
+	}
 	/* Same box model as drawFrame (avoid rect vs client mismatch + unfilled edge rows) */
 	canvas.width = Math.max(1, Math.round(w * dpr));
 	canvas.height = Math.max(1, Math.round(h * dpr));
@@ -246,20 +252,30 @@ function setupScrollStory() {
 		pinSpacing: false,
 		anticipatePin: 1,
 		onUpdate: (self) => {
-			const next = frameIndexFromProgress(self.progress);
-			if (next === Math.round(state.frame)) return;
-			state.frame = next;
-			drawFrame(next);
-			updateCallouts(next);
+			syncSequenceToProgress(self.progress, false);
 		},
 		onRefresh: (self) => {
 			syncSequenceToProgress(self.progress, true);
 		},
-		onEnterBack: () => {
-			resizeCanvas();
-			updateCallouts(Math.round(state.frame));
+		onEnter: (self) => {
+			syncSequenceToProgress(self.progress, true);
+		},
+		onEnterBack: (self) => {
+			syncSequenceToProgress(self.progress, true);
 		},
 	});
+
+	/* Momentum / fling scroll on mobile often coalesces; resync frame when scroll settles */
+	if ("onscrollend" in window) {
+		window.addEventListener(
+			"scrollend",
+			() => {
+				const st = ScrollTrigger.getById("sequence-canvas-scrub");
+				if (st) syncSequenceToProgress(st.progress, true);
+			},
+			{ passive: true },
+		);
+	}
 
 	gsap.from(".story-intro .section-eyebrow", {
 		y: 20,

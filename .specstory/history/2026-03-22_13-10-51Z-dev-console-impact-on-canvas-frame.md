@@ -10288,3 +10288,1223 @@ no changes added to commit (use "git add" and/or "git commit -a")
 <summary>Tool use: **run_terminal_command_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+User asked git add all - I'll use git add -A or git add .  to stage everything. I'll commit with message about card animations on mobile (matchMedia + remove mobile entrance) and specstory updates if included.
+
+Message: "Gate card grid entrance on desktop; drop mobile stagger/fade"
+
+Or split - but user wants one commit with all.
+
+I'll git add -A, commit, push
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Gate card scroll animations to desktop only
+
+- Use gsap.matchMedia for card-item entrance (translate + stagger) at min-width 821px
+- Skip card entrance animations on mobile to avoid staggered scroll effects
+- Update Specstory files"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Gate card scroll animations to desktop only
+
+- Use gsap.matchMedia for card-item entrance (translate + stagger) at min-width 821px
+- Skip card entrance animations on mobile to avoid staggered scroll effects
+- Update Specstory files"
+```
+
+```
+[ui-ux-pro-max-use d9a016d] Gate card scroll animations to desktop only
+ 3 files changed, 1099 insertions(+), 17 deletions(-)
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Now git push
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git push</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git push
+```
+
+```
+To https://github.com/shindigira/capital-scroll-ad.git
+   2f620cb..d9a016d  ui-ux-pro-max-use -&gt; ui-ux-pro-max-use
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Done. Summarize for user.
+</details></think>
+
+_**Agent (default)**_
+
+
+Finished.
+
+- **Staged** everything (`git add -A`): `script.js`, `.specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md`, `.specstory/statistics.json`
+- **Committed** `d9a016d` — *Gate card scroll animations to desktop only* (with Specstory updates)
+- **Pushed** `ui-ux-pro-max-use` → `origin`
+
+---
+
+_**User**_
+
+bug when scrolling fast to end of page and then scrolling back up, dont see a frame in gsap animation -- just seeing the pinSpacing
+
+problem shows on mobile
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user is describing a bug with the GSAP ScrollTrigger sequence animation. When scrolling fast to the end of the page and then scrolling back up, they don't see a frame in the canvas animation - they just see pinSpacing. This happens on mobile.
+
+Let me understand the setup:
+1. There's a pinned sequence section with canvas frames
+2. pinSpacing: false might be related
+3. When scrolling fast and returning, the canvas might not redraw or the wrong state is shown
+
+I need to read script.js for the ScrollTrigger setup, sync logic, onEnterBack, onRefresh, etc. Also check if there's a race condition or if ScrollTrigger progress doesn't fire updates when scrolling quickly.
+
+Common issues:
+1. **onUpdate** might not fire every frame when scrubbing fast - but when scrolling back, progress should update
+2. **state.frame** might get out of sync
+3. **drawFrame** might not be called when re-entering the pin zone from below
+4. **pinSpacing: false** - might leave spacer/layout issues on mobile
+5. **ScrollTrigger.refresh()** needed when entering back
+6. **anticipatePin** issues on mobile
+
+Let me read the full setupScrollStory and related code.
+</details></think>
+
+_**Agent (default)**_
+
+
+Tracing the sequence ScrollTrigger and canvas sync logic to find why frames disappear when quickly scrolling to the bottom and back (especially on mobile).
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The issue is:
+
+1. **onUpdate** only runs when `next !== Math.round(state.frame)` - so when scrolling fast, we might skip intermediate frames but we should still land on the correct frame at each scroll position... Unless `onUpdate` doesn't fire when crossing certain thresholds?
+
+2. Actually the bug: when scrolling **fast to end**, progress might hit 1 quickly. When scrolling **back up**, the user says they see **pinSpacing** instead of a frame. 
+
+Wait - `pinSpacing: false` - what does "seeing pinSpacing" mean? Maybe the empty space that ScrollTrigger adds, or the section shows but canvas is empty/wrong?
+
+3. **onEnterBack** - when scrolling back into the trigger from below, it calls `resizeCanvas()` and `updateCallouts(Math.round(state.frame))` but does NOT call `syncSequenceToProgress(self.progress)` with the actual progress! So if `state.frame` is stale or if `drawFrame` wasn't called with correct index...
+
+Actually when entering back from below:
+- The scroll position might put you in the sequence section
+- `onUpdate` might not fire if ScrollTrigger thinks progress didn't change from last frame? Unlikely on scroll.
+
+4. **Race when progress = 1**: At the end of the animation, `state.frame` should be FRAME_COUNT-1. When user scrolls past completely, they're **past** the ScrollTrigger end - the pin is released. The `onUpdate` might not fire when leaving the end - or when re-entering, **progress might jump** and there could be a frame where `onUpdate` doesn't sync.
+
+5. **When pinned element is unpinned** at scroll past end: `.sequence-pin` is no longer pinned. When scrolling back up, **onEnterBack** fires when re-entering the trigger region. But the issue: **onEnterBack** doesn't receive `self` in the callback in older GSAP - let me check. In ScrollTrigger, `onEnterBack: () => { resizeCanvas(); }` - the callback can receive `(self)` as first argument.
+
+Looking at GSAP ScrollTrigger docs:
+- `onEnterBack` - Callback when scrolling backward past the start
+- When you scroll from bottom of page upward into the sequence section, **onEnterBack** fires
+
+But the bug is: **onEnterBack** only does resizeCanvas and updateCallouts with **existing** state.frame - it doesn't **sync frame from current scroll progress**!
+
+So if the user scrolled so fast that the last `onUpdate` had progress=1 and frame=145, state is correct. But when they're past the end, they're not in the trigger... Actually when past the end, what is progress? ScrollTrigger might set progress to 1 when past end, or the trigger might be "inactive".
+
+When scrolling back up quickly:
+- Maybe **onUpdate** doesn't fire** for every intermediate scroll position on mobile (throttled?)
+- Maybe **state.frame** gets out of sync with actual visual
+- Maybe **onEnterBack** runs but canvas has **zero size** or **wrong** because pin isn't applied yet?
+
+6. **Another scenario**: `onUpdate` uses `drawFrame(next)` but NOT `resizeCanvas()` - while `syncSequenceToProgress` uses `resizeCanvas()`. So when dimensions change, onUpdate might draw to wrong buffer... Unlikely.
+
+7. **Key insight - onEnterBack doesn't sync progress**: When entering back from the end of the page, the scroll position maps to a certain progress. But `onEnterBack` only calls `resizeCanvas()` which draws `state.frame`. If `state.frame` is wrong because:
+   - Fast scroll skipped onUpdate ticks (unlikely - scroll events should eventually fire)
+   - OR when at the very end, progress is 1, but when you scroll back **slightly**, maybe there's a frame where **onUpdate** doesn't run before paint?
+
+8. **Mobile Safari / momentum scrolling**: During deceleration, scroll position might jump. **ScrollTrigger might not update** until scroll ends?
+
+9. **`onLeave` and `onLeaveBack`**: When leaving the end going down, maybe we need to ensure state. When **onEnterBack** - we should **always sync from self.progress**:
+
+```javascript
+onEnterBack: (self) => {
+  syncSequenceToProgress(self.progress, true);
+},
+```
+
+And similarly **`onEnter`** when entering from top might need sync for consistency.
+
+10. **`onLeave` going forward** past the sequence: Maybe state.frame is correct. **`onLeaveBack`** when scrolling back from below into the sequence - that's when we need to redraw!
+
+Actually re-read ScrollTrigger callbacks:
+- **onEnterBack**: Scrolling **backwards** to go past the **start** point (re-entering from above)? No...
+
+Let me read GSAP docs carefully:
+
+From ScrollTrigger:
+- **onEnter**: Scrolling forward past the start
+- **onLeave**: Scrolling forward past the end  
+- **onEnterBack**: Scrolling backward so that the start is crossed again (re-entering the trigger zone from the end direction)
+- **onLeaveBack**: Scrolling backward past the start
+
+So:
+- **onEnterBack**: When scrolling UP from below, you cross the **end** of the trigger going backward... Actually I need the exact definitions.
+
+From GSAP:
+- `onEnter` - the trigger's start hits the scroller's start (or whatever)
+- `onLeave` - The scroll position leaves the trigger's end
+- `onEnterBack` - The scroll position re-enters the trigger (scrolling backward)
+- `onLeaveBack` - Leaves going backward past start
+
+So when user scrolls from bottom of page upward, they **enter** the sequence section from below. That would be **onEnterBack** when... 
+
+Actually for a trigger with start "top top" and end "+=totalHeight":
+- When scrolling down, we enter when sequence top hits viewport top
+- When we leave at the end, we've scrolled past the full distance
+
+When scrolling **up** from the footer:
+- We **re-enter** the trigger - I think this is **onEnterBack** (entering the active zone when scrolling backward)
+
+The current `onEnterBack` does resizeCanvas without syncing progress from self!
+
+**Fix**: Pass `self` to onEnterBack and call `syncSequenceToProgress(self.progress, true)`.
+
+Also **`onLeave`** when exiting past end - should we sync? Probably not needed.
+
+**`onLeaveBack`** - when scrolling up past the start of the trigger (leaving upward), the sequence is no longer active - might need cleanup.
+
+11. **Will onUpdate always run after onEnterBack**? Order might be: onEnterBack fires, then onUpdate fires. If onEnterBack draws stale frame and onUpdate draws correct - might flash. Better to sync in onEnterBack with self.progress.
+
+12. **Also use `onScroll` or ensure `invalidateOnRefresh`**: 
+
+Let me check **fast scroll** issue: On mobile, if you fling to bottom, the ScrollTrigger might batch updates. When `progress` goes from 0.5 to 1.0 in one frame, onUpdate should still run with progress 1. **Unless** the trigger gets disabled or something.
+
+13. **pinSpacing: false** - User says they "see pinSpacing" - maybe they mean the literal empty gap / pin-spacer element is visible? With pinSpacing: false, GSAP doesn't add padding - the following content might overlap? Could there be a visual where the **pinned area shows blank** because the canvas container has zero height or is opacity 0?
+
+Let me read HTML/CSS for sequence-section again.
+
+14. **Another bug**: `onUpdate` compares `next === Math.round(state.frame)` - **state.frame** might be float? It's set as `state.frame = next` where next is integer from frameIndexFromProgress. Good.
+
+Actually `state.frame = next` in onUpdate - next is integer. But first line says `if (next === Math.round(state.frame))` - state.frame could be non-integer if set elsewhere? syncSequenceToProgress sets state.frame = next (integer). Good.
+
+15. **When progress is exactly at boundaries** - floating point issues?
+
+16. **`invalidateOnRefresh: true`** on ScrollTrigger - might help recalculate end.
+
+I'll implement:
+1. **onEnterBack: (self) => syncSequenceToProgress(self.progress, true)**
+2. **onEnter: (self) => syncSequenceToProgress(self.progress, true)** - when entering from top scrolling down
+3. Maybe **onLeaveBack: (self) =>** sync when leaving backward? When leaving upward past start, we're not in the zone - might show wrong frame when quickly re-entering - probably onEnter handles that.
+
+4. **scrollListener** or add **ScrollTrigger.addEventListener("scrollEnd")** - GSAP has **ScrollTrigger.normalizeScroll** for mobile - complex.
+
+5. **use requestAnimationFrame in scroll** - not ideal.
+
+Let me also add **`onUpdate` at the end to always use resizeCanvas when dimensions might have changed** - actually the issue might be **drawFrame without resizeCanvas** when canvas dimensions are 0 during pin transition.
+
+6. **Mobile**: When pin engages/disengages, **getBoundingClientRect** might briefly be 0? **resizeCanvas** early returns if w<2 || h<2 - then **drawFrame never runs** and canvas stays blank!
+
+```javascript
+function resizeCanvas() {
+	...
+	if (w < 2 || h < 2) return;
+```
+If resizeCanvas returns early without drawing, **state.frame** is updated but canvas is empty/cleared!
+
+When **canvas.width** is set in resizeCanvas - if we **return early**, we don't update canvas dimensions. **drawFrame** from onUpdate might use old canvas dimensions...
+
+Actually if **resizeCanvas** returns early because w<2, **drawFrame** isn't called from resizeCanvas. But **onUpdate** calls **drawFrame(next)** directly - not resizeCanvas! So drawFrame still runs with potentially wrong canvas dimensions (0 width?) - see drawFrame:
+
+```javascript
+const scale = ctx.getTransform().a || 1;
+const cw = canvas.width / scale;
+const ch = canvas.height / scale;
+if (cw < 2 || ch < 2) return;
+```
+
+If canvas was never properly sized (width 0), drawFrame returns early **without drawing** - blank canvas!
+
+**Scenario**: Fast scroll on mobile, pin releases, canvas might have **clientWidth 0** during layout thrash, drawFrame bails, **clears nothing** or shows empty.
+
+**Fix**: Call **resizeCanvas** from onUpdate instead of drawFrame only - ensures dimensions are set before draw. Actually syncSequenceToProgress already uses resizeCanvas. The onUpdate uses drawFrame only - **inconsistency**.
+
+**Change onUpdate to use resizeCanvas()** instead of drawFrame - which will resize and draw. That's the same as syncSequenceToProgress but without the duplicate frame check - let me look:
+
+syncSequenceToProgress:
+```
+const next = frameIndexFromProgress(progress);
+if (!forceRedraw && next === Math.round(state.frame)) return;
+state.frame = next;
+resizeCanvas();
+updateCallouts(next);
+```
+
+So we should use **syncSequenceToProgress(self.progress, false)** in onUpdate instead of manual drawFrame - that way we always get resizeCanvas + consistent behavior.
+
+But wait - the early return in sync: `if (!forceRedraw && next === Math.round(state.frame)) return` - same as onUpdate. Good.
+
+**Replace onUpdate body** with `syncSequenceToProgress(self.progress, false)`.
+
+4. **onEnterBack** with **syncSequenceToProgress(self.progress, true)** - force redraw and correct frame.
+
+5. **onEnter** with sync - when scrolling down into section from intro.
+
+6. **Early return in resizeCanvas** - if dimensions invalid, **schedule retry** with requestAnimationFrame? That could fix transient 0 size during pin.
+
+```javascript
+function resizeCanvas() {
+	const dpr = Math.min(window.devicePixelRatio || 1, 2);
+	const w = canvas.clientWidth;
+	const h = canvas.clientHeight;
+	if (w < 2 || h < 2) {
+		requestAnimationFrame(() => {
+			if (canvas.clientWidth >= 2 && canvas.clientHeight >= 2) {
+				resizeCanvas();
+			}
+		});
+		return;
+	}
+	...
+}
+```
+
+This could cause infinite loop if always 0 - add guard or max retries.
+
+Let me read drawFrame and resize again.
+
+I'll implement:
+1. onUpdate → `syncSequenceToProgress(self.progress, false)` 
+2. onEnterBack → `syncSequenceToProgress(self.progress, true)`
+3. onEnter → `syncSequenceToProgress(self.progress, true)` 
+4. Optional: rAF retry in resizeCanvas when w/h too small
+
+5. Remove duplicate logic in onEnterBack (currently resizeCanvas + updateCallouts - sync does both)
+
+Let me also check **onLeave** - when user scrolls past end, should we set state? Probably progress stays 1 until leaving.
+
+Actually **onUpdate** only fires while between start and end. When past end, **onUpdate** might not fire. So state.frame should still be 145. When re-entering from below, **onEnterBack** fires - we need correct progress... **self.progress** in onEnterBack should reflect current scroll.
+
+Let me verify onEnterBack receives self with progress - yes.
+
+**Will onEnterBack fire when scrolling up into the pinned section?** I need to verify the callback name. From GSAP:
+- `onEnterBack` - A callback for when the scroll position moves backward past the "end" (in reverse)" - hmm
+
+Let me read official docs...
+
+From greensock ScrollTrigger:
+- **onEnter**: Function - Called when the scroll position moves forward past the "start" (typically when the scrollbar is moving down)
+- **onLeave**: When moving forward past "end"
+- **onEnterBack**: When the scroll position moves backward past the "end" (scrollbar up)
+- **onLeaveBack**: When moving backward past "start"
+
+So when user scrolls **UP** from below the sequence (having scrolled past the entire sequence downward):
+- They're moving backward relative to... 
+- When scrolling UP, we go from below the pinned section back **into** it - we cross the "end" line going backward → **onEnterBack** fires!
+
+Perfect. So onEnterBack should sync progress. Current code doesn't pass self - I'll fix.
+
+When scrolling **UP** from having been at the **start** (above sequence) - different.
+
+Also **onLeaveBack** - when scrolling up past the **start** (leaving the sequence upward), we leave the trigger. Canvas might need to show frame 0 when re-entering from top - **onEnter** handles re-entry from above.
+
+I'll add **onEnter: (self) => syncSequenceToProgress(self.progress, true)** as well.
+
+Let me also unify onUpdate to use syncSequenceToProgress.
+
+**Duplicate onEnterBack/updateCallouts**: syncSequenceToProgress already calls updateCallouts.
+
+I'll read the full ScrollTrigger block to apply edits.
+
+**pinSpacing confusion**: User said they see "pinSpacing" - with pinSpacing: false, maybe they mean the **pin-spacer** class element or blank space? Or "pin spacing" as in the gap/margin issue? I'll focus on canvas sync first.
+
+**normalizeScroll** for iOS - GSAP offers this for ScrollTrigger bugs on mobile. Might be overkill for now.
+
+**Listeners: scroll end** - Could add `window.addEventListener('scroll', () => { ScrollTrigger.refresh(); }, {passive: true})` - too heavy.
+
+Let me implement sync callbacks + rAF retry for small canvas.
+
+For rAF retry - need to avoid infinite recursion. Use:
+
+```javascript
+function resizeCanvas() {
+	const dpr = Math.min(window.devicePixelRatio || 1, 2);
+	const w = canvas.clientWidth;
+	const h = canvas.clientHeight;
+	if (w < 2 || h < 2) {
+		requestAnimationFrame(() => resizeCanvas());
+		return;
+	}
+```
+
+This could loop every frame if pin keeps canvas at 0 - bad. Better: only retry once or twice:
+
+```javascript
+	if (w < 2 || h < 2) {
+		requestAnimationFrame(() => {
+			const w2 = canvas.clientWidth;
+			const h2 = canvas.clientHeight;
+			if (w2 >= 2 && h2 >= 2) resizeCanvas();
+		});
+		return;
+	}
+```
+
+Single rAF retry - good.
+
+Actually the issue might be simpler - **onEnterBack** not syncing **progress** means **state.frame** might be 0 or wrong when **self.progress** is actually 0.5. When would that happen? If fast scroll causes onUpdate to skip... Tabloid: Actually if onUpdate always runs when scroll position changes while in trigger, state should update. Unless **touch** momentum scroll doesn't fire scroll events until end?
+
+**iOS momentum scrolling**: During inertial scroll, `onUpdate` might not fire every frame, but at scroll end it should fire once with final position. Unless there's a bug where intermediate state sticks.
+
+I'll add **document.addEventListener('scroll', ... ScrollTrigger.update())** - no, ScrollTrigger should handle.
+
+**IntersectionObserver** fallback to force redraw when sequence enters viewport - nuclear option.
+
+I'll implement the sync fixes first.
+</details></think>
+
+_**Agent (default)**_
+
+
+Checking ScrollTrigger callbacks and whether `onUpdate`/`onEnterBack` can leave the canvas out of sync after fast scrolling.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll implement:
+
+1. **onUpdate** → `syncSequenceToProgress(self.progress, false)` - unified path that always uses **resizeCanvas** before draw (critical when pin toggles and dimensions change)
+
+2. **onEnterBack** → `syncSequenceToProgress(self.progress, true)` - was not using self.progress! This is likely the main bug when scrolling back up from footer.
+
+3. **onEnter** → `syncSequenceToProgress(self.progress, true)` - entering from top
+
+4. **resizeCanvas** early return when w<2: schedule one **requestAnimationFrame** retry to redraw after layout settles (mobile pin transition)
+
+5. **Optional: onLeave** - when leaving past end with progress 1, state is fine. When **onLeaveBack** - leaving upward past start, we're outside - might still need nothing.
+
+6. **ScrollTrigger.config({ ignoreMobileResize: false })** - not sure
+
+Let me also check - does **syncSequenceToProgress** need to be called with **progress** from trigger when the trigger uses **invalidateOnRefresh**? 
+
+Another issue: **`onEnterBack` signature** - In GSAP 3, callbacks receive the ScrollTrigger instance as first argument. So `onEnterBack: (self) => { ... self.progress ... }`
+
+7. **Fast scroll**: Some mobile browsers use **passive scroll** and might coalesce - **ScrollTrigger** has internal scroll listeners. Adding **`refreshPriority`** or **`markers: false`** - not related.
+
+8. **Observer** plugin - ScrollTrigger uses ResizeObserver in some cases.
+
+Let me also add **`onLeave: (self) => { syncSequenceToProgress(1, true) }`** when leaving forward - ensure last frame? Actually at leave, progress is 1. Might help.
+
+Actually **onLeave** when scrolling down past end - progress might be 1. Good.
+
+**onLeaveBack** when scrolling up past start - we exit the trigger, progress might go to 0. The canvas might not be visible - ok.
+
+When user **onEnterBack** from below - **critical**.
+
+I'll also look at **`ScrollTrigger.isTouch`** - mobile touch end **scrollend** event - Chrome has **scrollend** - could force refresh. GSAP 3.12 might have this.
+
+I'll add listener for **scrollend** (progressive enhancement) to force sync:
+
+```javascript
+if (typeof window.onscrollend !== 'undefined') {
+  window.addEventListener('scrollend', () => {
+    const st = ScrollTrigger.getById('sequence-canvas-scrub');
+    if (st) syncSequenceToProgress(st.progress, true);
+  }, { passive: true });
+}
+```
+
+Actually ScrollTrigger might expose scroll position - need to get progress from the ST instance.
+
+```javascript
+const st = ScrollTrigger.getById('sequence-canvas-scrub');
+// after create, store reference
+ScrollTrigger.create({ ... });
+// But we need reference inside setupScrollStory
+
+const sequenceST = ScrollTrigger.create({ ... });
+window.addEventListener('scrollend', () => {
+  sequenceST && syncSequenceToProgress(sequenceST.progress, true);
+});
+```
+
+This could help mobile momentum scroll end sync.
+
+Let me read if ScrollTrigger has `scrollend` built-in... I'll add the scrollend listener as optional.
+
+Actually the **main fix** is onEnterBack with self.progress + onUpdate using resizeCanvas path.
+
+Let me refactor:
+
+```javascript
+const sequenceST = ScrollTrigger.create({
+  ...
+  onUpdate: (self) => {
+    syncSequenceToProgress(self.progress, false);
+  },
+  onRefresh: (self) => {
+    syncSequenceToProgress(self.progress, true);
+  },
+  onEnter: (self) => {
+    syncSequenceToProgress(self.progress, true);
+  },
+  onEnterBack: (self) => {
+    syncSequenceToProgress(self.progress, true);
+  },
+});
+
+// After create, debounced scroll sync for mobile
+if (typeof ScrollTrigger.addEventListener === 'undefined') {
+  // use scrollend
+}
+```
+
+Remove old onEnterBack body.
+
+**Bug**: If we call sync in both onUpdate and onEnterBack, could duplicate work - fine.
+
+**onUpdate** every frame + **onEnterBack** - when entering back, onUpdate might also fire in same tick - redundant but ok.
+
+Let me verify **syncSequenceToProgress** uses **resizeCanvas** which calls **drawFrame** - yes.
+
+Replace onUpdate to use sync only - remove the duplicate state.frame logic inside onUpdate since sync handles it.
+
+Read syncSequenceToProgress again:
+```javascript
+function syncSequenceToProgress(progress, forceRedraw) {
+	const next = frameIndexFromProgress(progress);
+	if (!forceRedraw && next === Math.round(state.frame)) return;
+	state.frame = next;
+	resizeCanvas();
+	updateCallouts(next);
+}
+```
+
+Good. **state.frame** is set to **next** which can be float? `next` is integer from Math.min/Math.round. Good.
+
+Wait - `state.frame = next` - next is always integer. But `Math.round(state.frame)` in comparison - state.frame could be float from old code? Unlikely.
+
+Let me also add **scrollend** listener for mobile Safari - check support: scrollend is relatively new (Safari 16.4+). I'll add with feature detect.
+
+```javascript
+window.addEventListener(
+  "scrollend",
+  () => {
+    const st = ScrollTrigger.getById("sequence-canvas-scrub");
+    if (st) syncSequenceToProgress(st.progress, true);
+  },
+  { passive: true },
+);
+```
+
+But scrollend fires on every scroll end globally - might run when not in sequence. Cheap to check progress - frameIndexFromProgress still works.
+
+Actually when user scrolls elsewhere, st.progress might be 0 or 1 - we might still need to sync if user was in sequence section. Actually if user scrolled in footer, st might be inactive - need to check **st.isActive** or progress validity.
+
+Looking at ScrollTrigger: when scroll is far from trigger, **progress** might still be 0 or 1. **syncSequenceToProgress** would still update frame - could reset canvas to frame 0 when user is at bottom of page but trigger progress is 1? When past end, is progress clamped to 1?
+
+I'll only run on scrollend if the trigger **isActive** or if the sequence section is in view:
+
+```javascript
+window.addEventListener("scrollend", () => {
+  const st = ScrollTrigger.getById("sequence-canvas-scrub");
+  if (!st) return;
+  if (st.progress > 0 && st.progress < 1 || st.isActive) {
+    syncSequenceToProgress(st.progress, true);
+  }
+});
+```
+
+Actually when user is at bottom past sequence, progress is 1 - we should still show frame 145. **isActive** might be false when past end. Let me check GSAP - when past the end, **animation** is inactive but **progress** might be 1.
+
+I'll use simpler: always **syncSequenceToProgress(st.progress, true)** on scrollend - if user is in footer, what's st.progress? If trigger is behind us, progress could be 1. That's correct final frame. If user is at top, progress 0 - frame 0. Good.
+
+If user is in middle of page but not in sequence - progress might be 0 or 1 depending on position - **frameIndexFromProgress** uses progress relative to trigger - if we're not in the scroll range, progress might be clamped... ScrollTrigger progress is 0 before start, 1 after end, and interpolates between. So when we're in footer past sequence, progress = 1. sync would set frame to last - wrong if canvas isn't visible? It would still update state - minor unnecessary work. OK.
+
+When we're in hero, progress = 0 - sync sets frame 0 - ok.
+
+I'll add scrollend as optional extra safety for mobile.
+
+Let me also check **ScrollTrigger.refresh()** on scrollend - too heavy.
+
+Implementation:
+
+1. Replace onUpdate, onEnterBack, add onEnter
+2. resizeCanvas retry rAF
+3. scrollend listener - attach in init or setupScrollStory
+
+For scrollend - the `syncSequenceToProgress` needs to be in scope - it's inside setupScrollStory. I can add the listener inside setupScrollStory after create.
+
+```javascript
+	if (typeof window.AnimationEvent !== "undefined" || true) {
+		window.addEventListener("scrollend", onSequenceScrollEnd, { passive: true });
+	}
+```
+
+Feature detect for scrollend: `'onscrollend' in window` might work.
+
+```javascript
+	if ("onscrollend" in window) {
+		window.addEventListener("scrollend", () => {
+			const st = ScrollTrigger.getById("sequence-canvas-scrub");
+			if (st) syncSequenceToProgress(st.progress, true);
+		});
+	}
+```
+
+I'll use `window.addEventListener("scrollend", ...)` - if not supported, no-op (listener never fires).
+
+Actually MDN says scrollend - need to check browser support. For older Safari, listener is never added if we check - `'onscrollend' in window` 
+
+Let me verify: https://caniuse.com - scrollend is ok for modern mobile.
+
+I'll implement the code changes.
+</details></think>
+
+_**Agent (default)**_
+
+
+Identifying issues:
+1. `onEnterBack` calls `resizeCanvas()` but doesn't sync `self.progress` — after fling-scrolling back into the sequence, `state.frame` can be wrong.
+2. `onUpdate` calls `drawFrame` directly while `syncSequenceToProgress` uses `resizeCanvas()` — during pin transitions on mobile, `clientWidth`/`clientHeight` can be 0 briefly, so `drawFrame` bails and leaves a blank canvas.
+3. Adding a `scrollend` sync helps iOS/momentum scrolling when scroll events coalesce.
+
+Implementing: unify on `syncSequenceToProgress`, fix callbacks, add a one-frame `resizeCanvas` retry, and optional `scrollend` handler.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll update resizeCanvas to schedule one rAF retry when dimensions are too small.
+
+I'll update the ScrollTrigger block.
+
+I need to be careful about scrollend firing very often - I'll use a lightweight sync only.
+
+Also: **invalidateOnRefresh: true** on the ScrollTrigger - helps when dimensions change
+
+Let me read GSAP ScrollTrigger - **fastScrollEnd: true** - there might be a built-in for this!
+
+Web search... GSAP ScrollTrigger fastScrollEnd
+
+From GSAP 3.11+:
+**ScrollTrigger.config({ autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" })**
+
+**normalizeScroll: true** - for iOS
+
+Let me search for fastScrollEnd in gsap
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad",
+  "pattern": "fastScroll|scrollend|normalizeScroll"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad",
+  "pattern": "fastScroll|scrollend|normalizeScroll",
+  "topFiles": [],
+  "totalFiles": 0,
+  "totalMatches": 0
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll implement the fixes. For resizeCanvas rAF - use a named inner function to avoid stacking many rAFs - throttle retry to one pending.
+
+```javascript
+let resizeCanvasRetryScheduled = false;
+function resizeCanvas() {
+	const dpr = Math.min(window.devicePixelRatio || 1, 2);
+	const w = canvas.clientWidth;
+	const h = canvas.clientHeight;
+	if (w < 2 || h < 2) {
+		if (!resizeCanvasRetryScheduled) {
+			resizeCanvasRetryScheduled = true;
+			requestAnimationFrame(() => {
+				resizeCanvasRetryScheduled = false;
+				resizeCanvas();
+			});
+		}
+		return;
+	}
+	...
+}
+```
+
+This could still loop if permanently 0 - but single rAF each time - if still 0, schedules another - could infinite loop at 60fps if canvas always 0. Add max 3 retries or stop after 5 frames.
+
+```javascript
+function resizeCanvas(retryCount = 0) {
+	...
+	if (w < 2 || h < 2) {
+		if (retryCount < 4) {
+			requestAnimationFrame(() => resizeCanvas(retryCount + 1));
+		}
+		return;
+	}
+	...
+}
+```
+
+Good.
+
+Let me implement all changes.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Verify ScrollTrigger option `invalidateOnRefresh` - I think it's valid. Let me double-check GSAP ScrollTrigger API.
+
+Actually I might have wrong name - could be `invalidateOnRefresh` on ScrollTrigger - let me verify
+
+From GSAP docs: ScrollTrigger has `invalidateOnRefresh` - boolean - If true, the animation associated with the trigger will be invalidated (essentially rewound and restarted) whenever the trigger refreshes.
+
+That might restart hero animations - it only affects the ScrollTrigger's linked animation. This ScrollTrigger doesn't have a linked animation - it's just callbacks. The invalidate might affect something else - let me check.
+
+Actually for ScrollTrigger.create with only callbacks, invalidateOnRefresh might not matter or could cause extra work. I'll remove if it causes issues - actually it says "animation associated" - there might be none. Safe to leave or remove.
+
+I'll grep gsap ScrollTrigger for invalidateOnRefresh
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="web_search">
+<details>
+<summary>Tool use: **web_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "searchTerm": "GSAP ScrollTrigger invalidateOnRefresh option"
+}
+```
+Result:
+
+```json
+{
+  "isFinal": true,
+  "references": [
+    {
+      "chunk": "No results found",
+      "title": "Web search results for query: GSAP ScrollTrigger invalidateOnRefresh option"
+    }
+  ],
+  "rejected": false
+}
+```
+User decision: **accepted**
+
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="web_search"><details>
+<summary>Tool use: **web_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll remove invalidateOnRefresh if it's not standard - let me read GSAP ScrollTrigger docs from memory. Actually I recall `invalidateOnRefresh` exists for scrub animations. For callback-only triggers it might be harmless.
+
+I'll leave it - if linter doesn't complain. If build fails, remove.
+
+Actually reading GSAP source mentally - ScrollTrigger might use `invalidated` for tweens. Without tweens, noop.
+
+Let me read lints.
+
+Also: **recursive resizeCanvas** - when retryCount increments, we call resizeCanvas again - but the first call returns without drawing. If dimensions become valid on rAF, we draw. Good.
+
+**Potential bug**: resizeCanvas() from init or resize window - called with default retryCount 0 - good.
+
+**scrollend** + `syncSequenceToProgress` - on every scroll end globally could run when user navigates - minor cost.
+
+**Safari iOS** - does it support `onscrollend`? Safari 16.4+ added scrollend. Older won't get handler - we rely on onEnterBack fix.
+
+**iOS without scrollend**: The onEnterBack + sync should be the main fix.
+
+Let me verify **onEnter** doesn't double-fire with onUpdate on first entry - extra redraw ok.
+
+Read lints
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/script.js"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll double-check: ScrollTrigger `invalidateOnRefresh` - I want to verify it exists. If not, GSAP might throw or ignore.
+
+I'll fetch gsap ScrollTrigger from cdn... can't easily. I'll search node_modules if any
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "" • **0** results in **1** directory</summary>
+
+Directory: **/Users/st/Projects/capital-scroll-ad** (0 files)
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search"><details>
+<summary>Tool use: **glob_file_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+No local gsap. I'll leave invalidateOnRefresh - it's a documented ScrollTrigger property in GSAP 3.
+
+If wrong, user will see console error - I'll grep online
+
+From https://greensock.com/docs/v3/Plugins/ScrollTrigger/invalidateOnRefresh/
+Actually the property might be on the animation, not the trigger.
+
+Looking at ScrollTrigger vars - I see in docs:
+- invalidateOnRefresh: Boolean - If true, the animation will be invalidated each time the ScrollTrigger refreshes.
+
+So it's for Animation scrollTrigger config, not the top-level ScrollTrigger.create when no animation.
+
+I'll remove invalidateOnRefresh from ScrollTrigger.create to avoid unknown behavior - the create() might pass unknown vars to config or ignore them.
+
+I'll remove it to be safe.
+</details></think>
+
+_**Agent (default)**_
+
+
+Verifying whether `invalidateOnRefresh` belongs on `ScrollTrigger.create` — it may only apply to tween-based triggers.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="web_fetch">
+<details>
+<summary>Tool use: **web_fetch**</summary>
+
+
+Parameters:
+
+```json
+{
+  "url": "https://gsap.com/docs/v3/Plugins/ScrollTrigger/"
+}
+```
+Result:
+
+```json
+{
+  "markdown": "ScrollTrigger | GSAP | Docs \u0026 Learning\n\nOn this page\n\nScrollTrigger enables anyone to create [jaw-dropping scroll-based animations](https://youtu.be/uYMYlipIReA) with minimal code. Infinitely flexible. Scrub, pin, snap, or just trigger anything scroll-related, even if it has nothing to do with animation.\n\nDetailed walkthrough\n\nGet ahead of the game by also learning about [the most common ScrollTrigger mistakes.](https://gsap.com/resources/st-mistakes)\n\n## Simple example​\n\n&#96;&#96;&#96;js\ngsap.to('.box', {\tscrollTrigger: '.box', // start the animation when \".box\" enters the viewport (once)\tx: 500});\n&#96;&#96;&#96;\n\n## Advanced example​\n\n&#96;&#96;&#96;js\nlet tl = gsap.timeline({\t// yes, we can add it to an entire timeline!\tscrollTrigger: {\t\ttrigger: '.container',\t\tpin: true, // pin the trigger element while active\t\tstart: 'top top', // when the top of the trigger hits the top of the viewport\t\tend: '+=500', // end after scrolling 500px beyond the start\t\tscrub: 1, // smooth scrubbing, takes 1 second to \"catch up\" to the scrollbar\t\tsnap: {\t\t\tsnapTo: 'labels', // snap to the closest label in the timeline\t\t\tduration: { min: 0.2, max: 3 }, // the snap animation should be at least 0.2 seconds, but no more than 3 seconds (determined by velocity)\t\t\tdelay: 0.2, // wait 0.2 seconds from the last scroll event before doing the snapping\t\t\tease: 'power1.inOut' // the ease of the snap animation (\"power3\" by default)\t\t}\t}});// add animations and labels to the timelinetl.addLabel('start')\t.from('.box p', { scale: 0.3, rotation: 45, autoAlpha: 0 })\t.addLabel('color')\t.from('.box', { backgroundColor: '#28a92b' })\t.addLabel('spin')\t.to('.box', { rotation: 360 })\t.addLabel('end');\n&#96;&#96;&#96;\n\n## Standalone/Custom example​\n\nYou don't need to put ScrollTriggers directly into animations (though that's probably the most common use case). Use the callbacks for anything...\n\n&#96;&#96;&#96;js\nScrollTrigger.create({\ttrigger: '#id',\tstart: 'top top',\tendTrigger: '#otherID',\tend: 'bottom 50%+=100px',\tonToggle: (self) =\u003e console.log('toggled, isActive:', self.isActive),\tonUpdate: (self) =\u003e {\t\tconsole.log(\t\t\t'progress:',\t\t\tself.progress.toFixed(3),\t\t\t'direction:',\t\t\tself.direction,\t\t\t'velocity',\t\t\tself.getVelocity()\t\t);\t}});\n&#96;&#96;&#96;\n\n## Features​\n\nFeature Highlights\n\n- Link any animation to a particular element so that it only plays when that element is in the viewport. This improves performance and ensures that your beautiful animations actually get seen!\n- ScrollTriggers can perform an actions on an animation (play, pause, resume, restart, reverse, complete, reset) when entering/leaving the defined area or link it directly to the scrollbar so that it acts like a scrubber (&#96;scrub: true&#96;).\n- Soften the link between the animation and the the scrollbar so that takes a certain amount of time to \"catch up\", like&#96;scrub: 1&#96; would take one second to catch up.\n- Integrated with [ScrollSmoother](https://gsap.com/docs/v3/Plugins/ScrollSmoother), GreenSock's smooth-scrolling tool built on native scroll technology (members-only benefit).\n\nread more...\n\n- Snap to certain points in the animation based on velocity. In fact, you can&#96;getVelocity()&#96; of the scrolling anytime. Snap to the closest label in a timeline or progress value in an Array, or run your own custom function-based logic for snapping\n- Embed scroll triggers directly into any GSAP animation (including timelines) or create standalone instances and tap into the rich callback system to do anything you want.\n- Advanced pinning capabilities can lock an element in place between certain scroll positions. Padding is automatically added to push other elements down accordingly, so they catch up when the element gets unpinned (disable this with&#96;pinSpacing: false&#96;). You can even pin the same element multiple times at different points.\n- Incredible flexibility for defining scroll positions - like \"start when the center of this element hits the center of the viewport, and end when the bottom of that other element hits the bottom of the viewport\", use keywords (top, center, bottom, left, right), percentages, pixels, or even relative values like&#96;\"+=300px\"&#96;. Once you get the hang of the syntax, it's remarkably intuitive.\n- Accommodates vertical or horizontal scrolling.\n- Rich callback system including onEnter, onLeave, onEnterBack, onLeaveBack, onToggle, onUpdate, onScrubComplete, and onRefresh.\n- Automatically recalculates positions when the window resizes.\n- Enable visual markers during development to see exactly where the start/end/trigger points are. Customization options abound, like&#96;markers: {startColor:\"green\", endColor:\"red\", fontSize:\"12px\"}&#96;.\n- Toggle a CSS class. For example,&#96;toggleClass: \"active\"&#96; adds the \"active\" class to the trigger element while the ScrollTrigger is active. You can affect other elements too.\n- Responsive - use the [matchMedia()](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()) method to create different setups for various screen sizes using standard media queries.\n- Custom containers - you don't need to use the viewport; define a custom scroller like a&#96; &#96; instead.\n- Highly optimized for maximum performance - scroll events are debounced, updates are synchronized with GSAP and screen refreshes, resize recalculations are throttled, etc.\n- No scroll-jacking, so it can be combined with native technologies like CSS scroll snapping. If you want scroll-smoothing, you can use [ScrollSmoother](https://gsap.com/docs/v3/Plugins/ScrollSmoother) which integrates seamlessly with ScrollTrigger, or use the [scrollerProxy()](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.scrollerProxy()) method to integrate with a 3rd party smooth-scrolling library.\n\n## Config Object​\n\n&#96;scrollTrigger&#96; can be used as either a shorthand for the&#96;trigger&#96;(described below) or as a configuration object with any of the following properties:\n\n### Property\n\n### Description\n\n#### animation\n\nTween | Timeline - A GSAP [Tween](https://gsap.com/docs/v3/GSAP/Tween) or [Timeline](https://gsap.com/docs/v3/GSAP/Timeline) instance that should be controlled by the ScrollTrigger. Only one animation is controlled per ScrollTrigger, but you can wrap all your animations in a single Timeline (recommended) or create multiple ScrollTriggers if you prefer.\n\n#### anticipatePin\n\nNumber - If you pin large sections/panels you may notice what looks like a slight delay in pinning when you scroll quickly. That's caused by the fact that most modern browsers handle scroll repaints on a separate thread, so at the moment of pinning the browser may have already painted the pre-pinned content, making it visible for perhaps 1/60th of a second. The only way to counteract that is to have ScrollTrigger monitor the scroll velocity and anticipate the pin, applying it slightly early to avoid that flash of unpinned content. A value of&#96;anticipatePin: 1&#96; is typically fine, but you can reduce or increase that number to control how early it does the pinning. In many cases, however, you don't need any anticipatePin (the default is 0).\n\n#### containerAnimation\n\nTween | Timeline Easily trigger animations inside 'horizontally' scrolling sections that are controlled by vertical scrolling\n\nView More details\n\nA popular effect is to create horizontally-moving sections that are tied to vertical scrolling but since that horizontal movement isn't a native scroll, a regular ScrollTrigger can't know when, for example, an element comes into view horizontally, so you must tell ScrollTrigger to monitor the container's [horizontal] animation to know when to trigger, like&#96;containerAnimation: yourTween&#96;.\n\nSee the Pen Horizontal \"containerAnimation\" - ScrollTrigger by GreenSock (@GreenSock)on CodePen.\n\nCaveats: the container's animation must use a linear ease (&#96;ease: \"none\"&#96;). Also, pinning and snapping aren't available on containerAnimation-based ScrollTriggers. You should avoid animating the&#96;trigger&#96; element horizontally or if you do, just offset the start/end values according to how far you're animating the trigger.\n\n[more information here](https://gsap.com/blog/3-8/#containeranimation).\n\n#### end\n\nString | Number | Function - Determines the ending position of the ScrollTrigger.\n\nView More details\n\nIt can be any of the following:\n\n- String - Describes a place on the endTrigger (or trigger if one isn't defined) and a place on the scroller that must meet in order to end the ScrollTrigger. So, for example,&#96;\"bottom center\"&#96; means \"when the bottom of the endTrigger hits the center of the scroller\".&#96;\"center 100px\"&#96; means \"when the center of the endTrigger hits 100px down from the top of the scroller\" (assuming vertical scroll). You can use keywords like \"top\", \"bottom\", \"center\" (or \"left\" and \"right\" if&#96;horizontal: true&#96;) or percentages like \"80%\" or pixel values like \"100px\". Percentages and pixels are always relative to the top/left of the element/viewport. You can also define a single relative value like \"+=300\" which means \"300px beyond where the start is\", or \"+=100%\" means \"the height of the scroller beyond where the start is\".&#96;\"max\"&#96; is a special keyword indicating the maximum scroll position.\n- Number - An exact scroll value, so&#96;200&#96; would trigger when the viewport/scroller scrolls by exactly 200 pixels.\n- Function - A function that gets called whenever the ScrollTrigger refreshes and calculates its positions (typically upon creation and any time the scroller resizes). It should return a String or Number, as described above. This makes it easy to dynamically calculate values. Like all callbacks, the function receives the ScrollTrigger instance itself as the only parameter.\n\nThis is a static position that is calculated when the ScrollTrigger is created and when the scroller is resized, based on where things are in the normal document flow. It is not constantly recalculated, so for example if you animate the trigger/endTrigger, it won't constantly update the start/end values accordingly because ScrollTrigger is highly optimized for performance. You can call&#96;ScrollTrigger.refresh()&#96; to force things to be recalculated. The default is&#96;\"bottom top\"&#96;. clamp() the value (version 3.12+)Wrap your end value in&#96;\"clamp()\"&#96; to tell ScrollTrigger to always keep the calculated value between 0 (the top of the page) and the maximum scroll position so that it'll never leak outside the page bounds. Practically-speaking, this ensures that any trigger elements toward the very bottom of the page won't end with partially-scrubbed animations. For example,&#96;end: \"clamp(bottom top)\"&#96;- any normal string-based value can be inside the clamp(). Like&#96;\"clamp(20px 80%)\"&#96;. Here's a video explaining further:\n\n#### endTrigger\n\nString | Element - The element (or selector text for the element) whose position in the normal document flow is used for calculating where the ScrollTrigger ends. You don't need to define an&#96;endTrigger&#96; unless it's DIFFERENT than the&#96;trigger&#96; element because that's the default.\n\n#### fastScrollEnd\n\nBoolean | Number - if&#96;true&#96;, it will force the current ScrollTrigger's animation to completion if you leave its trigger area faster than a certain velocity (default 2500px/s). This helps avoid overlapping animations when the user scrolls quickly. You can specify a number for the minimum velocity, so&#96;fastScrollEnd: 3000&#96; would only activate if the velocity exceeds 3000px/s. See a [demo here](https://codepen.io/GreenSock/pen/7d22c763b9edd0c0c48150ecd1c921c9).\n\n#### horizontal\n\nBoolean - By default, it assumes your setup uses vertical scrolling but simply set&#96;horizontal: true&#96; if your setup uses horizontal scrolling instead.\n\n#### id\n\nString - An arbitrary unique identifier for the ScrollTrigger instance which can be used with&#96;ScrollTrigger.getById()&#96;. This id is also added to the markers.\n\n#### invalidateOnRefresh\n\nBoolean - If&#96;true&#96;, the animation associated with the ScrollTrigger will have its [invalidate()](https://gsap.com/docs/v3/GSAP/Tween/invalidate()) method called whenever a refresh() occurs (typically on resize). This flushes out any internally-recorded starting values.\n\n#### markers\n\nObject | Boolean - Adds markers that are helpful during development/troubleshooting.&#96;markers: true&#96; adds them with the defaults (startColor: \"green\", endColor: \"red\", fontSize: \"16px\", fontWeight: \"normal\", indent: 0) but you can customize them by using an object like\n\n&#96;&#96;&#96;js\nmarkers: {startColor: \"white\", endColor: \"white\", fontSize: \"18px\", fontWeight: \"bold\", indent: 20}\n&#96;&#96;&#96;\n\n#### once\n\nBoolean - If&#96;true&#96;, the ScrollTrigger will kill() itself as soon as the end position is reached once. This causes it to stop listening for scroll events and it becomes eligible for garbage collection. This will only call onEnter a maximum of one time as well. It does not kill the associated animation. It's perfect for times when you only want an animation to play once when scrolling forward and never get reset or replayed. It also sets the toggleActions to \"play none none none\".\n\n#### onEnter\n\nFunction - A callback for when the scroll position moves forward past the \"start\" (typically when the trigger is scrolled into view). It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonEnter: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onEnterBack\n\nFunction - A callback for when the scroll position moves backward past the \"end\" (typically when the trigger is scrolled back into view). It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonEnterBack: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onLeave\n\nFunction - A callback for when the scroll position moves forward past the \"end\" (typically when the trigger is scrolled out of view). It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonLeave: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onLeaveBack\n\nFunction - A callback for when the scroll position moves backward past the \"start\" (typically when the trigger is scrolled all the way backward past the start). It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonLeaveBack: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onRefresh\n\nFunction - A callback for when the a refresh occurs (typically a resize event) which forces the ScrollTrigger to recalculate all of its positioning. It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonRefresh: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onUpdate\n\nFunction - A callback that gets called every time the progress of the ScrollTrigger changes (meaning the scroll position changed). If you have a numeric&#96;scrub&#96; applied, keep in mind that the associated animation will keep scrubbing for a little while after the scroll position stops, so if your goal is to update something whenever the animation updates, it's best to apply an&#96;onUpdate&#96; to the animation itself rather than the ScrollTrigger. [See a demo here](https://codepen.io/osublake/pen/2152a28cffe2c2c0cca8a3e47f7b21c6?editors=0010).\n\nThe onUpdate callback receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;.\n\nExample:\n\n&#96;&#96;&#96;js\nonUpdate: self =\u003e console.log(\"progress\", self.progress)\n&#96;&#96;&#96;\n\n#### onScrubComplete\n\nFunction - A callback for when a numerical scrub has completed. This is only useful when a numerical scrub (like&#96;scrub: 1&#96;) is applied. The callback receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonScrubComplete: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onSnapComplete\n\nFunction - A callback for when the snapping has completed. This only applies when there's a&#96;snap&#96; defined. A snap will be cancelled if/when the user (or anything else) interacts in any way with scrolling, so the onSnapComplete would not be triggered at all in that case. The callback receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonSnapComplete: ({progress, direction, isActive}) =\u003e console.log(progress, direction, isActive)\n&#96;&#96;&#96;\n\n#### onToggle\n\nFunction - A callback for when the ScrollTrigger toggles from inactive to active or the other way around. This is typically when the scroll position moves past the \"start\" or \"end\" in either direction, but if it shoots past BOTH on the same tick, like if the user scrolls extremely fast, onToggle won't fire because the state hasn't changed. You can often use this one callback in the place of onEnter, onLeave, onEnterBack, and onLeaveBack by just checking the isActive property for toggling things. It receives one parameter - the ScrollTrigger instance itself which has properties/methods like&#96;progress&#96;,&#96;direction&#96;,&#96;isActive&#96;, and&#96;getVelocity()&#96;. Example:\n\n&#96;&#96;&#96;js\nonToggle: self =\u003e console.log(\"toggled to active:\", isActive)\n&#96;&#96;&#96;\n\n#### pin\n\nBoolean | String | Element - An element (or selector text for the element) that should be pinned during the time that the ScrollTrigger is active, meaning it will appear to \"stick\" in its starting position while the rest of the content continues scrolling underneath it. Only one pinned element is allowed, but it can contain as many elements as you want. Setting&#96;pin: true&#96; will cause it to pin the&#96;trigger&#96; element.\n\nWarning don't animate the pinned element itself because that will throw off the measurements (ScrollTrigger is highly optimized for performance and pre-calculates as much as possible). Instead, you could nest things such that you're animating only elements INSIDE the pinned element.\n\nNote: if you are pinning something that is nested inside another element that also gets pinned, make sure you define a&#96;pinnedContainer&#96; so that ScrollTrigger knows to offset the start/end positions accordingly.\n\nUsing React? Make sure to do proper cleanup - read [this article](https://gsap.com/resources/React).\n\n#### pinnedContainer\n\nElement | String - If your ScrollTrigger's&#96;trigger&#96;/&#96;endTrigger&#96; element is INSIDE an element that gets pinned by another ScrollTrigger (pretty uncommon), that would cause the start/end positions to be thrown off by however long that pin lasts, so you can set the&#96;pinnedContainer&#96; to that parent/container element to have ScrollTrigger calculate those offsets accordingly. Again, this is very rarely needed. Important: nested pinning is not supported, so this feature is only for non-pinning ScrollTriggers\n\n(added in 3.7.0)\n\n#### pinReparent\n\nBoolean - If&#96;true&#96;, the pinned element will be reparented to the&#96; &#96; while it is actively pinned so that it can escape any ancestor containing blocks. If you notice odd behavior while pinning (like the pinned element suddenly shifting and then moving with the scroll), you probably have a&#96;transform&#96; or&#96;will-change&#96; on an ancestor element which [breaks](https://stackoverflow.com/questions/15194313/transform3d-not-working-with-position-fixed-children)&#96;position: fixed&#96; behavior (it's a browser thing, not ScrollTrigger). It's best to set up your project to avoid those because reparenting can be expensive, but&#96;pinReparent: true&#96; can bail you out if you can't avoid them. Only use this feature if you must.\n\nWarning: if you have CSS rules that rely on specific nesting that'd be affected by the reparenting, they'll break. For example, a CSS rule like&#96;.section .panel p {color: white}&#96; wouldn't apply to the nested&#96; &#96; anymore if you pin the&#96;.panel&#96; element with&#96;pinReparent: true&#96; because during the pin, it would no longer be inside the&#96; &#96;, so make sure you write your CSS rules to accommodate the reparenting.\n\n#### pinSpacer\n\nElement | String - normally ScrollTrigger creates a&#96; &#96; internally to wrap around pinned elements but in the extremely rare scenario where you're loading an iframe into the pinned element, it can cause the iframe to refresh when ScrollTrigger refreshes (like on window resize), so this feature allows you to specify an element that should be used as the spacer instead of the internally-created one. That way, ScrollTrigger won't remove/add it during its refresh, keeping iframe content intact.\n\n#### pinSpacing\n\nBoolean | String - By default, padding will be added to the bottom (or right for&#96;horizontal: true&#96;) to push other elements down so that when the pinned element gets unpinned, the following content catches up perfectly. Otherwise, things may scroll UNDER the pinned element. You can tell ScrollTrigger not to add any padding by setting&#96;pinSpacing: false&#96;.\n\nView More details\n\nIf you'd rather it use margin instead of padding, you can set&#96;pinSpacing: \"margin\"&#96;.\n\nNote: pinSpacing works in most cases, but it really depends on the way you set up your DOM and CSS. For example, if you pin something in a parent that has display: flex or position: absolute, the extra padding won't push other elements down/right so you may need to manually space things out. pinSpacing is just a convenience that works in most situations.\n\nImportant: if the container is&#96;display: flex&#96;,&#96;pinSpacing&#96; is set to&#96;false&#96; by default because that's typically what is desired since padding works differently in that context.\n\nThis video on pinning that's part of SnorklTV's [ScrollTrigger Express course](https://www.creativecodingclub.com/courses/scrolltrigger-express?ref=44f484) may help your understanding.\n\n#### pinType\n\n\"fixed\" | \"transform\" - by default,&#96;position: fixed&#96; is used for pinning only if the scroller is the&#96; &#96;, otherwise transforms are used (because&#96;position: fixed&#96; won't work in various nested scenarios), but you can force ScrollTrigger to use&#96;position: fixed&#96; by setting&#96;pinType: \"fixed\"&#96;. Typically this isn't necessary or helpful. Beware that if you set the CSS property&#96;will-change: transform&#96;, browsers treat it just like having a transform applied, breaking&#96;position: fixed&#96; elements (this is unrelated to ScrollTrigger/GSAP).\n\n#### preventOverlaps\n\nBoolean | String - this feature activates as a ScrollTrigger is about to trigger an animation; it finds preceding scrollTrigger-based animations and forces those previous animations to their end state – avoiding unsightly overlaps. if&#96;true&#96;, it will affect all preceding ScrollTriggers. You can use an arbitrary string to limit their effect to only others with a matching string. So&#96;preventOverlaps: \"group1\"&#96; would only affect other ScrollTriggers with&#96;preventOverlaps: \"group1\"&#96;. See a [demo here](https://codepen.io/GreenSock/pen/7d22c763b9edd0c0c48150ecd1c921c9).\n\n#### refreshPriority\n\nnumber - it's VERY unlikely that you'd need to define a&#96;refreshPriority&#96; as long as you create your ScrollTriggers in the order they'd happen on the page (top-to-bottom or left-to-right)...which we strongly recommend doing. Otherwise, use&#96;refreshPriority&#96; to influence the order in which ScrollTriggers get refreshed to ensure that the pinning distance gets added to the start/end values of subsequent ScrollTriggers further down the page (that's why order matters). See the [sort()](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.sort()) method for details. A ScrollTrigger with&#96;refreshPriority: 1&#96; will get refreshed earlier than one with&#96;refreshPriority: 0&#96;(the default). You're welcome to use negative numbers too, and you can assign the same number to multiple ScrollTriggers.\n\n#### scroller\n\nString | Element - By default, the&#96;scroller&#96; is the viewport itself, but if you'd like to add a ScrollTrigger to a scrollable&#96; &#96;, for example, just define that as the scroller. You can use selector text like \"#elementID\" or the element itself.\n\n#### scrub\n\nBoolean | Number - Links the progress of the animation directly to the scrollbar so it acts like a scrubber. You can apply smoothing so that it takes a little time for the playhead to catch up with the scrollbar's position! It can be any of the following\n\n- Boolean -&#96;scrub: true&#96; links the animation's progress directly to the ScrollTrigger's progress.\n- Number - The amount of time (in seconds) that the playhead should take to \"catch up\", so&#96;scrub: 0.5&#96; would cause the animation's playhead to take 0.5 seconds to catch up with the scrollbar's position. It's great for smoothing things out.\n\n#### snap\n\nNumber | Array | Function | Object | \"labels\" | \"labelsDirectional\" - Allows you to snap to certain progress values (between 0 and 1) after the user stops scrolling. So&#96;snap: 0.1&#96; would snap in increments of 0.1 (10%, 20%, 30%, etc.).&#96;snap: [0, 0.1, 0.5, 0.8, 1]&#96; would only let it come to rest on one of those specific progress values. It can be any of the following...\n\nView More details\n\nObject - Like&#96;snap: {snapTo: \"labels\", duration: 0.3, delay: 0.1, ease: \"power1.inOut\"}&#96;, fully customizable with any of the following properties (only \"snapTo\" is required):\n\n- snapTo [Number | Array | Function | \"labels\"] - determines the snapping logic (described above)\n- delay [Number] - the delay (in seconds) between the last scroll event and the start of the snapping animation. Default is half the scrub amount (or 0.1 if scrub isn't a number)\n- directional [Boolean] - by default (as of version 3.8.0), snapping is directional by default meaning it'll go in the direction the user last scrolled, but you can disable this by setting&#96;directional: false&#96;.\n- duration [Number | Object] - the duration of the snapping animation (in seconds).&#96;duration: 0.3&#96; would always take 0.3 seconds, but you can also define a range as an object like&#96;duration: {min: 0.2, max: 3}&#96; to clamp it within the provided range, based on the velocity. That way, if the user stops scrolling close to a snapping point, it'd take less time to snap than if the natural stopping point is far from a snapping point.\n- ease [String | Function] - the [ease](https://gsap.com/docs/v3/Eases) that the snapping animation should use. The default is \"power3\".\n- inertia [Boolean] - to tell ScrollTrigger not to factor in the inertia, set&#96;inertia: false&#96;\n- onStart [Function] - a function that should be called when snapping starts\n- onInterrupt [Function] - a function that should be called when snapping gets interrupted (like if the user starts scrolling mid-snap)\n- onComplete [Function] - a function that should be called when snapping completes\n\n#### start\n\nString | Number | Function - Determines the starting position of the ScrollTrigger.\n\nView More details\n\nIt can be any of the following:\n\n- String - Describes a place on the trigger and a place on the scroller that must meet in order to start the ScrollTrigger. So, for example,&#96;\"top center\"&#96; means \"when the top of the trigger hits the center of the scroller\" (and the scroller is the viewport by default).&#96;\"bottom 80%\"&#96; means \"when the bottom of the trigger hits 80% down from the top of the viewport\" (assuming vertical scroll). You can use keywords like \"top\", \"bottom\", \"center\" (or \"left\" and \"right\" if&#96;horizontal: true&#96;) or percentages like \"80%\" or pixel values like \"100px\". Percentages and pixels are always relative to the top/left of the element/scroller. You can even use a complex relative value like&#96;\"top bottom-=100px\"&#96; which means \"when the top of the trigger hits 100px above the bottom of the viewport/scroller\"\n- Number - An exact scroll value, so&#96;200&#96; would trigger when the viewport/scroller scrolls by exactly 200 pixels.\n- Function - A function that gets called whenever the ScrollTrigger calculates its positions (typically upon creation and any time the scroller resizes). It should return a String or Number, as described above. This makes it easy to dynamically calculate values. Like all callbacks, the function receives the ScrollTrigger instance itself as the only parameter, so you can, for example, base the position on the previous ScrollTrigger's end like&#96;start: self =\u003e self.previous().end&#96;\n\nThis is a static position that is calculated when the ScrollTrigger is created and when the scroller is resized, based on where things are in the normal document flow. It is not constantly recalculated, so for example if you animate the trigger/endTrigger, it won't constantly update the start/end values accordingly because ScrollTrigger is highly optimized for performance. You can call&#96;ScrollTrigger.refresh()&#96; to force things to be recalculated. The default is&#96;\"top bottom\"&#96; unless&#96;pin: true&#96; is set in which case the default value is&#96;\"top top\"&#96;. clamp() the value (version 3.12+)Wrap your start value in&#96;\"clamp()\"&#96; to tell ScrollTrigger to always keep the calculated value between 0 (the top of the page) and the maximum scroll position so that it'll never leak outside the page bounds. Practically-speaking, this ensures that any \"above the fold\" (triggers inside the viewport at the top of the page) won't start out with partially-scrubbed animations. For example,&#96;start: \"clamp(top bottom)\"&#96;- any normal string-based value can be inside the clamp(). Like&#96;\"clamp(20px 80%)\"&#96;. Here's a video explaining further:\n\n#### toggleActions\n\nString - Determines how the linked animation is controlled at the 4 distinct toggle places - onEnter, onLeave, onEnterBack, and onLeaveBack, in that order. The default is&#96;play none none none&#96;. So&#96;toggleActions: \"play pause resume reset\"&#96; will play the animation when entering, pause it when leaving, resume it when entering again backwards, and reset (rewind back to the beginning) when scrolling all the way back past the beginning. You can use any of the following keywords for each action: \"play\", \"pause\", \"resume\", \"reset\", \"restart\", \"complete\", \"reverse\", and \"none\".\n\n#### toggleClass\n\nString | Object - Adds/removes a class to an element (or multiple elements) when the ScrollTrigger toggles active/inactive. It can be either of the following:\n\n- String - The name of the class to add to the&#96;trigger&#96; element, like&#96;toggleClass: \"active\"&#96;\n- Object - To toggle a class for elements other than just the trigger, use the object syntax like&#96;toggleClass: {targets: \".my-selector\", className: \"active\"}&#96;. The \"targets\" can be selector text, a direct reference to an element, or an Array of elements.\n\nNote that&#96;toggleActions&#96; don't apply to&#96;toggleClass&#96;. To have toggle class names in a different way, use the callback functions (onEnter, onLeave, onLeaveBack, and onEnterBack).\n\n#### trigger\n\nString | Element - The element (or selector text for the element) whose position in the normal document flow is used to calculate where the ScrollTrigger starts.\n\nLooking for Smooth Scrolling?\n\nGSAP's own [ScrollSmoother](https://gsap.com/docs/v3/Plugins/ScrollSmoother) tool is built on top of ScrollTrigger, so it is totally integrated and super easy to use. Built on native scroll technology, it avoids most of the accessibility issues that plague other smooth-scrolling libraries.\n\n## Properties​\n\n#### [.animation](https://gsap.com/docs/v3/Plugins/ScrollTrigger/animation): Tween | Timeline | undefined\n\n[read-only] The [Tween](https://gsap.com/docs/v3/GSAP/Tween) or [Timeline](https://gsap.com/docs/v3/GSAP/Timeline) associated with the ScrollTrigger instance (if any).\n\n#### [.direction](https://gsap.com/docs/v3/Plugins/ScrollTrigger/direction): Number\n\n[read-only] Reflects the moment-by-moment direction of scrolling where&#96;1&#96; is forward and&#96;-1&#96; is backward.\n\n#### [.end](https://gsap.com/docs/v3/Plugins/ScrollTrigger/end): Number\n\n[read-only] The ScrollTrigger's ending scroll position (numeric, in pixels).\n\n#### [.isActive](https://gsap.com/docs/v3/Plugins/ScrollTrigger/isActive): Boolean\n\n[read-only] Only&#96;true&#96; if the scroll position is between the start and end positions of the ScrollTrigger instance.\n\n#### [ScrollTrigger.isTouch](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.isTouch): Number\n\nA way to discern the touch capabilities of the current device -&#96;0&#96; is mouse/pointer only (no touch),&#96;1&#96; is touch-only,&#96;2&#96; accommodates both.\n\n#### [.pin](https://gsap.com/docs/v3/Plugins/ScrollTrigger/pin): Element | undefined\n\n[read-only] The pin element (if one was defined). If selector text was used, like \".pin\", the&#96;pin&#96; will be the element itself (not selector text)\n\n#### [progress](https://gsap.com/docs/v3/Plugins/ScrollTrigger/progress): Number\n\n[read-only] The overall progress of the ScrollTrigger instance where 0 is at the start, 0.5 is in the middle, and 1 is at the end.\n\n#### [scroller](https://gsap.com/docs/v3/Plugins/ScrollTrigger/scroller): Element | window\n\n[read-only] The scroller element (or window) associated with the ScrollTrigger. It's the thing whose scrollbar is linked to the ScrollTrigger. By default, it's the window (viewport).\n\n#### [start](https://gsap.com/docs/v3/Plugins/ScrollTrigger/start): Number\n\n[read-only] The ScrollTrigger's starting scroll position (numeric, in pixels).\n\n#### [.trigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger/trigger): Element | undefined\n\n[read-only] The trigger element (if one was defined). If selector text was used, like \".trigger\", the&#96;trigger&#96; will be the element itself (not selector text)\n\n#### [.vars](https://gsap.com/docs/v3/Plugins/ScrollTrigger/vars): Object\n\n[read-only] The vars configuration object used to create the ScrollTrigger instance\n\n## Methods​\n\n#### [.disable](https://gsap.com/docs/v3/Plugins/ScrollTrigger/disable())( revert:boolean, allowAnimation:Boolean )\n\nDisables the ScrollTrigger instance, immediately unpinning and restoring any pin-related changes made to the DOM by ScrollTrigger.\n\n#### [.enable](https://gsap.com/docs/v3/Plugins/ScrollTrigger/enable())( reset:Boolean )\n\nEnables the ScrollTrigger instance\n\n#### [.getTween](https://gsap.com/docs/v3/Plugins/ScrollTrigger/getTween())( snap:Boolean ) : Tween\n\nReturns the&#96;scrub&#96; tween (default) or the snapping tween (&#96;getTween(true)&#96;)\n\n#### [.getVelocity](https://gsap.com/docs/v3/Plugins/ScrollTrigger/getVelocity())( ) : Number\n\nGets the scroll velocity in pixels-per-second\n\n#### [.kill](https://gsap.com/docs/v3/Plugins/ScrollTrigger/kill())( revert:boolean, allowAnimation:Boolean )\n\nKills the ScrollTrigger instance, immediately unpinning and restoring any pin-related changes made to the DOM by ScrollTrigger and removing all scroll-related listeners, etc. so that the instance is eligible for garbage collection. If you only want to temporarily disable the ScrollTrigger, use the [disable()](https://gsap.com/docs/v3/Plugins/ScrollTrigger/disable()) method instead.\n\n#### [.labelToScroll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/labelToScroll())( label:String ) : Number\n\nConverts a timeline label into the associated scroll position (only applicable to ScrollTriggers whose \"animation\" is a timeline)\n\n#### [.next](https://gsap.com/docs/v3/Plugins/ScrollTrigger/next())( ) : ScrollTrigger instance\n\nReturns the next ScrollTrigger in the refresh order.\n\n#### [.previous](https://gsap.com/docs/v3/Plugins/ScrollTrigger/previous())( ) : ScrollTrigger instance\n\nReturns the previous ScrollTrigger in the refresh order.\n\n#### [.refresh](https://gsap.com/docs/v3/Plugins/ScrollTrigger/refresh())()\n\nForces the ScrollTrigger instance to re-calculate its start and end values (the scroll positions where it'll be activated).\n\n#### [.scroll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/scroll())( position:Number ) : Number | null\n\nGets/Sets the scroll position of the associated scroller (numeric).\n\n#### [ScrollTrigger.addEventListener](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.addEventListener())( type:String, callback:Function ) : null\n\nAdd a listener for any of the following events: \"scrollStart\", \"scrollEnd\", \"refreshInit\", \"revert\", \"matchMedia\", or\"refresh\" which get dispatched globally when any such ScrollTrigger-related event occurs (it is not tied to a particular instance).\n\n#### [ScrollTrigger.batch](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.batch())( triggers:Selector text | Array, vars:Object ) : Array\n\nCreates a coordinated group of ScrollTriggers (one for each target element) that batch their callbacks (onEnter, onLeave, etc.) within a certain interval, delivering a neat Array so that you can easily do something like create a staggered animation of all the elements that enter the viewport around the same time.\n\n#### [ScrollTrigger.clearMatchMedia](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.clearMatchMedia())( query:String )\n\n#### [ScrollTrigger.clearScrollMemory](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.clearScrollMemory())( scrollRestoration:String )\n\nClears any recorded scroll positions in ScrollTrigger so that no scroll positions get restored after a refresh(). Normally, this isn't necessary but in some frameworks that handle routing in unconventional ways, it can be useful.\n\n#### [ScrollTrigger.config](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.config())( vars:Object )\n\nAllows you to configure certain global behaviors of ScrollTrigger like&#96;limitCallbacks&#96;\n\n#### [ScrollTrigger.create](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.create())( vars:Object ) : ScrollTrigger\n\nCreates a standalone ScrollTrigger instance\n\n#### [ScrollTrigger.defaults](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.defaults())( config:Object ) : null\n\nAllows you to set the default values that apply to every ScrollTrigger upon creation, like&#96;toggleActions&#96;,&#96;markers&#96;, etc.\n\n#### [ScrollTrigger.getAll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.getAll())( ) : Array\n\nReturns an Array of all ScrollTrigger instances\n\n#### [ScrollTrigger.getById](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.getById())( id:String ) : ScrollTrigger\n\nReturns the ScrollTrigger that was assigned the corresponding&#96;id&#96;\n\n#### [ScrollTrigger.isInViewport](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.isInViewport())( Element:Element | String, proportion:Number, horizontal:Boolean ) : Boolean\n\nReturns&#96;true&#96; if the element is in the viewport. You can optionally specify a minimum proportion, like&#96;ScrollTrigger.isInViewport(element, 0.2)&#96; would only return&#96;true&#96; if at least 20% of the element is in the viewport.\n\n#### [ScrollTrigger.isScrolling](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.isScrolling())( ) : Boolean\n\nIndicates whether or not any ScrollTrigger-related scroller is in the process of scrolling.\n\n#### [ScrollTrigger.killAll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.killAll())( ) ;\n\nImmediately calls&#96;kill()&#96; on all ScrollTriggers (except the main ScrollSmoother one if it exists).\n\n#### [ScrollTrigger.matchMedia](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.matchMedia())( vars:Object )\n\n[DEPRECATED] Allows you to set up ScrollTriggers that only apply to certain viewport sizes (using media queries).\n\n#### [ScrollTrigger.maxScroll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.maxScroll())( scroller:Element | window, horizontal:Boolean ) : Number\n\nA utility function for getting the maximum scroll value for a particular element/scroller. For example, if the element/scroller is 500px tall and contains 800px of content, maxScroll() would return 300.\n\n#### [ScrollTrigger.normalizeScroll](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.normalizeScroll())( normalize:Boolean | Object ) : ScrollObserver | null\n\nForces scrolling to be done on the JavaScript thread, ensuring screen updates are synchronized and the address bar doesn't show/hide on [most] mobile devices.\n\n#### [ScrollTrigger.observe](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.observe())( config:Object ) : Observer\n\nSuper-flexible, unified way to sense meaningful events across all (touch/mouse/pointer) devices without wrestling with all the implementation details. Trigger simple callbacks like onUp, onDown, onLeft, onRight, onChange, onHover, onDrag, etc. Functionally identical to [Observer.create()](https://gsap.com/docs/v3/Plugins/Observer/static.create())\n\n#### [ScrollTrigger.positionInViewport](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.positionInViewport())( element:Element | String, referencePoint:String | Number, horizontal:Boolean ) : Number\n\nReturns a normalized value representing the element's position in relation to the viewport where 0 is at the top of the viewport, 0.5 is in the center, and 1 is at the bottom. So, for example, if the top of the element is 80% down from the top of the viewport, the following code would return 0.8:&#96;ScrollTrigger.positionInViewport(element, \"top\");&#96;\n\n#### [ScrollTrigger.refresh](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.refresh())( safe:Boolean )\n\nRecalculates the positioning of all of the ScrollTriggers on the page; this typically happens automatically when the window/scroller resizes but you can force it by calling&#96;ScrollTrigger.refresh()&#96;\n\n#### [ScrollTrigger.removeEventListener](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.removeEventListener())( type:String, callback:Function ) : null\n\nRemoves an event listener\n\n#### [ScrollTrigger.saveStyles](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.saveStyles())( targets:String | Element | Array )\n\nInternally records the current inline CSS styles for the given elements so that when ScrollTrigger reverts (typically for a refresh() or matchMedia() change) those elements will be reverted accordingly even if they had animations that added/changed inline styles. Think of it like taking a snapshot of the inline CSS and telling ScrollTrigger \"re-apply these inline styles only and dump all others when you revert internally\".\n\n#### [ScrollTrigger.scrollerProxy](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.scrollerProxy())( scroller:String | Element, vars:Object )\n\nAllows you to hijack the&#96;scrollTop&#96; and/or&#96;scrollLeft&#96; getters/setters for a particular scroller element so that you can implement things like smooth scrolling or other custom effects.\n\n#### [ScrollTrigger.snapDirectional](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.snapDirectional())( incrementOrArray:Number | Array ) : Function\n\nReturns a snapping function to which you can feed any value to snap, along with a direction where&#96;1&#96; is forward (greater than) and&#96;-1&#96; is backward (less than).\n\n#### [ScrollTrigger.sort](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.sort())( func:Function ) : Array\n\nSorts the internal Array of ScrollTrigger instances to control the order in which they [refresh()](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.refresh())(calculate their start/end values).\n\n#### [ScrollTrigger.update](https://gsap.com/docs/v3/Plugins/ScrollTrigger/static.update())( )\n\nChecks where the scrollbar is and updates all ScrollTrigger instances'&#96;progress&#96; and&#96;direction&#96; values accordingly, controls the animation (if necessary) and fires the appropriate callbacks.\n\n## FAQs​\n\n#### How does ScrollTrigger work? Is it just like IntersectionObserver?\n\nScrollTrigger does NOT constantly watch every element and check its positioning in the viewport on each tick. We're obsessed with performance and that'd be far too costly. Instead, ScrollTrigger does the processing up-front to figure out where the start/end points are in the natural document flow. In other words, \"this ScrollTrigger will be active when the scrollbar is between ___ and ____\". Then, it debounces the \"scroll\" events and only updates things on the next requestAnimationFrame, perfectly synced with GSAP and screen refreshes. It ONLY watches the scroll position. Period. That means it's FAST.\n\nScrollTrigger automatically listens for viewport/scroller \"resize\" events and recalculates all the start/end positions accordingly (&#96;onRefresh&#96;). In fact, since resizing/refreshing is CPU-intensive, it waits until there's a 200ms gap in resize events before starting its work. Yeah, we looked for every opportunity to maximize performance.\n\n[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) is a native feature in most modern browsers that's different in the following ways:\n\n- It constantly \"watches\" elements to sense when they enter/leave regardless of scrolling.\n- It's not helpful for tracking an element's position between two points, like for scrubbing an animation accordingly.\n- It does let you watch multiple elements and have a single callback triggered that could loop through and fire a staggered animation on just the elements that entered, for example.\n\nScrollTrigger does not use IntersectionObserver under the hood because it lacks the necessary functionality and compatibility. You can certainly use IntersectionObserver and ScrollTrigger together.\n\n#### How does pinning work under the hood?\n\n- The pinned element gets immediately wrapped in a&#96; &#96; with a fixed width/height to match. A class of \"pin-spacer\" is added to that wrapper. Think of it like a proxy element that props open the space where the pinned element was in the DOM so that when it flips to&#96;position: fixed&#96; things don't collapse.\n- By default, padding will be added to the bottom (or right for horizontal: true) of the pin-spacer so that [in most cases] things get pushed further down/right. When the pinned element gets unpinned, the content below/right will have caught up. So if, for example, the pinned element stays pinned for 300px, there would be padding of 300px added.\n\nwalkthrough\n\nThis video on pinning that's part of SnorklTV's [ScrollTrigger Express course](https://www.creativecodingclub.com/courses/scrolltrigger-express?ref=44f484) may help your understanding.\n\n- When the ScrollTrigger is active (when the scroll position is between the start and end), it sets the pinned element to&#96;position: fixed&#96; and positions it with fixed top/left/width/height values...unless the scroller isn't the viewport in which case it never uses&#96;position: fixed&#96; because that'd break sub-scrolling, so it uses pure transforms. If&#96;pinReparent&#96; is set to&#96;true&#96;(we recommend avoiding that if you can), the pinned element will get reparented to the&#96; &#96; and styles will be moved inline to ensure appearance is maintained.\n- When the ScrollTrigger becomes inactive, the pinned element reverts to its original&#96;position&#96; value and a transform is applied to place it correctly.\n- When the window/scroller gets resized, all ScrollTriggers re-calculate their start/end positions (&#96;onRefresh&#96;). As a part of that process, the pin-spacer is removed from the DOM and the pinned element is swapped back in so that measurements are accurate with the original CSS. Then the pin-spacer is swapped back in as a wrapper.\n\nWhy not just use transforms and avoid&#96;position: fixed&#96;? Many browsers don't render consistently using that technique. There are annoying visual glitches due to the fact that scroll repaints are handled on a different thread in most modern browsers. Surprisingly,&#96;position: fixed&#96; seemed to deliver better performance overall. And performance is EXTREMELY important for scrolling.\n\n#### How does duration work with scrub: true?\n\nIf you have a ScrollTrigger&#96;scrub: true&#96; and that ScrollTrigger has a timeline or tween animation associated with it, the durations of tweens within that animation serve as proportions for the total amount of distance that the tween will play. The proportion of how much distance it's animated between is in regards to the total duration of the animation. It's easiest to understand with an example:\n\nSay you have a timeline with three sequenced tweens: a 1 second tween, a 3 second tween, and then another 1 second tween. And the ScrollTrigger applied to it will animate for a full viewport height's distance (perhaps the trigger uses the values of&#96;start: \"center bottom\"&#96; and&#96;end: \"center top\"&#96;).\n\nIf&#96;scrub: true&#96;(or a number) is applied, then the first tween will be animated between when the center of the trigger element is between the 100% mark (from the top; the bottom of the viewport) and the 80% mark (from the top) of the viewport. The second tween will fire when the center of the element is at the 80% mark until the 20% mark. And the third tween will fire when the center of the element is between the 20% mark and the 0% mark. This is because the total duration of the timeline is 5 seconds. So ⅕ is 20% and ⅗ is 60%.\n\n#### loading...\n\nIf you change the duration of all the tweens to the same number, say 1, then the percentages would all be equal: 100% -\u003e 66%, 66% -\u003e 33%, 33% -\u003e 0%. This is because the total duration is 3, so ⅓ is 33%.\n\nIn other words, the duration values don't matter as much as the proportions of the duration of each tween compared to the total time of the timeline.\n\nIf you want to make the animation take a longer distance of scroll to complete, affect the distance from start to end longer. For example you could set&#96;end: \"+=4000\"&#96; to make it take a lot of scrolling to complete.\n\n#### How do I include undefined in my project?\n\nSee the [installation page](https://gsap.com/docs/v3/Installation) for all the options (CDN, NPM, download, etc.) where there's even an interactive helper that provides the necessary code. Easy peasy. Don't forget to [register undefined](https://gsap.com/docs/v3/GSAP/gsap.registerPlugin()) like this in your project:\n\n&#96;&#96;&#96;js\ngsap.registerPlugin(undefined)\n&#96;&#96;&#96;\n\n#### Is this included in the GSAP core?\n\nNo, you must load/import it separately\n\n#### It works fine during development, but suddenly stops working in the production build! What do I do?\n\nYour build tool is probably dropping the plugin when [tree shaking](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking) and you forgot to [register undefined](https://gsap.com/docs/v3/GSAP/gsap.registerPlugin())(which protects it from tree shaking). Just register the plugin like this:\n\n&#96;&#96;&#96;js\ngsap.registerPlugin(undefined)\n&#96;&#96;&#96;\n\n#### Is it bad to register a plugin multiple times?\n\nNo, it's perfectly fine. It doesn't help anything, nor does it hurt.\n\n#### How do I include ScrollTrigger in my project?\n\nSee the [installation page](https://gsap.com/docs/v3/Installation) for all the options (CDN, NPM, download, etc.) where there's even an interactive helper that provides the necessary code. Easy peasy. Don't forget to [register ScrollTrigger](https://gsap.com/docs/v3/GSAP/gsap.registerPlugin()) like this in your project:\n\n&#96;&#96;&#96;js\ngsap.registerPlugin(ScrollTrigger)\n&#96;&#96;&#96;\n\n#### Is this included in the GSAP core?\n\nNo, you must load/import it separately\n\n#### It works fine during development, but suddenly stops working in the production build! What do I do?\n\nYour build tool is probably dropping the plugin when [tree shaking](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking) and you forgot to [register ScrollTrigger](https://gsap.com/docs/v3/GSAP/gsap.registerPlugin())(which protects it from tree shaking). Just register the plugin like this:\n\n&#96;&#96;&#96;js\ngsap.registerPlugin(ScrollTrigger)\n&#96;&#96;&#96;\n\n#### Is it bad to register a plugin multiple times?\n\nNo, it's perfectly fine. It doesn't help anything, nor does it hurt.\n\n## Demos​\n\nCheck out the full collection of [Scroll animation demos](https://codepen.io/collection/bNPYOw) on CodePen.\n\n## Contents\n\n- Simple example\n- Advanced example\n- Standalone/Custom example\n- Features\n- Config Object\n- Properties\n- Methods\n- FAQs\n- Demos",
+  "url": "https://gsap.com/docs/v3/Plugins/ScrollTrigger/"
+}
+```
+User decision: **accepted**
+
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="web_fetch"><details>
+<summary>Tool use: **web_fetch**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Read the file for invalidateOnRefresh
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/.cursor/projects/Users-st-Projects-capital-scroll-ad/agent-tools/7f5d868a-fcac-47a2-913d-d329c86040d0.txt",
+  "pattern": "invalidate"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/.cursor/projects/Users-st-Projects-capital-scroll-ad/agent-tools/7f5d868a-fcac-47a2-913d-d329c86040d0.txt",
+  "pattern": "invalidate",
+  "topFiles": [
+    {
+      "matchCount": 2,
+      "uri": "../../.cursor/projects/Users-st-Projects-capital-scroll-ad/agent-tools/7f5d868a-fcac-47a2-913d-d329c86040d0.txt"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 2
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+It's for animation associated with ScrollTrigger - our trigger has no gsap animation, only callbacks. I'll remove invalidateOnRefresh as it has no effect or could be ignored.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Summary for user
+
+Note: `scrollend` - feature detect uses `'onscrollend' in window` - in some browsers it might be `document.onscrollend`. Let me check - MDN says document and window support scrollend. `'onscrollend' in window` should work in Safari.
+
+Done.
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what was going wrong and what we changed.
+
+### Causes
+1. **`onEnterBack` didn’t use scroll progress** — It only called `resizeCanvas()` and used the old `state.frame`. After a fast fling to the bottom and scrolling back, **`self.progress` wasn’t applied**, so the frame index could stay wrong while the pin/layout came back.
+2. **`onUpdate` called `drawFrame` only** — **`syncSequenceToProgress` uses `resizeCanvas()`**, which sets the bitmap size and then draws. During pin changes, mobile can briefly report **0×0** for the canvas; `drawFrame` then exits early and **nothing is drawn**, so you could get an empty area (often read as odd spacing / pin chrome).
+3. **Momentum scrolling** — On some devices, scroll updates are batched until movement stops; a **`scrollend`** resync helps when supported.
+
+### Fixes
+- **`onUpdate`** → always **`syncSequenceToProgress(self.progress, false)`** (same path as refresh: resize + draw + callouts).
+- **`onEnter` / `onEnterBack`** → **`syncSequenceToProgress(self.progress, true)`** so re-entering the section (from above or below) **forces the correct frame** from current progress.
+- **`resizeCanvas`** → if width/height &lt; 2, **retry up to 5 frames** on `requestAnimationFrame` so a transient 0×0 layout doesn’t leave a blank canvas.
+- **`scrollend`** (when **`'onscrollend' in window`**) → **`syncSequenceToProgress(st.progress, true)`** for the sequence `ScrollTrigger` so fling/momentum settles to the right frame.
+
+No HTML/CSS changes required for this behavior.
+
+---
+
+_**User**_
+
+explain
+
+const st = ScrollTrigger.getById("sequence-canvas-scrub");
++                               if (st) syncSequenceToProgress(st.progress, true);
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants an explanation of this code snippet - what ScrollTrigger.getById does, why we check `if (st)`, and what syncSequenceToProgress(st.progress, true) does in the scrollend listener context.
+</details></think>
+
+_**Agent (default)**_
+
+
+### What this does
+
+```javascript
+const st = ScrollTrigger.getById("sequence-canvas-scrub");
+if (st) syncSequenceToProgress(st.progress, true);
+```
+
+1. **`ScrollTrigger.getById("sequence-canvas-scrub")`**  
+   Looks up the ScrollTrigger instance that was created with `id: "sequence-canvas-scrub"` (your pinned sequence section). That object knows the **current scroll progress** for that trigger (0 → start of the scrub, 1 → end).
+
+2. **`if (st)`**  
+   Only runs the sync if that trigger exists (e.g. script order is correct and the trigger was created). If `getById` returns `undefined`, you don’t call `syncSequenceToProgress` on nothing.
+
+3. **`syncSequenceToProgress(st.progress, true)`**  
+   - Uses **`st.progress`** — ScrollTrigger’s idea of how far you are through the sequence **right now**, including after fast / inertial scroll when `onUpdate` might not have run every frame.  
+   - Maps that to a **frame index**, updates **`state.frame`**, runs **`resizeCanvas()`** (so the bitmap matches the layout), **`drawFrame`**, and **`updateCallouts`**.  
+   - The **`true`** means **force a redraw** even if the frame index didn’t change (so you still repaint after layout glitches or missed updates).
+
+So in the **`scrollend`** handler, this line means: *when scrolling stops, re-align the canvas and callouts to whatever progress ScrollTrigger thinks we’re at for the sequence* — which helps on mobile where momentum scrolling can leave the visible frame out of sync.
