@@ -1,7 +1,14 @@
 gsap.registerPlugin(ScrollTrigger);
 
 const FRAME_COUNT = 146;
+/** Pixels of scroll mapped to the frame strip (must match frameIndexFromProgress). */
+const SCRUB_HEIGHT = FRAME_COUNT * 64;
 const FRAME_PATH = (i) => `frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
+
+/** Total scroll span for the sequence section: scrub + one viewport (hold). Recomputed on resize. */
+function getSequenceTotalHeight() {
+	return SCRUB_HEIGHT + window.innerHeight;
+}
 
 const canvas = document.getElementById("sequence-canvas");
 if (!canvas) throw new Error("Missing #sequence-canvas element.");
@@ -39,8 +46,10 @@ const PHASES = {
 
 function drawFrame(index) {
 	const img = images[index];
-	const cw = canvas.clientWidth;
-	const ch = canvas.clientHeight;
+	/* Match backing-store size (set in resizeCanvas) so the fill always covers the bitmap */
+	const scale = ctx.getTransform().a || 1;
+	const cw = canvas.width / scale;
+	const ch = canvas.height / scale;
 	if (cw < 2 || ch < 2) return;
 
 	/* Solid background — matches --canvas-fill on .sequence-shell (frame letterbox) */
@@ -61,16 +70,22 @@ function drawFrame(index) {
 		dh = dw / imgR;
 	}
 
+	/* Integer dest avoids subpixel hairlines with multiply compositing */
+	const dx = Math.round((cw - dw) / 2);
+	const dy = Math.round((ch - dh) / 2);
 	ctx.globalCompositeOperation = "multiply";
-	ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+	ctx.drawImage(img, dx, dy, Math.round(dw), Math.round(dh));
 	ctx.globalCompositeOperation = "source-over";
 }
 
 function resizeCanvas() {
 	const dpr = Math.min(window.devicePixelRatio || 1, 2);
-	const rect = canvas.getBoundingClientRect();
-	canvas.width = Math.round(rect.width * dpr);
-	canvas.height = Math.round(rect.height * dpr);
+	const w = canvas.clientWidth;
+	const h = canvas.clientHeight;
+	if (w < 2 || h < 2) return;
+	/* Same box model as drawFrame (avoid rect vs client mismatch + unfilled edge rows) */
+	canvas.width = Math.max(1, Math.round(w * dpr));
+	canvas.height = Math.max(1, Math.round(h * dpr));
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 	drawFrame(Math.round(state.frame));
 }
@@ -199,17 +214,14 @@ function animateStats() {
 /* ── ScrollTrigger setup ── */
 
 function setupScrollStory() {
-	const scrubHeight = FRAME_COUNT * 64;
-	const holdDistance = window.innerHeight;
-	const totalHeight = scrubHeight + holdDistance;
-
-	gsap.set(".sequence-section", { height: totalHeight });
+	gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
 
 	function frameIndexFromProgress(progress) {
+		const totalHeight = getSequenceTotalHeight();
 		const animProgress = gsap.utils.clamp(
 			0,
 			1,
-			(progress * totalHeight) / scrubHeight,
+			(progress * totalHeight) / SCRUB_HEIGHT,
 		);
 		return Math.min(
 			FRAME_COUNT - 1,
@@ -229,7 +241,7 @@ function setupScrollStory() {
 		id: "sequence-canvas-scrub",
 		trigger: ".sequence-section",
 		start: "top top",
-		end: `+=${totalHeight}`,
+		end: () => `+=${getSequenceTotalHeight()}`,
 		pin: ".sequence-pin",
 		pinSpacing: false,
 		anticipatePin: 1,
@@ -356,8 +368,9 @@ function init() {
 	});
 
 	window.addEventListener("resize", () => {
-		resizeCanvas();
+		gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
 		ScrollTrigger.refresh();
+		resizeCanvas();
 	});
 }
 
