@@ -386,6 +386,8 @@ img {
 }
 
 .card-item {
+  display: flex;
+  flex-direction: column;
   background: var(--white);
   border-radius: 20px;
   padding: 2rem 1.8rem 2.2rem;
@@ -408,6 +410,7 @@ img {
 }
 
 .card-item p {
+  flex: 1;
   font-size: 0.94rem;
   line-height: 1.6;
   color: var(--gray-2);
