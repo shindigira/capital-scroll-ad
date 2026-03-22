@@ -9,7 +9,8 @@ const itemsToCopy = [
   "styles.css",
   "script.js",
   "frames",
-  "capital-one-logo-png_seeklogo-425557.png"
+  "cards",
+  "capital-one-logo-png_seeklogo-425557.png",
 ];
 
 function ensureExists(relPath) {
