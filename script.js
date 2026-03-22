@@ -288,18 +288,22 @@ function setupScrollStory() {
 		},
 	});
 
-	gsap.from(".card-item", {
-		x: -60,
-		opacity: 0,
-		duration: 0.7,
-		ease: "power3.out",
-		stagger: 0.15,
-		clearProps: "transform",
-		scrollTrigger: {
-			trigger: ".cards-grid",
-			start: "top 80%",
-			toggleActions: "play none none reverse",
-		},
+	const cardsScrollTrigger = {
+		trigger: ".cards-grid",
+		start: "top 80%",
+		toggleActions: "play none none reverse",
+	};
+	const cardsMM = gsap.matchMedia();
+	cardsMM.add("(min-width: 821px)", () => {
+		gsap.from(".card-item", {
+			x: -60,
+			opacity: 0,
+			duration: 0.7,
+			ease: "power3.out",
+			stagger: 0.15,
+			clearProps: "transform",
+			scrollTrigger: cardsScrollTrigger,
+		});
 	});
 
 	gsap.from(".cta-section .section-eyebrow", {
