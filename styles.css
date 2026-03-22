@@ -295,6 +295,8 @@ img {
 /* ── stats band ── */
 
 .stats-band {
+  position: relative;
+  z-index: 20;
   background: var(--black);
   color: var(--white);
   padding: 5rem 0;
@@ -360,6 +362,8 @@ img {
 /* ── cards section ── */
 
 .cards-section {
+  position: relative;
+  z-index: 20;
   padding: var(--section-pad) 0;
   background: var(--offwhite);
 }
@@ -412,6 +416,8 @@ img {
 /* ── cta ── */
 
 .cta-section {
+  position: relative;
+  z-index: 20;
   padding: var(--section-pad) 0 calc(var(--section-pad) + 2rem);
   background: var(--white);
   text-align: center;
