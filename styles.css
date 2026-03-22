@@ -381,38 +381,63 @@ img {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
 .card-item {
   display: flex;
   flex-direction: column;
-  background: var(--white);
-  border-radius: 20px;
-  padding: 2rem 1.8rem 2.2rem;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .card-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-visual {
+  aspect-ratio: 16 / 10;
+}
+
+.card--savor .card-visual {
+  background: linear-gradient(135deg, #c0392b 0%, #e67e73 50%, #b0a0a0 100%);
+}
+
+.card--platinum .card-visual {
+  background: linear-gradient(135deg, #c4c4c4 0%, #a8a8a8 50%, #bfbfbf 100%);
+}
+
+.card--venture .card-visual {
+  background: linear-gradient(135deg, #1a5276 0%, #5499c7 50%, #85929e 100%);
+}
+
+.card--quicksilver .card-visual {
+  background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 50%, #b0bec5 100%);
+}
+
+.card-body {
+  padding: 1.3rem 1.4rem 1.5rem;
+  background: var(--white);
 }
 
 .card-item h3 {
   font-family: "Sora", sans-serif;
-  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
   color: var(--black);
 }
 
 .card-item p {
-  flex: 1;
-  font-size: 0.94rem;
-  line-height: 1.6;
+  font-size: 0.84rem;
+  line-height: 1.5;
   color: var(--gray-2);
 }
 
@@ -498,6 +523,10 @@ img {
     top: auto;
     bottom: 20%;
     right: 3%;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
