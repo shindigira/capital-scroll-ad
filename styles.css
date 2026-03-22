@@ -401,23 +401,17 @@ img {
 }
 
 .card-visual {
-  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem;
 }
 
-.card--savor .card-visual {
-  background: linear-gradient(135deg, #c0392b 0%, #e67e73 50%, #b0a0a0 100%);
-}
-
-.card--platinum .card-visual {
-  background: linear-gradient(135deg, #c4c4c4 0%, #a8a8a8 50%, #bfbfbf 100%);
-}
-
-.card--venture .card-visual {
-  background: linear-gradient(135deg, #1a5276 0%, #5499c7 50%, #85929e 100%);
-}
-
-.card--quicksilver .card-visual {
-  background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 50%, #b0bec5 100%);
+.card-visual img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
 }
 
 .card-body {
