@@ -167,29 +167,35 @@ function animateStats() {
 
 function setupScrollStory() {
   const scrubHeight = FRAME_COUNT * 64;
+  const holdDistance = window.innerHeight;
+  const totalHeight = scrubHeight + holdDistance;
 
-  gsap.set(".sequence-section", { height: scrubHeight });
+  gsap.set(".sequence-section", { height: totalHeight });
 
   ScrollTrigger.create({
     trigger: ".sequence-section",
     start: "top top",
-    end: `+=${scrubHeight}`,
+    end: `+=${totalHeight}`,
     pin: ".sequence-pin",
     pinSpacing: false,
-    scrub: 0.4,
     anticipatePin: 1,
     onUpdate: (self) => {
+      const animProgress = gsap.utils.clamp(
+        0, 1, self.progress * totalHeight / scrubHeight
+      );
       const next = Math.min(
         FRAME_COUNT - 1,
-        Math.round(self.progress * (FRAME_COUNT - 1))
+        Math.round(animProgress * (FRAME_COUNT - 1))
       );
       if (next === Math.round(state.frame)) return;
       state.frame = next;
       drawFrame(next);
       updateCallouts(next);
     },
-    onLeave: () => gsap.set(".sequence-pin", { autoAlpha: 0 }),
-    onEnterBack: () => gsap.set(".sequence-pin", { autoAlpha: 1 })
+    onEnterBack: () => {
+      resizeCanvas();
+      updateCallouts(Math.round(state.frame));
+    }
   });
 
   gsap.from(".story-intro .section-eyebrow", {
@@ -202,11 +208,6 @@ function setupScrollStory() {
     scrollTrigger: { trigger: ".story-intro", start: "top 74%" }
   });
 
-  gsap.from(".card-item", {
-    y: 30, opacity: 0, duration: 0.8, ease: "power2.out", stagger: 0.1,
-    scrollTrigger: { trigger: ".cards-grid", start: "top 80%" }
-  });
-
   gsap.to(".marquee-text", {
     xPercent: -18, ease: "none",
     scrollTrigger: {
@@ -215,6 +216,11 @@ function setupScrollStory() {
       end: "bottom top",
       scrub: true
     }
+  });
+
+  gsap.from(".card-item", {
+    y: 30, opacity: 0, duration: 0.8, ease: "power2.out", stagger: 0.1,
+    scrollTrigger: { trigger: ".cards-grid", start: "top 80%" }
   });
 
   gsap.from(".cta-section .section-eyebrow", {
