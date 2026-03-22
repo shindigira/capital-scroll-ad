@@ -11508,3 +11508,225 @@ if (st) syncSequenceToProgress(st.progress, true);
    - The **`true`** means **force a redraw** even if the frame index didn’t change (so you still repaint after layout glitches or missed updates).
 
 So in the **`scrollend`** handler, this line means: *when scrolling stops, re-align the canvas and callouts to whatever progress ScrollTrigger thinks we’re at for the sequence* — which helps on mobile where momentum scrolling can leave the visible frame out of sync.
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants to git add, commit, and push. I'll check git status first, then stage, commit with a descriptive message about the ScrollTrigger sync fixes, and push.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git status</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git status
+```
+
+```
+On branch ui-ux-pro-max-use
+Your branch is up to date with 'origin/ui-ux-pro-max-use'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   script.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+User asked git add commit push - I'll stage all with git add -A, commit with message focused on script.js changes (ScrollTrigger sync, resizeCanvas retry, scrollend) and mention specstory if included. No AI attribution in commit message per workspace rules.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Fix sequence canvas sync after fast scroll on mobile
+
+- Route scrub updates through syncSequenceToProgress (resize + draw)
+- Sync frame from progress on enter/enterBack; scrollend resync when supported
+- Retry resizeCanvas when layout briefly reports zero size"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Fix sequence canvas sync after fast scroll on mobile
+
+- Route scrub updates through syncSequenceToProgress (resize + draw)
+- Sync frame from progress on enter/enterBack; scrollend resync when supported
+- Retry resizeCanvas when layout briefly reports zero size"
+```
+
+```
+[ui-ux-pro-max-use e69272b] Fix sequence canvas sync after fast scroll on mobile
+ 3 files changed, 1250 insertions(+), 14 deletions(-)
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Now git push
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git push</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git push
+```
+
+```
+To https://github.com/shindigira/capital-scroll-ad.git
+   d9a016d..e69272b  ui-ux-pro-max-use -&gt; ui-ux-pro-max-use
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Done. Brief summary.
+</details></think>
+
+_**Agent (default)**_
+
+
+All set.
+
+- **Staged** everything (`script.js`, `.specstory/history/...`, `.specstory/statistics.json`)
+- **Committed** `e69272b` — *Fix sequence canvas sync after fast scroll on mobile* (ScrollTrigger sync, `scrollend`, `resizeCanvas` retries)
+- **Pushed** to `origin/ui-ux-pro-max-use`
+
+---
+
+_**User**_
+
+@script.js:307-323 this animation should only play once in few and then stay
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants the card animation (gsap.from on .card-item) to only play once when scrolled into view, and then stay in the final state - not reverse when scrolling back up. Currently they use `toggleActions: "play none none reverse"` which means on reverse (scrolling back up past the trigger), it reverses the animation.
+
+To play once and stay, they should use:
+- `toggleActions: "play none none none"` - play once on enter, never reverse on leave
+- Or use `once: true` on the scrollTrigger
+
+Let me check GSAP ScrollTrigger options:
+- `once: true` - the callback only fires once
+- `toggleActions: "play none none none"` - on enter forward: play, on leave forward: none, on enter backward: none, on leave backward: none
+
+So when user scrolls back up, the animation won't reverse.
+
+I'll read the current script block to apply the fix.
+</details></think>
+
+_**Agent (default)**_
+
+
+Replacing `toggleActions: "play none none reverse"` (reverses when scrolling back up) with `once: true` or `toggleActions: "play none none none"` so the entrance plays once and stays.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll use:
+```javascript
+const cardsScrollTrigger = {
+	trigger: ".cards-grid",
+	start: "top 80%",
+	toggleActions: "play none none none",
+};
+```
+
+This way: play when entering forward, no action on leave forward, no action on enter backward, no action on leave backward - so cards stay visible when scrolling back up.
+
+Alternative `once: true` on ScrollTrigger - fires only the first time the start passes. If user scrolls past without scrolling slowly enough to trigger... Actually `once` means the trigger only fires once ever - good for "play once per page load".
+
+From GSAP docs:
+- `once: Boolean` - If true, the ScrollTrigger will only calculate positions and run callbacks once (when the scroll position reaches the start point the first time).
+
+For gsap.from with scrollTrigger, `once: true` means the animation only plays the first time you scroll to that section. If user never scrolls to cards, it won't play. If user scrolls to cards, plays once. If they refresh and scroll again, plays again - that's normal.
+
+Actually `toggleActions: "play none none none"` - every time user scrolls down into the trigger, it would "play" again. Wait - does it replay?
+
+From toggleActions</details></think>

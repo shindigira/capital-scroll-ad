@@ -307,7 +307,8 @@ function setupScrollStory() {
 	const cardsScrollTrigger = {
 		trigger: ".cards-grid",
 		start: "top 80%",
-		toggleActions: "play none none reverse",
+		toggleActions: "play none none none",
+		once: true,
 	};
 	const cardsMM = gsap.matchMedia();
 	cardsMM.add("(min-width: 821px)", () => {
