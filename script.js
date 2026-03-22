@@ -16,6 +16,15 @@ const calloutEls = {
 const state = { frame: 0 };
 const images = [];
 
+function getCanvasFillColor() {
+	const shell = document.querySelector(".sequence-shell");
+	if (shell) {
+		const v = getComputedStyle(shell).getPropertyValue("--canvas-fill").trim();
+		if (v) return v;
+	}
+	return "#f1f0ec";
+}
+
 // detected frame ranges (from visual inspection of extracted frames)
 // basketball player phase: frame_0001 -> frame_0012
 // businessman in suit phase: frame_0013 -> frame_0044
@@ -34,9 +43,9 @@ function drawFrame(index) {
 	const ch = canvas.clientHeight;
 	if (cw < 2 || ch < 2) return;
 
-	/* Solid background so canvas is never visually blank if a frame image hiccups */
+	/* Solid background — matches --canvas-fill on .sequence-shell (frame letterbox) */
 	ctx.globalCompositeOperation = "source-over";
-	ctx.fillStyle = "#f1f0ec";
+	ctx.fillStyle = getCanvasFillColor();
 	ctx.fillRect(0, 0, cw, ch);
 
 	if (!img || !img.complete || img.naturalWidth < 1) return;
@@ -146,6 +155,11 @@ function setupNavbar() {
 function animateHero() {
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 	tl.from(".hero-eyebrow", { y: 20, opacity: 0, duration: 0.7 })
+		.from(
+			".hero-subeyebrow",
+			{ y: 16, opacity: 0, duration: 0.55 },
+			"-=0.55",
+		)
 		.from(".hero h1", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
 		.from(".scroll-cue", { opacity: 0, duration: 0.6 }, "-=0.3")
