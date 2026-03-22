@@ -30,10 +30,16 @@ const PHASES = {
 
 function drawFrame(index) {
 	const img = images[index];
-	if (!img || !img.complete) return;
-
 	const cw = canvas.clientWidth;
 	const ch = canvas.clientHeight;
+	if (cw < 2 || ch < 2) return;
+
+	/* Solid background so canvas is never visually blank if a frame image hiccups */
+	ctx.globalCompositeOperation = "source-over";
+	ctx.fillStyle = "#f1f0ec";
+	ctx.fillRect(0, 0, cw, ch);
+
+	if (!img || !img.complete || img.naturalWidth < 1) return;
 	const imgR = img.naturalWidth / img.naturalHeight;
 	const canR = cw / ch;
 
@@ -46,9 +52,6 @@ function drawFrame(index) {
 		dh = dw / imgR;
 	}
 
-	ctx.globalCompositeOperation = "source-over";
-	ctx.fillStyle = "#f1f0ec";
-	ctx.fillRect(0, 0, cw, ch);
 	ctx.globalCompositeOperation = "multiply";
 	ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
 	ctx.globalCompositeOperation = "source-over";
@@ -188,7 +191,28 @@ function setupScrollStory() {
 
 	gsap.set(".sequence-section", { height: totalHeight });
 
+	function frameIndexFromProgress(progress) {
+		const animProgress = gsap.utils.clamp(
+			0,
+			1,
+			(progress * totalHeight) / scrubHeight,
+		);
+		return Math.min(
+			FRAME_COUNT - 1,
+			Math.round(animProgress * (FRAME_COUNT - 1)),
+		);
+	}
+
+	function syncSequenceToProgress(progress, forceRedraw) {
+		const next = frameIndexFromProgress(progress);
+		if (!forceRedraw && next === Math.round(state.frame)) return;
+		state.frame = next;
+		resizeCanvas();
+		updateCallouts(next);
+	}
+
 	ScrollTrigger.create({
+		id: "sequence-canvas-scrub",
 		trigger: ".sequence-section",
 		start: "top top",
 		end: `+=${totalHeight}`,
@@ -196,19 +220,14 @@ function setupScrollStory() {
 		pinSpacing: false,
 		anticipatePin: 1,
 		onUpdate: (self) => {
-			const animProgress = gsap.utils.clamp(
-				0,
-				1,
-				(self.progress * totalHeight) / scrubHeight,
-			);
-			const next = Math.min(
-				FRAME_COUNT - 1,
-				Math.round(animProgress * (FRAME_COUNT - 1)),
-			);
+			const next = frameIndexFromProgress(self.progress);
 			if (next === Math.round(state.frame)) return;
 			state.frame = next;
 			drawFrame(next);
 			updateCallouts(next);
+		},
+		onRefresh: (self) => {
+			syncSequenceToProgress(self.progress, true);
 		},
 		onEnterBack: () => {
 			resizeCanvas();
@@ -302,6 +321,24 @@ function init() {
 		setupScrollStory();
 		animateStats();
 		ScrollTrigger.refresh();
+		/* Browser scroll restoration often lands after first paint — refresh again */
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				ScrollTrigger.refresh();
+			});
+		});
+	});
+
+	window.addEventListener(
+		"load",
+		() => {
+			ScrollTrigger.refresh();
+		},
+		{ once: true },
+	);
+
+	window.addEventListener("pageshow", (event) => {
+		if (event.persisted) ScrollTrigger.refresh();
 	});
 
 	window.addEventListener("resize", () => {
