@@ -33,14 +33,29 @@
 
     <header class="hero">
       <div class="hero-glow" aria-hidden="true"></div>
-      <p class="hero-eyebrow">Capital One</p>
-      <p class="hero-subeyebrow">Credit &amp; rewards</p>
-      <h1>Your spending, simplified.</h1>
-      <p class="hero-body">
-        Compare Capital One cards, track rewards, and stay in control—with
-        the clarity you expect from a modern financial app.
+      <p class="hero-brand">
+        <span class="hero-brand--capital">Capital</span>
+        <span class="hero-brand--one">One</span>
       </p>
-      <ul class="hero-trust" aria-label="Security highlights">
+      <p class="hero-tagline">Credit cards · Rewards · Insights</p>
+      <h1
+        class="hero-title"
+        aria-label="Your spending, followed by rotating one-word highlights."
+      >
+        <span class="hero-h1-line1" aria-hidden="true">Your spending,</span>
+        <span class="hero-h1-line2" aria-hidden="true">
+          <span
+            id="hero-typed"
+            class="hero-h1-typed"
+            data-typed-fallback="Simplified."
+          ></span>
+        </span>
+      </h1>
+      <p class="hero-body">
+        Compare cards, track rewards, and manage spending in one place—with
+        bank-grade security and tools designed for clarity.
+      </p>
+      <ul class="hero-trust" aria-label="Security and account protections">
         <li>
           <span class="hero-trust-icon" aria-hidden="true"></span>
           Bank-level encryption
@@ -51,11 +66,11 @@
         </li>
         <li>
           <span class="hero-trust-icon" aria-hidden="true"></span>
-          Zero-liability protection
+          $0 fraud liability
         </li>
       </ul>
       <div class="scroll-cue" aria-hidden="true">
-        <span>Scroll to explore</span>
+        <span>Continue</span>
         <span class="scroll-cue-line"></span>
       </div>
     </header>
@@ -188,6 +203,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

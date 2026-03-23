@@ -39,6 +39,10 @@
   --frames-callout-text: #475569;
   --frames-callout-muted: #64748b;
   --frames-callout-accent: var(--accent-gold-bright);
+
+  /* Capital One wordmark — navy “Capital”, red “One” (aligned to brand palette) */
+  --co-navy: #004a7c;
+  --co-red: #d03027;
 }
 
 *,
@@ -191,16 +195,21 @@ img {
 /* ── hero ── */
 
 .hero {
-  /* Fill viewport below static navbar */
+  /* Fill viewport below static navbar — restrained fintech wash */
   min-height: calc(100svh - 5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(2.5rem, 6vh, 4rem) 6vw 3rem;
-  background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(0, 113, 227, 0.08), transparent 50%),
-    radial-gradient(ellipse 80% 50% at 85% 55%, rgba(217, 119, 6, 0.06), transparent 48%),
+  padding: clamp(2.75rem, 7vh, 4.5rem) clamp(1.25rem, 5vw, 2rem) 3.25rem;
+  background: linear-gradient(
+      180deg,
+      rgba(0, 74, 124, 0.04) 0%,
+      transparent 42%
+    ),
+    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(0, 113, 227, 0.045), transparent 52%),
+    radial-gradient(ellipse 70% 45% at 90% 40%, rgba(208, 48, 39, 0.035), transparent 50%),
     var(--bg-page);
   position: relative;
   overflow: hidden;
@@ -209,7 +218,7 @@ img {
 .hero-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 100%, rgba(241, 240, 236, 0.9), transparent 55%);
+  background: radial-gradient(circle at 50% 108%, rgba(241, 240, 236, 0.95), transparent 58%);
   pointer-events: none;
 }
 
@@ -218,40 +227,87 @@ img {
   z-index: 1;
 }
 
-.hero-eyebrow {
-  font-size: clamp(0.85rem, 1.5vw, 1rem);
+/* Company name — primary emphasis above the headline */
+.hero-brand {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.3em;
+  font-size: clamp(2rem, 4.75vw, 3.15rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--black);
-  margin-bottom: 0.35rem;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin: 0 auto 0.55rem;
+  max-width: 100%;
 }
 
-.hero-subeyebrow {
-  font-size: 0.72rem;
+.hero-brand--capital {
+  color: var(--co-navy);
+}
+
+.hero-brand--one {
+  color: var(--co-red);
+}
+
+.hero-tagline {
+  font-size: clamp(0.6875rem, 1.35vw, 0.8125rem);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent-gold-bright);
-  margin-bottom: 1.25rem;
+  color: color-mix(in srgb, var(--co-navy) 78%, var(--black));
+  margin-bottom: clamp(1.35rem, 3vh, 1.75rem);
+  max-width: 36rem;
+  line-height: 1.45;
 }
 
-.hero h1 {
+.hero-title {
   font-family: var(--font);
-  font-size: clamp(2.6rem, 6.5vw, 5rem);
+  font-size: clamp(2.15rem, 5.5vw, 4rem);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  max-width: 12ch;
-  margin: 0 auto 1.25rem;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  max-width: min(92vw, 22rem);
+  margin: 0 auto clamp(1.15rem, 2.5vh, 1.5rem);
   color: var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.06em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.hero-h1-line1 {
+  display: block;
+  width: 100%;
+}
+
+.hero-h1-line2 {
+  display: block;
+  width: 100%;
+  min-height: 1.18em;
+  color: var(--co-navy);
+}
+
+.hero-h1-typed {
+  color: inherit;
+}
+
+.hero-title .typed-cursor {
+  font-weight: 400;
+  color: var(--co-navy);
+  opacity: 0.75;
 }
 
 .hero-body {
-  font-size: clamp(1rem, 1.5vw, 1.15rem);
-  line-height: 1.65;
-  color: var(--gray-1);
-  max-width: 520px;
+  font-size: clamp(1.02rem, 1.65vw, 1.125rem);
+  line-height: 1.68;
+  color: var(--gray-2);
+  max-width: min(36rem, 92vw);
   margin: 0 auto;
+  letter-spacing: -0.01em;
 }
 
 .hero-trust {
@@ -259,46 +315,49 @@ img {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem 1.75rem;
-  margin-top: 2rem;
-  max-width: 640px;
+  gap: 0.85rem 1.5rem;
+  margin-top: clamp(1.85rem, 4vh, 2.35rem);
+  padding-top: clamp(1.5rem, 3vh, 1.85rem);
+  border-top: 1px solid var(--border-subtle);
+  max-width: min(40rem, 94vw);
 }
 
 .hero-trust li {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.78rem;
+  font-size: clamp(0.75rem, 1.35vw, 0.8125rem);
   font-weight: 500;
   color: var(--gray-2);
+  letter-spacing: -0.01em;
 }
 
 .hero-trust-icon {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent-gold-bright);
-  box-shadow: 0 0 0 3px var(--accent-gold-soft);
+  background: var(--co-navy);
+  box-shadow: 0 0 0 3px rgba(0, 74, 124, 0.12);
   flex-shrink: 0;
 }
 
 .scroll-cue {
-  margin-top: 3rem;
+  margin-top: clamp(2.5rem, 5vh, 3.25rem);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  color: var(--gray-1);
-  font-size: 0.68rem;
+  gap: 0.65rem;
+  color: var(--gray-2);
+  font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .scroll-cue-line {
   width: 1px;
-  height: 42px;
-  background: linear-gradient(to bottom, var(--accent-gold-bright), transparent);
+  height: 40px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--co-navy) 55%, transparent), transparent);
   transform-origin: top;
 }
 
