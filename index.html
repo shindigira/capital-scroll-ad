@@ -18,7 +18,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="altitude-body">
     <a class="skip-link" href="#story">Skip to content</a>
     <nav class="navbar" aria-label="Primary">
       <div class="navbar-inner">
@@ -82,7 +82,7 @@
       </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero hero--altitude">
       <div class="hero-glow" aria-hidden="true"></div>
       <!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) -->
       <div class="hero-scene" aria-hidden="true">
@@ -281,10 +281,7 @@
           </div>
         </div>
       </div>
-      <!-- <p class="hero-brand">
-        <span class="hero-brand--capital">Capital</span>
-        <span class="hero-brand--one">One</span>
-      </p> -->
+
       <p class="hero-tagline">Credit cards · Rewards · Insights</p>
       <h1
         class="hero-title"
@@ -321,6 +318,108 @@
         <span class="scroll-cue-label">Scroll for more</span>
         <span class="scroll-cue-line"></span>
       </div>
+      <section class="altitude-main" aria-label="Capital One card benefits">
+        <div class="altitude-main__hero-card">
+          <div class="altitude-main__hero-text">
+            <h2 class="altitude-main__headline">The card for every move.</h2>
+            <p class="altitude-main__subhead">
+              Earn 3x points on travel and dining, with no foreign transaction fees. Built for those who move.
+            </p>
+            <div class="altitude-main__actions">
+              <button type="button" class="altitude-btn altitude-btn--primary">
+                Apply Now
+              </button>
+              <button type="button" class="altitude-btn altitude-btn--ghost">
+                Compare
+              </button>
+            </div>
+          </div>
+          <div class="altitude-main__hero-art" aria-hidden="true">
+            <img
+              src="cards/platinum-removebg-preview.png"
+              alt=""
+              class="altitude-main__card-img"
+              decoding="async"
+            />
+          </div>
+        </div>
+
+        <div class="altitude-main__benefits">
+          <div class="altitude-main__section-kicker">Benefits</div>
+          <h3 class="altitude-main__section-title">Designed for your lifestyle</h3>
+          <div class="altitude-main__benefits-grid">
+            <article class="altitude-benefit">
+              <div class="altitude-benefit__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="var(--co-navy)">
+                  <path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4z" stroke-width="1.6" />
+                  <path d="M9 12l2 2 4-5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h4 class="altitude-benefit__title">Travel Insurance</h4>
+              <p class="altitude-benefit__text">
+                Comprehensive trip cancellation and interruption coverage for you and your family.
+              </p>
+            </article>
+
+            <article class="altitude-benefit">
+              <div class="altitude-benefit__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="var(--co-navy)">
+                  <rect x="6" y="3.5" width="12" height="17" rx="2" stroke-width="1.6"/>
+                  <path d="M9 8h6M9 11h6M9 14h4" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4 class="altitude-benefit__title">No Foreign Fees</h4>
+              <p class="altitude-benefit__text">
+                Pay zero international transaction fees when you travel abroad or shop globally online.
+              </p>
+            </article>
+
+            <article class="altitude-benefit">
+              <div class="altitude-benefit__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="var(--co-navy)">
+                  <path d="M6 7h12v10H6V7z" stroke-width="1.6"/>
+                  <path d="M8 10h8" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M10 14h4" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h4 class="altitude-benefit__title">$200 Annual Credit</h4>
+              <p class="altitude-benefit__text">
+                Receive statement credits for eligible travel purchases automatically every year.
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <div class="altitude-main__rates">
+          <div class="altitude-main__rates-top">
+            <div class="altitude-main__section-kicker">Rates &amp; Fees</div>
+            <div class="altitude-main__penalty">
+              <span>Show penalty fees</span>
+              <span class="altitude-main__info" aria-hidden="true">?</span>
+            </div>
+          </div>
+          <h3 class="altitude-main__section-title altitude-main__section-title--small">
+            Transparent pricing
+          </h3>
+
+          <div class="altitude-rate-list" role="table" aria-label="Rates and fees">
+            <div class="altitude-rate-row" role="row">
+              <div class="altitude-rate-label" role="cell">Purchase APR</div>
+              <div class="altitude-rate-value" role="cell">20.24% - 28.24% Variable</div>
+            </div>
+            <div class="altitude-rate-divider" role="separator"></div>
+            <div class="altitude-rate-row" role="row">
+              <div class="altitude-rate-label" role="cell">Annual Fee</div>
+              <div class="altitude-rate-value" role="cell">$95</div>
+            </div>
+            <div class="altitude-rate-divider" role="separator"></div>
+            <div class="altitude-rate-row" role="row">
+              <div class="altitude-rate-label" role="cell">Balance Transfer Fee</div>
+              <div class="altitude-rate-value" role="cell">Intro 3%, then 5%</div>
+            </div>
+          </div>
+        </div>
+      </section>
     </header>
 
     <main>
@@ -388,48 +487,181 @@
         </div>
       </section>
 
-      <section id="cards-section" class="cards-section">
+      <section
+        id="cards-section"
+        class="cards-section altitude-compare-section"
+      >
         <div class="section-inner">
-          <p class="section-eyebrow">002 / Card lineup</p>
-          <h2>Pick the card that fits how you spend.</h2>
-          <div class="cards-grid">
-            <article class="card-item card--savor">
-              <div class="card-visual">
-                <img src="cards/savor-removebg-preview.png" alt="SavorOne credit card" />
+          <div class="altitude-compare__top">
+            <a href="#" class="altitude-compare__back">Back to Home</a>
+          </div>
+          <h2 class="altitude-compare__title">Find your perfect fit.</h2>
+          <p class="altitude-compare__subhead">
+            Compare our tiers to find the rewards and benefits that match your lifestyle.
+          </p>
+
+          <div class="altitude-compare__grid" role="list" aria-label="Capital One card tiers">
+            <article class="altitude-tier" role="listitem">
+              <div class="altitude-tier__art" aria-hidden="true">
+                <img
+                  class="altitude-tier__art-img"
+                  src="cards/savor-removebg-preview.png"
+                  alt=""
+                  decoding="async"
+                />
               </div>
-              <div class="card-body">
-                <h3>SavorOne</h3>
-                <p>Everyday rewards built for real life.</p>
+              <h3 class="altitude-tier__name">Standard</h3>
+              <p class="altitude-tier__fee">$0 Annual Fee</p>
+
+              <div class="altitude-tier__rows">
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">REWARDS RATE</span>
+                  <span class="altitude-tier__value">1x Points</span>
+                  <span class="altitude-tier__muted">On all purchases</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">ANNUAL CREDIT</span>
+                  <span class="altitude-tier__value">-</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">LOUNGE ACCESS</span>
+                  <span class="altitude-tier__value">-</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">FOREIGN FEES</span>
+                  <span class="altitude-tier__value">3% Fee</span>
+                </div>
               </div>
+
+              <button type="button" class="altitude-tier__btn">Select</button>
             </article>
-            <article class="card-item card--platinum">
-              <div class="card-visual">
-                <img src="cards/platinum-removebg-preview.png" alt="Platinum credit card" />
+
+            <article class="altitude-tier altitude-tier--popular" role="listitem">
+              <div class="altitude-tier__popular-pill">MOST POPULAR</div>
+              <div
+                class="altitude-tier__art altitude-tier__art--premium"
+                aria-hidden="true"
+              >
+                <img
+                  class="altitude-tier__art-img"
+                  src="cards/platinum-removebg-preview.png"
+                  alt=""
+                  decoding="async"
+                />
               </div>
-              <div class="card-body">
-                <h3>Platinum</h3>
-                <p>Simple, reliable credit with clarity.</p>
+              <h3 class="altitude-tier__name">Premium</h3>
+              <p class="altitude-tier__fee">$95 Annual Fee</p>
+
+              <div class="altitude-tier__rows">
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">REWARDS RATE</span>
+                  <span class="altitude-tier__value">3x Points</span>
+                  <span class="altitude-tier__muted">Travel &amp; Dining</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">ANNUAL CREDIT</span>
+                  <span class="altitude-tier__value">$200</span>
+                  <span class="altitude-tier__muted">Annual Travel Credit</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">LOUNGE ACCESS</span>
+                  <span class="altitude-tier__value">Standard</span>
+                  <span class="altitude-tier__muted">2 Passes per year</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">FOREIGN FEES</span>
+                  <span class="altitude-tier__value">None</span>
+                </div>
               </div>
+
+              <button type="button" class="altitude-tier__btn altitude-tier__btn--primary">
+                Apply Now
+              </button>
             </article>
-            <article class="card-item card--venture">
-              <div class="card-visual">
-                <img src="cards/venture-removebg-preview.png" alt="Venture credit card" />
+
+            <article class="altitude-tier" role="listitem">
+              <div
+                class="altitude-tier__art altitude-tier__art--elite"
+                aria-hidden="true"
+              >
+                <img
+                  class="altitude-tier__art-img"
+                  src="cards/venture-removebg-preview.png"
+                  alt=""
+                  decoding="async"
+                />
               </div>
-              <div class="card-body">
-                <h3>Venture</h3>
-                <p>Travel-focused rewards with flexibility.</p>
+              <h3 class="altitude-tier__name">Elite</h3>
+              <p class="altitude-tier__fee">$450 Annual Fee</p>
+
+              <div class="altitude-tier__rows">
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">REWARDS RATE</span>
+                  <span class="altitude-tier__value">5x Points</span>
+                  <span class="altitude-tier__muted">Luxury &amp; Flights</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">ANNUAL CREDIT</span>
+                  <span class="altitude-tier__value">$500</span>
+                  <span class="altitude-tier__muted">Luxury Lifestyle Credit</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">LOUNGE ACCESS</span>
+                  <span class="altitude-tier__value">Unlimited</span>
+                  <span class="altitude-tier__muted">Priority Pass Select</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">FOREIGN FEES</span>
+                  <span class="altitude-tier__value">None</span>
+                </div>
               </div>
+
+              <button type="button" class="altitude-tier__btn">Select</button>
             </article>
-            <article class="card-item card--quicksilver">
-              <div class="card-visual">
-                <img src="cards/quicksilver-removebg-preview.png" alt="Quicksilver credit card" />
+
+            <article class="altitude-tier" role="listitem">
+              <div
+                class="altitude-tier__art altitude-tier__art--signature"
+                aria-hidden="true"
+              >
+                <img
+                  class="altitude-tier__art-img"
+                  src="cards/quicksilver-removebg-preview.png"
+                  alt=""
+                  decoding="async"
+                />
               </div>
-              <div class="card-body">
-                <h3>QuickSilver</h3>
-                <p>Straightforward unlimited cash back.</p>
+              <h3 class="altitude-tier__name">Signature</h3>
+              <p class="altitude-tier__fee">$195 Annual Fee</p>
+
+              <div class="altitude-tier__rows">
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">REWARDS RATE</span>
+                  <span class="altitude-tier__value">2x Points</span>
+                  <span class="altitude-tier__muted">Everyday travel</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">ANNUAL CREDIT</span>
+                  <span class="altitude-tier__value">$150</span>
+                  <span class="altitude-tier__muted">Annual Travel Credit</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">LOUNGE ACCESS</span>
+                  <span class="altitude-tier__value">None</span>
+                </div>
+                <div class="altitude-tier__row">
+                  <span class="altitude-tier__label">FOREIGN FEES</span>
+                  <span class="altitude-tier__value">None</span>
+                </div>
               </div>
+
+              <button type="button" class="altitude-tier__btn">Select</button>
             </article>
           </div>
+
+          <p class="altitude-compare__fineprint">
+            Rates and fees are subject to credit approval. See full terms and conditions for details.
+          </p>
         </div>
       </section>
 

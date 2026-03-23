@@ -1,6 +1,6 @@
 :root {
   /* Light theme — aligned with frame letterbox (#f1f0ec) */
-  --bg-page: #f4f3ef;
+  --bg-page: #f5f6fb;
   --bg-deep: #f1f0ec;
   --bg: #ffffff;
   --surface: #fafaf9;
@@ -162,7 +162,7 @@ img {
   gap: 1.25rem;
 }
 
-.navbar-links > a:not(.nav-cta) {
+.navbar-links>a:not(.nav-cta) {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--gray-1);
@@ -171,7 +171,7 @@ img {
   transition: color var(--transition-fast);
 }
 
-.navbar-links > a:not(.nav-cta):hover {
+.navbar-links>a:not(.nav-cta):hover {
   color: var(--black);
 }
 
@@ -202,11 +202,9 @@ img {
   justify-content: center;
   text-align: center;
   padding: clamp(2.75rem, 7vh, 4.5rem) clamp(1.25rem, 5vw, 2rem) 3.25rem;
-  background: linear-gradient(
-      180deg,
+  background: linear-gradient(180deg,
       rgba(0, 74, 124, 0.04) 0%,
-      transparent 42%
-    ),
+      transparent 42%),
     radial-gradient(ellipse 100% 70% at 50% 0%, rgba(0, 113, 227, 0.045), transparent 52%),
     radial-gradient(ellipse 70% 45% at 90% 40%, rgba(208, 48, 39, 0.035), transparent 50%),
     var(--bg-page);
@@ -221,7 +219,7 @@ img {
   pointer-events: none;
 }
 
-.hero > *:not(.hero-glow):not(.hero-scene) {
+.hero>*:not(.hero-glow):not(.hero-scene) {
   position: relative;
   z-index: 2;
 }
@@ -279,12 +277,10 @@ img {
   height: min(72vw, 480px);
   right: -6%;
   top: -4%;
-  background: radial-gradient(
-    circle at 40% 38%,
-    rgba(0, 113, 227, 0.35) 0%,
-    rgba(0, 74, 124, 0.18) 42%,
-    transparent 68%
-  );
+  background: radial-gradient(circle at 40% 38%,
+      rgba(0, 113, 227, 0.35) 0%,
+      rgba(0, 74, 124, 0.18) 42%,
+      transparent 68%);
 }
 
 .hero-orb--b {
@@ -292,12 +288,10 @@ img {
   height: min(48vw, 320px);
   left: -4%;
   bottom: 6%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(208, 48, 39, 0.16) 0%,
-    rgba(217, 119, 6, 0.08) 45%,
-    transparent 65%
-  );
+  background: radial-gradient(circle at 50% 50%,
+      rgba(208, 48, 39, 0.16) 0%,
+      rgba(217, 119, 6, 0.08) 45%,
+      transparent 65%);
   filter: blur(48px);
   opacity: 0.55;
 }
@@ -316,12 +310,10 @@ img {
   position: absolute;
   inset: 0;
   border-radius: clamp(14px, 2.2vw, 22px);
-  background: linear-gradient(
-    155deg,
-    rgba(255, 255, 255, 0.97) 0%,
-    rgba(250, 250, 249, 0.88) 48%,
-    rgba(241, 240, 236, 0.75) 100%
-  );
+  background: linear-gradient(155deg,
+      rgba(255, 255, 255, 0.97) 0%,
+      rgba(250, 250, 249, 0.88) 48%,
+      rgba(241, 240, 236, 0.75) 100%);
   border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow:
     0 2px 4px rgba(0, 74, 124, 0.05),
@@ -350,12 +342,10 @@ img {
   bottom: 14%;
   height: 10px;
   border-radius: 5px;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 74, 124, 0.12),
-    rgba(0, 113, 227, 0.1),
-    rgba(0, 74, 124, 0.12)
-  );
+  background: linear-gradient(90deg,
+      rgba(0, 74, 124, 0.12),
+      rgba(0, 113, 227, 0.1),
+      rgba(0, 74, 124, 0.12));
 }
 
 .hero-card-3d--back {
@@ -376,11 +366,9 @@ img {
 .hero-shard {
   position: absolute;
   border-radius: 20px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.55),
-    rgba(0, 113, 227, 0.08)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.55),
+      rgba(0, 113, 227, 0.08));
   border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 16px 40px rgba(0, 74, 124, 0.1);
   transform-style: preserve-3d;
@@ -658,6 +646,485 @@ img {
   opacity: 0.5;
 }
 
+/* ── Altitude Card Benefits main screen (keeps GSAP sequence elsewhere) ── */
+
+.hero--altitude {
+  background: #f7f8fc;
+  min-height: unset;
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 4vw, 2.25rem) 3.5rem;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.hero--altitude .hero-glow,
+.hero--altitude .hero-scene,
+.hero--altitude .hero-codebar,
+.hero--altitude .hero-brand,
+.hero--altitude .hero-tagline,
+.hero--altitude .hero-title,
+.hero--altitude .hero-body,
+.hero--altitude .hero-trust,
+.hero--altitude .scroll-cue {
+  display: none;
+}
+
+.hero--altitude::before {
+  opacity: 0.18;
+}
+
+.altitude-main {
+  position: relative;
+  z-index: 2;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.altitude-main__hero-card {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: clamp(1.75rem, 4vw, 2.6rem);
+  border-radius: 22px;
+  background: #f1f2f6;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) inset;
+}
+
+.altitude-main__hero-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.altitude-main__kicker {
+  font-size: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.altitude-main__bank-logo {
+  height: 34px;
+  width: auto;
+}
+
+.altitude-main__headline {
+  font-size: clamp(1.85rem, 4vw, 2.7rem);
+  line-height: 1.08;
+  font-weight: 700;
+  color: var(--black);
+  margin: 0 0 0.9rem;
+}
+
+.altitude-main__subhead {
+  margin: 0 0 1.4rem;
+  color: var(--gray-2);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  max-width: 42ch;
+}
+
+.altitude-main__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.15rem;
+  flex-wrap: wrap;
+}
+
+.altitude-btn {
+  border-radius: 999px;
+  padding: 0.72rem 1.35rem;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease;
+}
+
+.altitude-btn--primary {
+  background: var(--co-navy);
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 74, 124, 0.22);
+}
+
+.altitude-btn--ghost {
+  background: rgba(15, 23, 42, 0.04);
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.altitude-btn:hover {
+  transform: translateY(-1px);
+}
+
+.altitude-main__hero-art {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.altitude-main__card-img {
+  width: min(340px, 100%);
+  height: auto;
+  border-radius: 18px;
+  filter: drop-shadow(0 24px 60px rgba(0, 74, 124, 0.18));
+  opacity: 0.98;
+}
+
+.altitude-main__benefits {
+  margin-top: 2rem;
+}
+
+.altitude-main__section-kicker {
+  font-family: var(--hud-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hud-muted);
+  margin-bottom: 0.65rem;
+}
+
+.altitude-main__section-title {
+  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+  font-weight: 700;
+  margin: 0 0 1.4rem;
+  color: var(--black);
+}
+
+.altitude-main__section-title--small {
+  margin-bottom: 1rem;
+}
+
+.altitude-main__benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.altitude-benefit {
+  background: #f1f2f6;
+  border-radius: 18px;
+  padding: 1.4rem 1.25rem;
+}
+
+.altitude-benefit__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--co-navy) 10%, transparent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.95rem;
+}
+
+.altitude-benefit__title {
+  margin: 0 0 0.55rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--black);
+}
+
+.altitude-benefit__text {
+  margin: 0;
+  color: var(--gray-2);
+  line-height: 1.55;
+  font-size: 0.9rem;
+}
+
+.altitude-main__rates {
+  margin-top: 2rem;
+  background: transparent;
+  padding-top: 1rem;
+}
+
+.altitude-main__rates-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.altitude-main__penalty {
+  font-family: var(--hud-mono);
+  font-size: 0.72rem;
+  color: var(--hud-muted);
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.altitude-main__info {
+  width: 18px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(0, 74, 124, 0.1);
+  color: rgba(0, 74, 124, 0.9);
+  font-weight: 800;
+}
+
+.altitude-rate-list {
+  margin-top: 1.1rem;
+  border-radius: 18px;
+  background: #f1f2f6;
+  padding: 0.9rem 1.1rem;
+}
+
+.altitude-rate-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.85rem 0;
+  align-items: center;
+}
+
+.altitude-rate-divider {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.altitude-rate-label {
+  font-family: var(--hud-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: rgba(15, 23, 42, 0.8);
+  text-transform: uppercase;
+}
+
+.altitude-rate-value {
+  font-size: 0.86rem;
+  color: rgba(15, 23, 42, 0.75);
+  text-align: right;
+}
+
+/* ── Card tier compare ── */
+
+.altitude-compare-section {
+  background: var(--bg);
+  border-top: none;
+  padding: clamp(4rem, 8vh, 6rem) 0;
+}
+
+.altitude-compare__title {
+  font-size: clamp(2.1rem, 4vw, 3.2rem);
+  font-weight: 700;
+  margin: 0 0 0.55rem;
+  text-align: center;
+  color: var(--black);
+}
+
+.altitude-compare__subhead {
+  margin: 0 auto 2.25rem;
+  text-align: center;
+  max-width: 58ch;
+  color: var(--gray-2);
+  line-height: 1.6;
+  font-size: 0.98rem;
+}
+
+.altitude-compare__top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.altitude-compare__back {
+  border-radius: 999px;
+  padding: 0.5rem 0.95rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: rgba(15, 23, 42, 0.72);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.altitude-compare__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
+.altitude-compare__fineprint {
+  margin-top: 1.35rem;
+  text-align: center;
+  color: rgba(15, 23, 42, 0.55);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.altitude-tier {
+  position: relative;
+  background: #f4f5fb;
+  border-radius: 22px;
+  padding: 1.1rem 1.05rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+
+.altitude-tier__popular-pill {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--co-navy);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  padding: 0.48rem 1rem;
+  border-radius: 999px;
+}
+
+.altitude-tier--popular {
+  border: 2px solid var(--co-navy);
+  background: #ffffff;
+}
+
+.altitude-tier__art {
+  height: 155px;
+  border-radius: 18px;
+  background: transparent;
+  margin-bottom: 1.05rem;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.altitude-tier__art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+}
+
+.altitude-tier__art--premium {
+  background: transparent;
+}
+
+.altitude-tier__art--elite {
+  background: transparent;
+}
+
+.altitude-tier__art--signature {
+  background: transparent;
+}
+
+.altitude-tier__name {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--black);
+  text-align: center;
+}
+
+.altitude-tier__fee {
+  margin: 0.2rem 0 1.15rem;
+  text-align: center;
+  color: rgba(15, 23, 42, 0.55);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.altitude-tier__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 0.25rem;
+  flex: 1;
+}
+
+.altitude-tier__row {
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.altitude-tier__label {
+  display: block;
+  font-family: var(--hud-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.45);
+  margin-bottom: 0.35rem;
+}
+
+.altitude-tier__value {
+  display: block;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--black);
+}
+
+.altitude-tier__muted {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(15, 23, 42, 0.5);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.altitude-tier__btn {
+  margin-top: 2rem;
+  margin-bottom: 0.35rem;
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.78rem 1rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: rgba(15, 23, 42, 0.08);
+  color: rgba(15, 23, 42, 0.8);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.altitude-tier__btn:hover {
+  transform: translateY(-1px);
+}
+
+.altitude-tier__btn--primary {
+  background: var(--co-navy);
+  color: #fff;
+}
+
+.altitude-tier__btn--hide-mobile {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .altitude-compare__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .altitude-compare__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .altitude-tier {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 920px) {
+  .altitude-main__hero-card {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+  }
+
+  .altitude-main__hero-art {
+    justify-content: center;
+  }
+
+  .altitude-main__benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue-line {
     animation: none;
@@ -729,7 +1196,7 @@ img {
 }
 
 .sequence-shell {
-  --canvas-fill: #f1f0ec;
+  --canvas-fill: var(--bg-page);
   position: relative;
   width: min(1200px, 92vw);
   height: 82vh;
@@ -985,7 +1452,7 @@ img {
   color: var(--black);
 }
 
-.cta-section > .section-inner > p {
+.cta-section>.section-inner>p {
   max-width: 520px;
   margin: 0 auto;
   font-size: 1rem;
@@ -1101,7 +1568,14 @@ img {
     align-items: center;
   }
 
-  .navbar-links > a:not(.nav-cta) {
+  .navbar-links>a:not(.nav-cta) {
     display: none;
   }
+}
+
+/* Altitude mode: hide legacy landing sections (keep hero + GSAP sequence) */
+.altitude-body .story-intro,
+.altitude-body .stats-band,
+.altitude-body .cta-section {
+  display: none;
 }
