@@ -1856,8 +1856,6 @@ _**Agent (premium)**_
 
 <details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/.cursor/config.json</summary>
 
-Status: **loading**
-
 </details>
 
 </tool-use>
@@ -1866,3 +1864,498 @@ Status: **loading**
 <summary>Tool use: **edit_file_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (premium)**_
+
+Updated `/.cursor/config.json` to:
+
+- `npm *`
+- `pnpm *`
+- `yarn *`
+- `git *`
+
+This should cover the command variants you’re running (including flags and subcommands like `git push`). If prompts still appear, reload Cursor once so config is re-read.
+
+---
+
+_**User**_
+
+git add all commit push
+
+---
+
+_**Agent (premium)**_
+
+I’ll stage everything in the repo, create one commit, and push it to `origin/main`. I’m checking current status and recent history first so I can use an accurate commit message.
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short</summary>
+
+```bash
+git status --short
+```
+
+```
+ M .cursor/config.json
+?? .specstory/
+?? .vscode/
+?? index.html
+?? node_modules/
+?? package-lock.json
+?? package.json
+?? src/
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git diff --staged; git diff</summary>
+
+```bash
+git diff --staged; git diff
+```
+
+```
+diff --git a/.cursor/config.json b/.cursor/config.json
+index 371d871..aee1a19 100644
+--- a/.cursor/config.json
++++ b/.cursor/config.json
+@@ -1,15 +1,8 @@
+ {
+ 	"allowedCommands": [
+-		"npm install",
+-		"pnpm install",
+-		"yarn install",
+-		"npm run dev",
+-		"pnpm dev",
+-		"npm test",
+-		"pnpm test",
+-		"git add",
+-		"git commit",
+-		"git status",
+-		"git diff"
++		"npm *",
++		"pnpm *",
++		"yarn *",
++		"git *"
+ 	]
+ }
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git log --oneline -8</summary>
+
+```bash
+git log --oneline -8
+```
+
+```
+75d14a9 Add project command and commit policies.
+c049297 Add project skill definitions for design workflows.
+d8408dc Initial commit
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git add -A && git status --short</summary>
+
+```bash
+git add -A && git status --short
+```
+
+```
+M  .cursor/config.json
+A  .specstory/.project.json
+A  .specstory/cli/config.toml
+A  .specstory/history/2026-03-20_15-04-37Z-skill-development-for-cursor.md
+A  .specstory/statistics.json
+A  .vscode/settings.json
+A  index.html
+A  node_modules/.package-lock.json
+A  node_modules/gsap/CSSPlugin.js
+A  node_modules/gsap/CSSRulePlugin.js
+A  node_modules/gsap/CustomBounce.js
+A  node_modules/gsap/CustomEase.js
+A  node_modules/gsap/CustomWiggle.js
+A  node_modules/gsap/Draggable.js
+A  node_modules/gsap/DrawSVGPlugin.js
+A  node_modules/gsap/EasePack.js
+A  node_modules/gsap/EaselPlugin.js
+A  node_modules/gsap/Flip.js
+A  node_modules/gsap/GSDevTools.js
+A  node_modules/gsap/InertiaPlugin.js
+A  node_modules/gsap/MorphSVGPlugin.js
+A  node_modules/gsap/MotionPathHelper.js
+A  node_modules/gsap/MotionPathPlugin.js
+A  node_modules/gsap/Observer.js
+A  node_modules/gsap/Physics2DPlugin.js
+A  node_modules/gsap/PhysicsPropsPlugin.js
+A  node_modules/gsap/PixiPlugin.js
+A  node_modules/gsap/README.md
+A  node_modules/gsap/SECURITY.md
+A  node_modules/gsap/ScrambleTextPlugin.js
+A  node_modules/gsap/ScrollSmoother.js
+A  node_modules/gsap/ScrollToPlugin.js
+A  node_modules/gsap/ScrollTrigger.js
+A  node_modules/gsap/SplitText.js
+A  node_modules/gsap/TextPlugin.js
+A  node_modules/gsap/all.js
+A  node_modules/gsap/dist/CSSRulePlugin.js
+A  node_modules/gsap/dist/CSSRulePlugin.min.js
+A  node_modules/gsap/dist/CSSRulePlugin.min.js.map
+A  node_modules/gsap/dist/CustomBounce.js
+A  node_modules/gsap/dist/CustomBounce.min.js
+A  node_modules/gsap/dist/CustomBounce.min.js.map
+A  node_modules/gsap/dist/CustomEase.js
+A  node_modules/gsap/dist/CustomEase.min.js
+A  node_modules/gsap/dist/CustomEase.min.js.map
+A  node_modules/gsap/dist/CustomWiggle.js
+A  node_modules/gsap/dist/CustomWiggle.min.js
+A  node_modules/gsap/dist/CustomWiggle.min.js.map
+A  node_modules/gsap/dist/Draggable.js
+A  node_modules/gsap/dist/Draggable.min.js
+A  node_modules/gsap/dist/Draggable.min.js.map
+A  node_modules/gsap/dist/DrawSVGPlugin.js
+A  node_modules/gsap/dist/DrawSVGPlugin.min.js
+A  node_modules/gsap/dist/DrawSVGPlugin.min.js.map
+A  node_modules/gsap/dist/EasePack.js
+A  node_modules/gsap/dist/EasePack.min.js
+A  node_modules/gsap/dist/EasePack.min.js.map
+A  node_modules/gsap/dist/EaselPlugin.js
+A  node_modules/gsap/dist/EaselPlugin.min.js
+A  node_modules/gsap/dist/EaselPlugin.min.js.map
+A  node_modules/gsap/dist/Flip.js
+A  node_modules/gsap/dist/Flip.min.js
+A  node_modules/gsap/dist/Flip.min.js.map
+A  node_modules/gsap/dist/GSDevTools.js
+A  node_modules/gsap/dist/GSDevTools.min.js
+A  node_modules/gsap/dist/GSDevTools.min.js.map
+A  node_modules/gsap/dist/InertiaPlugin.js
+A  node_modules/gsap/dist/InertiaPlugin.min.js
+A  node_modules/gsap/dist/InertiaPlugin.min.js.map
+A  node_modules/gsap/dist/MorphSVGPlugin.js
+A  node_modules/gsap/dist/MorphSVGPlugin.min.js
+A  node_modules/gsap/dist/MorphSVGPlugin.min.js.map
+A  node_modules/gsap/dist/MotionPathHelper.js
+A  node_modules/gsap/dist/MotionPathHelper.min.js
+A  node_modules/gsap/dist/MotionPathHelper.min.js.map
+A  node_modules/gsap/dist/MotionPathPlugin.js
+A  node_modules/gsap/dist/MotionPathPlugin.min.js
+A  node_modules/gsap/dist/MotionPathPlugin.min.js.map
+A  node_modules/gsap/dist/Observer.js
+A  node_modules/gsap/dist/Observer.min.js
+A  node_modules/gsap/dist/Observer.min.js.map
+A  node_modules/gsap/dist/Physics2DPlugin.js
+A  node_modules/gsap/dist/Physics2DPlugin.min.js
+A  node_modules/gsap/dist/Physics2DPlugin.min.js.map
+A  node_modules/gsap/dist/PhysicsPropsPlugin.js
+A  node_modules/gsap/dist/PhysicsPropsPlugin.min.js
+A  node_modules/gsap/dist/PhysicsPropsPlugin.min.js.map
+A  node_modules/gsap/dist/PixiPlugin.js
+A  node_modules/gsap/dist/PixiPlugin.min.js
+A  node_modules/gsap/dist/PixiPlugin.min.js.map
+A  node_modules/gsap/dist/ScrambleTextPlugin.js
+A  node_modules/gsap/dist/ScrambleTextPlugin.min.js
+A  node_modules/gsap/dist/ScrambleTextPlugin.min.js.map
+A  node_modules/gsap/dist/ScrollSmoother.js
+A  node_modules/gsap/dist/ScrollSmoother.min.js
+A  node_modules/gsap/dist/ScrollSmoother.min.js.map
+A  node_modules/gsap/dist/ScrollToPlugin.js
+A  node_modules/gsap/dist/ScrollToPlugin.min.js
+A  node_modules/gsap/dist/ScrollToPlugin.min.js.map
+A  node_modules/gsap/dist/ScrollTrigger.js
+A  node_modules/gsap/dist/ScrollTrigger.min.js
+A  node_modules/gsap/dist/ScrollTrigger.min.js.map
+A  node_modules/gsap/dist/SplitText.js
+A  node_modules/gsap/dist/SplitText.min.js
+A  node_modules/gsap/dist/SplitText.min.js.map
+A  node_modules/gsap/dist/TextPlugin.js
+A  node_modules/gsap/dist/TextPlugin.min.js
+A  node_modules/gsap/dist/TextPlugin.min.js.map
+A  node_modules/gsap/dist/all.js
+A  node_modules/gsap/dist/gsap.js
+A  node_modules/gsap/dist/gsap.min.js
+A  node_modules/gsap/dist/gsap.min.js.map
+A  node_modules/gsap/gsap-core.js
+A  node_modules/gsap/index.js
+A  node_modules/gsap/package.json
+A  node_modules/gsap/src/CSSPlugin.js
+A  node_modules/gsap/src/CSSRulePlugin.js
+A  node_modules/gsap/src/CustomBounce.js
+A  node_modules/gsap/src/CustomEase.js
+A  node_modules/gsap/src/CustomWiggle.js
+A  node_modules/gsap/src/Draggable.js
+A  node_modules/gsap/src/DrawSVGPlugin.js
+A  node_modules/gsap/src/EasePack.js
+A  node_modules/gsap/src/EaselPlugin.js
+A  node_modules/gsap/src/Flip.js
+A  node_modules/gsap/src/GSDevTools.js
+A  node_modules/gsap/src/InertiaPlugin.js
+A  node_modules/gsap/src/MorphSVGPlugin.js
+A  node_modules/gsap/src/MotionPathHelper.js
+A  node_modules/gsap/src/MotionPathPlugin.js
+A  node_modules/gsap/src/Observer.js
+A  node_modules/gsap/src/Physics2DPlugin.js
+A  node_modules/gsap/src/PhysicsPropsPlugin.js
+A  node_modules/gsap/src/PixiPlugin.js
+A  node_modules/gsap/src/ScrambleTextPlugin.js
+A  node_modules/gsap/src/ScrollSmoother.js
+A  node_modules/gsap/src/ScrollToPlugin.js
+A  node_modules/gsap/src/ScrollTrigger.js
+A  node_modules/gsap/src/SplitText.js
+A  node_modules/gsap/src/SplitText.ts
+A  node_modules/gsap/src/TextPlugin.js
+A  node_modules/gsap/src/all.js
+A  node_modules/gsap/src/gsap-core.js
+A  node_modules/gsap/src/index.js
+A  node_modules/gsap/src/utils/PathEditor.js
+A  node_modules/gsap/src/utils/VelocityTracker.js
+A  node_modules/gsap/src/utils/matrix.js
+A  node_modules/gsap/src/utils/paths.js
+A  node_modules/gsap/src/utils/strings.js
+A  node_modules/gsap/types/animation.d.ts
+A  node_modules/gsap/types/css-plugin.d.ts
+A  node_modules/gsap/types/css-rule-plugin.d.ts
+A  node_modules/gsap/types/custom-bounce.d.ts
+A  node_modules/gsap/types/custom-ease.d.ts
+A  node_modules/gsap/types/custom-wiggle.d.ts
+A  node_modules/gsap/types/draggable.d.ts
+A  node_modules/gsap/types/draw-svg-plugin.d.ts
+A  node_modules/gsap/types/ease.d.ts
+A  node_modules/gsap/types/easel-plugin.d.ts
+A  node_modules/gsap/types/flip.d.ts
+A  node_modules/gsap/types/gs-dev-tools.d.ts
+A  node_modules/gsap/types/gsap-core.d.ts
+A  node_modules/gsap/types/gsap-plugins.d.ts
+A  node_modules/gsap/types/gsap-utils.d.ts
+A  node_modules/gsap/types/index.d.ts
+A  node_modules/gsap/types/inertia-plugin.d.ts
+A  node_modules/gsap/types/morph-svg-plugin.d.ts
+A  node_modules/gsap/types/motion-path-helper.d.ts
+A  node_modules/gsap/types/motion-path-plugin.d.ts
+A  node_modules/gsap/types/observer.d.ts
+A  node_modules/gsap/types/physics-2d-plugin.d.ts
+A  node_modules/gsap/types/physics-props-plugin.d.ts
+A  node_modules/gsap/types/pixi-plugin.d.ts
+A  node_modules/gsap/types/scramble-text-plugin.d.ts
+A  node_modules/gsap/types/scroll-smoother.d.ts
+A  node_modules/gsap/types/scroll-to-plugin.d.ts
+A  node_modules/gsap/types/scroll-trigger.d.ts
+A  node_modules/gsap/types/split-text.d.ts
+A  node_modules/gsap/types/text-plugin.d.ts
+A  node_modules/gsap/types/timeline.d.ts
+A  node_modules/gsap/types/tween.d.ts
+A  node_modules/gsap/types/utils/velocity-tracker.d.ts
+A  node_modules/gsap/utils/PathEditor.js
+A  node_modules/gsap/utils/VelocityTracker.js
+A  node_modules/gsap/utils/matrix.js
+A  node_modules/gsap/utils/paths.js
+A  node_modules/gsap/utils/strings.js
+A  package-lock.json
+A  package.json
+A  src/main.js
+A  src/styles.css
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: TREE=$(git write-tree) && NEW=$(git commit-tree "$TREE" -p HEAD -m "Add initial project scaffold and dependencies." -m "Add frontend starter files, lockfiles, local tooling settings, and bundled GSAP dependency files for the current project state.") && git reset --soft "$NEW" && git log -1 --pretty=full && git status --short</summary>
+
+```bash
+TREE=$(git write-tree) && NEW=$(git commit-tree "$TREE" -p HEAD -m "Add initial project scaffold and dependencies." -m "Add frontend starter files, lockfiles, local tooling settings, and bundled GSAP dependency files for the current project state.") && git reset --soft "$NEW" && git log -1 --pretty=full && git status --short
+```
+
+```
+commit 946fd20e07be94ca0d0f7b161a460ad4ef33ac3c
+Author: shindigira &lt;shindigira@gmail.com&gt;
+Commit: shindigira &lt;shindigira@gmail.com&gt;
+
+    Add initial project scaffold and dependencies.
+    
+    Add frontend starter files, lockfiles, local tooling settings, and bundled GSAP dependency files for the current project state.
+ M .specstory/history/2026-03-20_15-04-37Z-skill-development-for-cursor.md
+ M .specstory/statistics.json
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+I created the commit, but I need your direction before pushing.
+
+After the commit was created, two tracked files changed again in the working tree (new changes appeared that were not part of the committed snapshot):
+
+- `.specstory/history/2026-03-20_15-04-37Z-skill-development-for-cursor.md`
+- `.specstory/statistics.json`
+
+Current commit is ready:
+- `946fd20` — `Add initial project scaffold and dependencies.`
+
+How do you want to proceed?
+1. Push now with `946fd20` as-is, leave those two new changes uncommitted.
+2. Stage those two files too, make a follow-up commit, then push both.
+3. Do something else.
+
+---
+
+_**User**_
+
+git status
+
+---
+
+_**Agent (premium)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status</summary>
+
+```bash
+git status
+```
+
+```
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .specstory/history/2026-03-20_15-04-37Z-skill-development-for-cursor.md
+	modified:   .specstory/statistics.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (premium)**_
+
+Current `git status`:
+
+- On branch `main`
+- Branch is **ahead of `origin/main` by 1 commit**
+- Unstaged modified files:
+  - `.specstory/history/2026-03-20_15-04-37Z-skill-development-for-cursor.md`
+  - `.specstory/statistics.json`
+- No staged changes right now
+
+---
+
+_**User**_
+
+how to get to allowlist?
+
+---
+
+_**Agent (premium)**_
+
+Quickest way:
+
+- Open **Cursor Settings** (`Cmd+,`)
+- Search for **allowlist** or **allowedCommands**
+- Edit at project level via `.cursor/config.json` (your repo already has this)
+
+For your current project, the allowlist file is:
+- `.cursor/config.json`
+
+Global (all projects) settings file is:
+- `~/Library/Application Support/Cursor/User/settings.json`
+
+If you want, I can set both project + global to the same allowlist so behavior is consistent everywhere.
+
+---
+
+_**User**_
+
+i need ffprobe and ffmpeg installed on my mac, how?
+
+---
+
+_**Agent (premium)**_
+
+Best way on macOS is Homebrew.
+
+### Install
+```bash
+brew install ffmpeg
+```
+
+That installs both `ffmpeg` and `ffprobe`.
+
+### Verify
+```bash
+ffmpeg -version
+ffprobe -version
+which ffmpeg
+which ffprobe
+```
+
+### If `brew` is missing
+Install Homebrew first:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Then run:
+```bash
+brew install ffmpeg
+```
+
+### Optional (if command not found after install)
+For Apple Silicon Macs:
+```bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+If you want, I can run these checks for you in this repo terminal and confirm everything is working.
