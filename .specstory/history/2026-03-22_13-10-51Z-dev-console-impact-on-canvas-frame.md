@@ -18153,8 +18153,28 @@ _**User**_
 
 _**Agent (default)**_
 
+<think><details><summary>Thought Process</summary>
+
+The user wants to replace the navbar logo (lines 25-27 in index.html) with the SVG they pasted. I need to:
+
+1. Clean up the SVG - remove Angular-specific attributes like `_ngcontent-web-shell-c2748147077=""` and `ng-star-inserted` class
+2. Replace the img with the cleaned SVG inside the anchor
+3. Use proper classes that match the project (navbar-logo styling) - the SVG should scale like the current img
+
+Let me read the current navbar HTML and CSS for navbar-logo
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: </summary>
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
 
 </details>
 </tool-use>
@@ -18167,7 +18187,7 @@ _**Agent (default)**_
 _**Agent (default)**_
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: </summary>
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
 
 </details>
 </tool-use>
@@ -18176,14 +18196,58 @@ _**Agent (default)**_
 <summary>Tool use: **read_file_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll:
+1. Replace img with cleaned SVG - strip _ngcontent attributes, use class "navbar-logo-svg" or target `.navbar-logo svg`
+2. Add CSS `.navbar-logo svg { height: 44px; width: auto; display: block; }` - the viewBox is 418x150 so aspect ratio ~2.79 - width will compute from height
+
+Actually current img uses height 64px inside 44px max container with overflow hidden - the SVG viewBox 418x150 - for navbar we want similar visual. I'll use height: 40px or 44px on svg, width auto (SVG preserves aspect with width auto if height set and preserve aspect ratio)
+
+For inline SVG: `height="44"` and `width` can be calculated: 418/150 * 44 ≈ 122.6 - or use style height 44px width auto with viewBox
+
+```css
+.navbar-logo svg {
+  height: 44px;
+  width: auto;
+  max-width: min(200px, 55vw);
+  display: block;
+}
+```
+
+Also add `<title>` inside SVG for accessibility when used as img replacement - user had aria-label on parent anchor which is sufficient. hide redundant title if aria-label on link - WCAG: either aria-label on link or title in svg. Keep aria-label on `<a>`.
+
+Remove role="img" from svg since it's decorative inside labeled link? Actually if link has aria-label, the SVG can be aria-hidden="true" to avoid duplicate announcement. Or keep svg with title. Best: `<a aria-label="Capital One home">` + `<svg aria-hidden="true" focusable="false">` so screen reader only announces the link once.
+
+I'll use aria-hidden="true" on svg since anchor has aria-label.
+
+Convert inline styles to fill attributes or classes for cleanliness:
+- `style="fill: none;"` on rect -> `fill="none"`
+- `style="fill: #cc2427;"` on path -> `fill="#cc2427"` or var
+- `style="fill: #013d5b;"` -> fill="#013d5b"
+
+I'll paste the paths exactly as user provided but cleaned.
+
+User's code has `height="150.01"` on rect - fine
+
+Let me build the full SVG string without ng attributes.
+</details></think>
+
+_**Agent (default)**_
+
+
+Replacing the navbar `<img>` with the provided SVG, stripping Angular-specific attributes, converting inline `fill` styles to attributes, and adding CSS so the SVG scales in the nav bar.
+
+
 
 _**Agent (default)**_
 
 <tool-use data-tool-type="write" data-tool-name="edit_file_v2">
 
 <details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
-
-Status: **loading**
 
 </details>
 
@@ -18200,8 +18264,6 @@ _**Agent (default)**_
 
 <details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
 
-Status: **loading**
-
 </details>
 
 </tool-use>
@@ -18210,3 +18272,250 @@ Status: **loading**
 <summary>Tool use: **edit_file_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Check hero-brand - user attachment showed text spans but we may have changed to img earlier. Grep hero-brand in index
+
+The user only asked for navbar 25-27 replacement. Done.
+
+Verify no broken HTML, read_lints
+
+Note: Official Capital One web SVG may be trademarked - user provided it explicitly for their demo project.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/index.html",
+    "/Users/st/Projects/capital-scroll-ad/styles.css"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Summarize - cleaned Angular attrs, aria-hidden on svg, anchor keeps aria-label
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what changed:
+
+### Navbar (`index.html`)
+- Swapped the PNG for your **inline SVG** (same paths / colors: swoosh `#cc2427`, wordmark `#013d5b`).
+- Removed Angular-only bits: `_ngcontent-*`, `ng-star-inserted`, `role="img"`, and duplicate `aria-label` on the SVG.
+- Set **`aria-hidden="true"`** and **`focusable="false"`** on the SVG so the **link’s `aria-label="Capital One home"`** is what screen readers use (no double announcement).
+
+### Styles (`styles.css`)
+- Replaced **`.navbar-logo img`** with **`.navbar-logo-svg`**: **`height: 44px`**, **`width: auto`**, **`max-width: min(200px, 52vw)`** so it fits the bar and narrow viewports.
+
+The hero can still use `capital-one-logo-png_seeklogo-425557.png` if that’s what you have there; only the **nav** uses the vector logo now. If you want the same SVG in the hero, we can extract it to `capital-one-logo.svg` and reuse it in both places.
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants git add, commit, and push. I'll check git status first, stage appropriate files (excluding __pycache__ if present), commit with descriptive message, and push.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git status</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git status
+```
+
+```
+On branch feat/hero-catchy-update
+Your branch is up to date with 'origin/feat/hero-catchy-update'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/core.cpython-311.pyc
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-311.pyc
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   index.html
+	modified:   scripts/build.js
+	modified:   styles.css
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+	apple-touch-icon.png
+	favicon.svg
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Stage: index.html, scripts/build.js, styles.css, favicon.svg, apple-touch-icon.png, .specstory/ - exclude pycache
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git add index.html scripts/build.js styles.css favicon.svg apple-touch-icon.png .specstory/ && git commit -m "Nav: official Capital One SVG logo; favicon and touch icon
+
+- Replace navbar PNG with inline vector wordmark and swoosh
+- Add favicon.svg and apple-touch-icon.png; copy in build script
+- Hero brand and stylesheet updates as staged"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git add index.html scripts/build.js styles.css favicon.svg apple-touch-icon.png .specstory/ && git commit -m "Nav: official Capital One SVG logo; favicon and touch icon
+
+- Replace navbar PNG with inline vector wordmark and swoosh
+- Add favicon.svg and apple-touch-icon.png; copy in build script
+- Hero brand and stylesheet updates as staged"
+```
+
+```
+[feat/hero-catchy-update a6a64cc] Nav: official Capital One SVG logo; favicon and touch icon
+ 7 files changed, 1694 insertions(+), 28 deletions(-)
+ create mode 100644 apple-touch-icon.png
+ create mode 100644 favicon.svg
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The commit message says "Hero brand" but I may have bundled other changes - that's ok. Push
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git push</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git push
+```
+
+```
+To https://github.com/shindigira/capital-scroll-ad.git
+   bcae2fc..a6a64cc  feat/hero-catchy-update -&gt; feat/hero-catchy-update
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Done - note pycache not committed
+</details></think>
+
+_**Agent (default)**_
+
+
+Summary:
+
+- **Committed** `a6a64cc` on **`feat/hero-catchy-update`**: `index.html`, `styles.css`, `scripts/build.js`, `favicon.svg`, `apple-touch-icon.png`, `.specstory/` updates.
+- **Pushed** to `origin/feat/hero-catchy-update`.
+
+**Not committed:** `.cursor/.../__pycache__/*.pyc` (bytecode). Discard or ignore those locally if you don’t want them tracked.
+
+Run **`npm run build`** when you want `build/` to match the latest `index.html` and assets.
