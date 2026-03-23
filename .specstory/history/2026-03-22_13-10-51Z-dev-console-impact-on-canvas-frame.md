@@ -15083,3 +15083,1524 @@ Directory: **/Users/st/Projects/capital-scroll-ad** (1 file)
 <summary>Tool use: **glob_file_search**</summary>
 
 </details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll run the ui-ux-pro-max search for fintech hero design system briefly - if it fails or takes long I'll proceed with professional judgement.
+
+Actually user wants concrete improvements - I'll implement:
+
+**Wording (financial institution tone):**
+- Tagline: "Credit & rewards" → something more institutional like "Credit cards & rewards" or "Consumer banking & rewards" or keep short: "Cards, rewards & security" - professional: "Credit cards · Rewards · Insights"
+- Hero body: tighten to authoritative, clear benefit
+- Trust bullets: already good - maybe slight refinement
+- Scroll cue: "Scroll to explore" → "Continue" or "Explore products" or keep soft
+
+I'll use:
+- Tagline: `Credit cards & rewards` or `Credit · Rewards · Control` - uppercase small caps style
+- Body: "Compare cards, track rewards, and manage spending in one place—with the clarity you expect from a leading financial institution." - a bit long. Shorter: "Compare cards, track rewards, and manage spending in one place. Clear tools backed by a trusted national bank."
+
+Financial institution: emphasize trust, clarity, no hype.
+
+**Typography scale:**
+- Brand: slightly tighter, maybe clamp(2rem, 4.8vw, 3.25rem) for prominence
+- Tagline: bump to 0.75rem, letter-spacing 0.12em, color slightly more muted (slate) with gold accent on key words - or keep gold for warmth
+- H1: financial sites often use slightly smaller max headline on mobile for gravitas - clamp(2.1rem, 5.5vw, 4rem) - controlled not shouty
+- Body: max-width 560px, line-height 1.7, color gray-2 for readability
+
+**Colors:**
+- Hero background: more restrained - subtle cool gray/blue wash instead of strong blue+gold orbs - softer gradients for institution feel
+- Line2 typed: use co-navy for second line to align with brand vs generic blue - or `--co-navy` for line1 black stays, line2 typed in `--co-navy` or a deeper blue
+
+Actually brand uses navy + red - typed line could be `--co-navy` to tie to brand (not iOS blue)
+
+**Spacing:**
+- Increase margin between sections: hero-brand → tagline → h1 more breathing room
+- hero-trust: subtle top border or softer pills
+
+I'll read scroll-cue and hero-trust CSS
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/design-system/MASTER.md</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll implement a cohesive polish:
+
+1. **index.html wording:**
+   - Tagline: `Credit cards & rewards` (clearer institutional category)
+   - Body: Professional, trustworthy - "Compare Capital One cards, track rewards, and manage spending in one place—with the clarity and security you expect from a national bank."
+   - Or shorter: "Compare cards, track rewards, and manage spending in one workspace. Built for clarity, backed by a trusted financial institution."
+   - Even shorter financial tone: "Compare cards side by side, track rewards, and stay in control—with bank-grade security and straightforward tools."
+   - Trust bullets: keep or refine - "256-bit encryption" might be too technical - bank-level is fine
+   - Scroll: "Scroll to explore" → "View products" or keep soft "Continue below"
+
+2. **aria-label** h1: update to match institutional tone
+
+3. **CSS:**
+   - Hero bg: softer, more institutional - subtle linear gradient from top very light blue-gray to warm page bg, reduce saturated orbs
+   - Hero brand: fine-tune
+   - Tagline: font-size 0.6875rem (11px) with 0.11em tracking, color: slate-600 variant - use gray-2 with gold - actually mix: color: var(--gray-2) with a small gold left border accent - or use `color: var(--co-navy)` at 0.85 opacity for sophistication - or keep gold for warmth
+   - For financial, often use **navy** for secondary text - I'll use `color: var(--co-navy)` opacity 0.72 for tagline with font-weight 600
+   - H1: line1 black, line2 typed in `--co-navy` or keep blue - I'll use co-navy for typed line to align with brand wordmark
+   - Body: color: var(--gray-2) for WCAG body, max-width 32rem
+   - Hero-title max-width: allow slightly wider for one word + period
+   - Trust: add padding-top subtle border-top 1px solid border-subtle, margin-top 2.25rem, font-size 0.8125rem
+   - Scroll cue: slightly muted
+
+4. **Variables**: Add --hero-fg-muted if needed
+
+Let me also add a subtle `font-feature-settings: "ss01"` on hero - optional, skip
+
+I'll run the python search quickly for fintech hero typography - might give extra hints - optional skip if slow.
+
+I'll implement changes.
+</details></think>
+
+_**Agent (default)**_
+
+
+Polishing the hero for a bank-grade hierarchy: restrained background, clearer typography scale, brand-aligned colors for the typed line, and more institutional copy.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+`color-mix` might not work in very old browsers - the project uses modern browsers. For Safari older - provide fallback. Actually add fallback for hero-tagline:
+
+```css
+color: var(--gray-2);
+color: color-mix(in srgb, var(--co-navy) 78%, var(--black));
+```
+
+Actually if color-mix unsupported, gray-2 applies - acceptable.
+
+Scroll cue line: color-mix - same
+
+hero-trust-icon: changed to co-navy - good institutional
+
+Check: `$0 fraud liability` - user might prefer spelling "Zero-liability" - Capital One uses "$0 Fraud Liability" sometimes. I'll keep "$0 fraud liability" as concise
+
+Read lints
+
+Also verify --co-navy exists in :root - user had it for brand
+
+grep co-navy in styles.css
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "--co-navy"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "--co-navy",
+  "topFiles": [
+    {
+      "matchCount": 7,
+      "uri": "styles.css"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 7
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+If color-mix not supported in older Safari - iOS 16.2+ has it. Could add fallback:
+```css
+.hero-tagline {
+  color: #3d5d73; /* approx mix */
+  color: color-mix(...);
+}
+```
+
+I'll add a simple hex fallback before color-mix for hero-tagline and scroll-cue-line
+
+Actually MDN says Safari 16.2+ - fine for 2024+
+
+Read lints
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/styles.css",
+    "/Users/st/Projects/capital-scroll-ad/index.html"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Run python design system as skill suggests - user attached skill - I could run it for validation but the implementation is done. Summarize for user.
+
+Note: animateHero still uses .hero-brand etc - class names unchanged
+
+Double-check responsive hero-tagline - mid dots might need thin spaces on very small screens - "Credit cards · Rewards · Insights" is fine
+
+Done
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what changed for a clearer **financial / institutional** hero (aligned with your design system’s light fintech base and Capital One tokens).
+
+### Wording (`index.html`)
+- **Tagline:** `Credit cards · Rewards · Insights` — reads as product pillars, not a generic slogan.
+- **Body:** Focus on **security + clarity** (“bank-grade security and tools designed for clarity”) instead of “modern financial app.”
+- **Trust:** `aria-label` → “Security and account protections”; third line → **`$0 fraud liability`** (common card-marketing language).
+- **Scroll cue:** **`Continue`** — short, neutral, less “marketing” than “Scroll to explore.”
+
+### Typography & hierarchy (`styles.css`)
+- **Brand:** Slightly larger scale (`clamp(2rem … 3.15rem)`), tighter tracking for a solid headline lockup.
+- **Tagline:** Slightly larger responsive size, **wider letter-spacing**, **navy-tinted** label (`color-mix` with `--co-navy`) — reads as institutional metadata, not loud gold.
+- **H1:** Slightly **smaller max** than before (`~4rem` cap) so it feels **bank-composed**, not startup-huge; spacing tuned under the tagline.
+- **Typed line + cursor:** **`--co-navy`** instead of product blue so it matches the wordmark.
+- **Body:** Slightly larger, **`--gray-2`**, wider line-height and max width for long-form readability.
+
+### Color & atmosphere
+- **Hero background:** Softer **linear + radial** wash using **navy/red tints** at low alpha (institutional, not playful blobs).
+- **Trust row:** **Top border** (`--border-subtle`), tighter gaps; **dots** use **navy** + light ring instead of gold (more “compliance / trust” than “promo”).
+- **Scroll line:** Gradient tied to **navy**, not gold.
+
+If you need **older browsers** without `color-mix()`, we can add one-line hex fallbacks before those declarations.
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants git add, commit, and push. I'll check git status first then stage, commit with a descriptive message, and push.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git status</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git status
+```
+
+```
+On branch feat/hero-catchy-update
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   index.html
+	modified:   script.js
+	modified:   styles.css
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Stage all, commit with message covering hero updates (Typed, brand colors, fintech polish), script changes, push branch feat/hero-catchy-update
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Hero refresh: brand colors, Typed one-word loop, fintech polish
+
+- Split Capital One wordmark; larger navy/red styling; institutional tagline and body copy
+- Typed.js rotating single words with periods; slower timing; fallback and a11y
+- Hero typography, trust row, scroll cue, and background wash tuned for finance UI
+- Specstory updates"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git add -A && git commit -m "Hero refresh: brand colors, Typed one-word loop, fintech polish
+
+- Split Capital One wordmark; larger navy/red styling; institutional tagline and body copy
+- Typed.js rotating single words with periods; slower timing; fallback and a11y
+- Hero typography, trust row, scroll cue, and background wash tuned for finance UI
+- Specstory updates"
+```
+
+```
+[feat/hero-catchy-update defddfc] Hero refresh: brand colors, Typed one-word loop, fintech polish
+ 5 files changed, 3525 insertions(+), 54 deletions(-)
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Push - may need -u origin feat/hero-catchy-update if first push
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git push -u origin feat/hero-catchy-update</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git push -u origin feat/hero-catchy-update
+```
+
+```
+branch 'feat/hero-catchy-update' set up to track 'origin/feat/hero-catchy-update'.
+remote: 
+remote: Create a pull request for 'feat/hero-catchy-update' on GitHub by visiting:        
+remote:      https://github.com/shindigira/capital-scroll-ad/pull/new/feat/hero-catchy-update        
+remote: 
+To https://github.com/shindigira/capital-scroll-ad.git
+ * [new branch]      feat/hero-catchy-update -&gt; feat/hero-catchy-update
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Done
+</details></think>
+
+_**Agent (default)**_
+
+
+All set.
+
+- **Staged** everything (`index.html`, `script.js`, `styles.css`, `.specstory/…`)
+- **Committed** `defddfc` on **`feat/hero-catchy-update`** — hero refresh (brand colors, Typed one-word loop, fintech polish) plus Specstory
+- **Pushed** and set upstream: **`origin/feat/hero-catchy-update`** (new branch on the remote)
+
+Open a PR from: https://github.com/shindigira/capital-scroll-ad/pull/new/feat/hero-catchy-update
+
+---
+
+_**User**_
+
+/ui-ux-pro-max 
+initial view needs a catchy update - update initial graphics
+
+use https://dribbble.com/shots/25500758-Hero-for-fintech-landing-page-web-design-3D-animation as inspiration
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants to update the initial hero view with catchier graphics inspired by a Dribbble shot about fintech landing page with 3D animation. I can't view the actual Dribbble shot content - the web search returned minimal content. I'll interpret typical fintech hero + 3D-style aesthetic from common patterns:
+
+- Often features: floating 3D-style cards, abstract mesh/sphere/orb, gradient mesh backgrounds, glass morphism panels, depth shadows, subtle animation
+- For a vanilla HTML/CSS/JS project without Three.js heavy assets, I can achieve "3D-inspired" feel with:
+  1. CSS 3D transforms on pseudo-elements or divs - floating "card" shapes
+  2. SVG abstract shapes with gradients
+  3. Multiple layered blurred orbs (already have some) - enhance with more depth
+  4. Optional subtle GSAP float animation on decorative elements
+  5. Mesh gradient or conic gradients for modern fintech look
+
+I'll read the current index.html hero and styles.css hero section fully, then add:
+- A decorative `.hero-visual` or `.hero-showcase` layer with abstract 3D-ish shapes (CSS only - isometric-looking rectangles, floating pill shapes)
+- Refined gradients similar to premium fintech dribbble shots (often deep blues, purples, soft glows - but this project uses Capital One light theme so I'll keep light base with dimensional floating elements in brand colors)
+
+Let me run the ui-ux-pro-max design system search for fintech hero 3d as the skill suggests, then implement.
+
+Actually I'll read frontend-design skill too - user attached ui-ux-pro-max. I'll run the python script from the correct path.
+</details></think>
+
+_**Agent (default)**_
+
+
+Reviewing the hero structure and applying a fintech-inspired visual layer with CSS “3D” depth and subtle motion—no heavy 3D engine. Fetching the Dribbble reference for cues and running a quick design-system search.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && python3 .cursor/skills/ui-ux-pro-max/scripts/search.py "fintech landing hero 3d depth glass gradient" --domain landing -n 8 2>/dev/null || true</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && python3 .cursor/skills/ui-ux-pro-max/scripts/search.py "fintech landing hero 3d depth glass gradient" --domain landing -n 8 2>/dev/null || true
+```
+
+```
+## UI Pro Max Search Results
+**Domain:** landing | **Query:** fintech landing hero 3d depth glass gradient
+**Source:** landing.csv | **Found:** 8 results
+
+### Result 1
+- **Pattern Name:** AI Personalization Landing
+- **Keywords:** ai, personalization, smart, recommendation, dynamic
+- **Section Order:** 1. Dynamic hero (personalized), 2. Relevant features, 3. Tailored testimonials, 4. Smart CTA
+- **Primary CTA Placement:** Context-aware placement based on user segment
+- **Color Strategy:** Adaptive based on user data. A/B test color variations per segment.
+- **Conversion Optimization:** 20%+ conversion with personalization. Requires analytics integration. Fallback for new users.
+
+### Result 2
+- **Pattern Name:** Horizontal Scroll Journey
+- **Keywords:** horizontal, scroll, journey, gallery, storytelling, panoramic
+- **Section Order:** 1. Intro (Vertical), 2. The Journey (Horizontal Track), 3. Detail Reveal, 4. Vertical Footer
+- **Primary CTA Placement:** Floating Sticky CTA or End of Horizontal Track
+- **Color Strategy:** Continuous palette transition. Chapter colors. Progress bar #000000.
+- **Conversion Optimization:** Immersive product discovery. High engagement. Keep navigation visible.
+28,Bento Grid Showcase,bento,  grid,  features,  modular,  apple-style,  showcase", 1. Hero, 2. Bento Grid (Key Features), 3. Detail Cards, 4. Tech Specs, 5. CTA, Floating Action Button or Bottom of Grid, Card backgrounds: #F5F5F...
+
+### Result 3
+- **Pattern Name:** Pricing-Focused Landing
+- **Keywords:** pricing, price, cost, plans, subscription
+- **Section Order:** 1. Hero (value proposition), 2. Pricing cards (3 tiers), 3. Feature comparison, 4. FAQ, 5. Final CTA
+- **Primary CTA Placement:** Each pricing card + Sticky CTA in nav + Bottom
+- **Color Strategy:** Popular plan highlighted (brand color border/bg). Free: grey. Enterprise: dark/premium.
+- **Conversion Optimization:** Annual discount 20-30%. Recommend mid-tier (most popular badge). Address objections in FAQ.
+
+### Result 4
+- **Pattern Name:** FAQ/Documentation Landing
+- **Keywords:** faq, documentation, help, support, questions
+- **Section Order:** 1. Hero with search bar, 2. Popular categories, 3. FAQ accordion, 4. Contact/support CTA
+- **Primary CTA Placement:** Search bar prominent + Contact CTA for unresolved questions
+- **Color Strategy:** Clean, high readability. Minimal color. Category icons in brand color. Success green for resolved.
+- **Conversion Optimization:** Reduce support tickets. Track search analytics. Show related articles. Contact escalation path.
+
+### Result 5
+- **Pattern Name:** Event/Conference Landing
+- **Keywords:** event, conference, meetup, registration, schedule
+- **Section Order:** 1. Hero (date/location/countdown), 2. Speakers grid, 3. Agenda/schedule, 4. Sponsors, 5. Register CTA
+- **Primary CTA Placement:** Register CTA sticky + After speakers + Bottom
+- **Color Strategy:** Urgency colors (countdown). Event branding. Speaker cards professional. Sponsor logos neutral.
+- **Conversion Optimization:** Early bird pricing with deadline. Social proof (past attendees). Speaker credibility. Multi-ticket discounts.
+
+### Result 6
+- **Pattern Name:** Community/Forum Landing
+- **Keywords:** community, forum, social, members, discussion
+- **Section Order:** 1. Hero (community value prop), 2. Popular topics/categories, 3. Active members showcase, 4. Join CTA
+- **Primary CTA Placement:** Join button prominent + After member showcase
+- **Color Strategy:** Warm, welcoming. Member photos add humanity. Topic badges in brand colors. Activity indicators green.
+- **Conversion Optimization:** Show active community (member count, posts today). Highlight benefits. Preview content. Easy onboarding.
+
+### Result 7
+- **Pattern Name:** App Store Style Landing
+- **Keywords:** app, mobile, download, store, install
+- **Section Order:** 1. Hero with device mockup, 2. Screenshots carousel, 3. Features with icons, 4. Reviews/ratings, 5. Download CTAs
+- **Primary CTA Placement:** Download buttons prominent (App Store + Play Store) throughout
+- **Color Strategy:** Dark/light matching app store feel. Star ratings in gold. Screenshots with device frames.
+- **Conversion Optimization:** Show real screenshots. Include ratings (4.5+ stars). QR code for mobile. Platform-specific CTAs.
+
+### Result 8
+- **Pattern Name:** Hero + Features + CTA
+- **Keywords:** hero, hero-centric, features, feature-rich, cta, call-to-action
+- **Section Order:** 1. Hero with headline/image, 2. Value prop, 3. Key features (3-5), 4. CTA section, 5. Footer
+- **Primary CTA Placement:** Hero (sticky) + Bottom
+- **Color Strategy:** Hero: Brand primary or vibrant. Features: Card bg #FAFAFA. CTA: Contrasting accent color
+- **Conversion Optimization:** Deep CTA placement. Use contrasting color (at least 7:1 contrast ratio). Sticky navbar CTA.
+
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I need to read the rest of hero CSS and script.js animateHero to add optional GSAP float on decorative elements with prefers-reduced-motion check.
+
+Plan:
+1. **HTML**: Add a `.hero-stage` wrapper or insert `.hero-scene` (aria-hidden) as first child after hero-glow containing:
+   - `.hero-orb` - large blurred gradient sphere (3D-ish depth)
+   - `.hero-float-card` x3 - isometric-style floating cards using CSS transform perspective
+   - `.hero-mesh` - SVG or CSS conic/mesh gradient ring
+
+2. **Layout**: Change hero to use `display: grid` or flex with two columns on large screens? The Dribbble ref is often asymmetric - text left, 3D graphic right. Current hero is centered stack. I could do:
+   - **Option A**: Keep centered text, add graphics as background layers behind text (z-index)
+   - **Option B**: Grid layout on lg: content | showcase
+
+For "catchy" fintech hero with 3D inspiration without breaking mobile-first:
+- Use **hero-inner** max-width container with text centered but add **absolute positioned** scene that fills hero, pointer-events-none, so graphics frame the copy
+
+3. **CSS** for floating cards:
+```css
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-3d-card {
+  position: absolute;
+  width: 120px;
+  height: 76px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.65));
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 25px 50px rgba(0,74,124,0.18), inset 0 1px 0 rgba(255,255,255,0.9);
+  transform: rotateY(-18deg) rotateX(8deg) translateZ(0);
+}
+```
+
+Use perspective on parent:
+```css
+.hero-scene {
+  perspective: 1200px;
+  perspective-origin: 60% 40%;
+}
+```
+
+4. **Orb**: Large circle with radial gradient co-navy to transparent, blur filter, positioned right side
+
+5. **GSAP**: In animateHero or new initHeroScene(), animate cards with yoyo float - only if !prefers-reduced-motion
+
+Let me read full hero css block to replace/edit cleanly
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I notice animateHero is missing hero-trust in the snippet - let me grep for hero-trust in animateHero
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "hero-trust|animateHero"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "hero-trust|animateHero",
+  "topFiles": [
+    {
+      "matchCount": 2,
+      "uri": "script.js"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 2
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The animateHero doesn't include hero-trust - that's ok. I need to:
+
+1. Update `.hero > *:not(.hero-glow)` to also exclude `.hero-scene` and children so scene stays z-index 0 behind content. Currently rule is `> *:not(.hero-glow)` - I'll change to exclude `.hero-glow` and `.hero-scene` - actually hero-scene should be z-index 0, content z-index 1+. The current rule sets all direct children except glow to z-index 1. So if I add hero-scene as sibling after glow, it would get z-index 1 unless excluded.
+
+I'll use:
+```css
+.hero-glow,
+.hero-scene {
+  position: absolute;
+  ...
+  z-index: 0;
+}
+.hero-content or wrap text in .hero-inner - 
+```
+
+Cleaner approach: **wrap all hero text in `.hero-inner`** so only glow and scene are absolute, inner is rel z-2.
+
+Actually simpler: add `.hero-scene { position: absolute; inset: 0; z-index: 0; }` and change selector:
+
+```css
+.hero > *:not(.hero-glow):not(.hero-scene) {
+  position: relative;
+  z-index: 2;
+}
+```
+
+2. HTML structure:
+```html
+<header class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-scene" aria-hidden="true">
+    <div class="hero-scene-perspective">
+      <div class="hero-orb hero-orb--primary"></div>
+      <div class="hero-orb hero-orb--accent"></div>
+      <svg class="hero-mesh-ring" ...>...</svg>
+      <div class="hero-float hero-float--1">
+        <span class="hero-float-chip"></span>
+        <span class="hero-float-label">Rewards</span>
+      </div>
+      ...
+    </p>
+```
+
+Actually keep float cards minimal without text (decorative) to avoid localization and clutter - use subtle card with gradient strip like a credit card edge.
+
+3. Float cards structure:
+```html
+<div class="hero-float hero-float--a" data-depth="1">
+  <div class="hero-float-face"></div>
+</div>
+```
+
+CSS:
+```css
+.hero-scene-perspective {
+  position: absolute;
+  inset: -10% -5% -15% -5%;
+  perspective: 1400px;
+  perspective-origin: 55% 35%;
+}
+.hero-float {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+.hero-float--a {
+  top: 18%;
+  right: 8%;
+  width: clamp(100px, 18vw, 160px);
+  height: clamp(64px, 10vw, 100px);
+  transform: rotateX(12deg) rotateY(-28deg) rotateZ(-2deg);
+}
+.hero-float-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fff 0%, rgba(255,255,255,0.88) 40%, rgba(0,74,124,0.06) 100%);
+  border: 1px solid rgba(255,255,255,0.95);
+  box-shadow: 
+    0 4px 6px rgba(0,74,124,0.06),
+    0 22px 44px rgba(0,74,124,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.98);
+  position: relative;
+  overflow: hidden;
+}
+.hero-float-face::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 38%;
+  background: linear-gradient(90deg, var(--co-navy), var(--co-red));
+  opacity: 0.9;
+}
+```
+
+4. Secondary smaller card different angle
+
+5. Torus/mesh - use SVG ring with gradient stroke for "3D fintech" tech look
+
+```html
+<svg class="hero-ring" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="hrg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004a7c" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#d03027" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0071e3" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <circle cx="200" cy="200" r="160" stroke="url(#hrg)" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="200" cy="200" r="120" stroke="url(#hrg)" stroke-width="1" opacity="0.4"/>
+</svg>
+```
+
+Position ring behind orbs.
+
+6. Orbs:
+```css
+.hero-orb--primary {
+  position: absolute;
+  width: clamp(280px, 45vw, 520px);
+  height: clamp(280px, 45vw, 520px);
+  border-radius: 50%;
+  right: -8%;
+  top: 5%;
+  background: radial-gradient(circle at 35% 35%, rgba(0,113,227,0.22), rgba(0,74,124,0.12) 45%, transparent 70%);
+  filter: blur(0px);
+}
+```
+Actually softer blur:
+```css
+filter: blur(40px);
+opacity: 0.85;
+```
+
+7. Mobile: hide or simplify scene - cards too busy on 375px. Use `@media (max-width: 640px)` reduce opacity of floats or hide side cards, keep orb.
+
+```css
+@media (max-width: 640px) {
+  .hero-float--b,
+  .hero-float--c { display: none; }
+  .hero-scene-perspective { perspective-origin: 50% 20%; }
+}
+```
+
+8. GSAP animateHero: add from `.hero-scene .hero-float` scale+opacity stagger OR add separate `initHeroFloat()` with gsap.to yoyo on each card
+
+```javascript
+function initHeroFloatMotion() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  gsap.utils.toArray(".hero-float").forEach((el, i) => {
+    gsap.to(el, {
+      y: "+=12",
+      rotationZ: "+=2",
+      duration: 2.8 + i * 0.4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      delay: i * 0.15,
+    });
+  });
+  gsap.to(".hero-orb--primary", {
+    scale: 1.06,
+    opacity: 0.95,
+    duration: 5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+}
+```
+
+Call from init() after animateHero or at end of animateHero timeline with call.
+
+9. Update animateHero to include `.from(".hero-scene", { opacity: 0 }, 0)` quick fade in - or scene visible from start
+
+Actually scene should fade in with hero - `tl.from(".hero-scene", { opacity: 0, duration: 1.2 }, 0)`
+
+10. Fix selector `.hero > *:not(.hero-glow)` in CSS - add `:not(.hero-scene)`
+
+11. index.html - check if typed.js script is still there
+</details></think>
+
+_**Agent (default)**_
+
+
+Adding a layered `.hero-scene` with soft orbs, an SVG gradient ring, and glassy “3D” card shapes inspired by premium fintech hero shots ([Dribbble reference](https://dribbble.com/shots/25500758-Hero-for-fintech-landing-page-web-design-3D-animation)). Wiring subtle GSAP float motion with reduced-motion respect.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Implement HTML insert after hero-glow the full scene.
+
+Update CSS - the block `.hero > *:not(.hero-glow)` needs to be `.hero > *:not(.hero-glow):not(.hero-scene)`
+
+Add all hero-scene styles + media queries
+
+Update script animateHero - add tl.from(".hero-scene", ...) at start position 0
+
+Add initHeroSceneMotion after timeline or in call
+
+Actually if hero-scene starts opacity 0 and fades in, the floats inside need to be visible when scene shows.
+
+Also include .from for hero-trust if it exists in file - grep index for hero-trust in animateHero - not there, skip.
+
+initHeroSceneMotion - call from init() right after animateHero() 
+
+Let me also add hero-trust to animateHero for polish - optional skip per user scope "initial graphics"
+
+I'll write the HTML for hero-scene with:
+- hero-scene-perspective wrapper
+- hero-orb--primary, hero-orb--accent  
+- svg hero-mesh
+- hero-float x3 with hero-float-slab (the card face)
+
+Structure:
+```html
+<div class="hero-scene" aria-hidden="true">
+  <div class="hero-scene-inner">
+    <svg class="hero-mesh" viewBox="0 0 600 600" ...>
+    <div class="hero-orb hero-orb--a"></div>
+    <div class="hero-orb hero-orb--b"></div>
+    <div class="hero-stack">
+      <div class="hero-card-3d hero-card-3d--back"></div>
+      <div class="hero-card-3d hero-card-3d--mid"></div>
+      <div class="hero-card-3d hero-card-3d--front"></div>
+    </div>
+  </div>
+</div>
+```
+
+Stack of 3 rotated cards like a deck - common 3D fintech look.
+
+```html
+<div class="hero-scene" aria-hidden="true">
+  <div class="hero-scene-inner">
+    <svg class="hero-mesh" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 800">
+      <defs>
+        <linearGradient id="heroMeshGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stop-color="#004a7c" stop-opacity="0.2"/>
+          <stop offset="45%" stop-color="#0071e3" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#d03027" stop-opacity="0.15"/>
+        </linearGradient>
+      </defs>
+      <circle cx="400" cy="400" r="280" fill="none" stroke="url(#heroMeshGrad)" stroke-width="1.2" opacity="0.55"/>
+      <circle cx="400" cy="400" r="210" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.8" opacity="0.4"/>
+      <circle cx="400" cy="400" r="340" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.6" opacity="0.25"/>
+    </svg>
+    <div class="hero-orb hero-orb--a"></div>
+    <div class="hero-orb hero-orb--b"></div>
+    <div class="hero-card-deck">
+      <div class="hero-card-3d hero-card-3d--1"></div>
+      <div class="hero-card-3d hero-card-3d--2"></div>
+      <div class="hero-card-3d hero-card-3d--3"></div>
+    </div>
+  </div>
+</div>
+```
+
+CSS positioning:
+- .hero-scene-inner { position: absolute; inset: 0; }
+- .hero-mesh { position: absolute; right: -5%; top: -10%; width: min(90vw, 720px); height: min(90vw, 720px); opacity: 0.9; pointer-events: none; }
+- .hero-orb--a { blur large, top right }
+- .hero-card-deck { position: absolute; right: 6%; top: 22%; width: 200px; height: 130px; transform-style: preserve-3d; perspective children }
+
+Actually card deck needs perspective on parent:
+```css
+.hero-card-deck {
+  position: absolute;
+  right: 8%;
+  top: 20%;
+  width: clamp(140px, 22vw, 220px);
+  height: clamp(90px, 14vw, 140px);
+  transform-style: preserve-3d;
+  transform: rotateX(14deg) rotateY(-32deg) rotateZ(-3deg);
+}
+.hero-card-3d {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  ...
+}
+.hero-card-3d--1 { transform: translateZ(-24px) translateY(8px); opacity: 0.75; }
+.hero-card-3d--2 { transform: translateZ(-12px) translateY(4px); opacity: 0.88; }
+.hero-card-3d--3 { transform: translateZ(0); }
+```
+
+Each card slightly different gradient on header strip.
+
+Add left-side smaller element - duplicate deck on left smaller for balance? Or single focal on right for asymmetric dribbble layout - on mobile center the mesh, shrink deck.
+
+```css
+@media (max-width: 900px) {
+  .hero-card-deck {
+    right: 50%;
+    transform: translateX(50%) rotateX(10deg) rotateY(-20deg);
+    top: 8%;
+    opacity: 0.55;
+  }
+}
+```
+
+On mobile putting deck at top might overlap title - reduce size and push behind:
+
+```css
+@media (max-width: 640px) {
+  .hero-card-deck { opacity: 0.35; top: 2%; transform: translateX(35%) scale(0.85) ... }
+  .hero-mesh { opacity: 0.5; }
+}
+```
+
+I'll implement.
+</details></think>
+
+_**Agent (default)**_
+
+
+Implementing the decorative scene and script updates.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Fix hero-mesh animation - rotating the whole SVG might look wrong - better animate transform rotate on a wrapper or use slow rotate on svg transform attribute. Actually rotating 360 on svg might spin the circles - could look like a dial - ok for "tech"
+
+Reduced motion already disables - good
+
+Add gsap initHeroSceneMotion and animateHero timeline include:
+- tl.from(".hero-scene", { opacity: 0, duration: 1 }, 0) 
+
+And call initHeroSceneMotion after animateHero in init - or at end of timeline with .call(initHeroSceneMotion)
+
+initHeroSceneMotion:
+```javascript
+function initHeroSceneMotion() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const deck = document.querySelector(".hero-card-deck");
+  if (!deck || typeof gsap === "undefined") return;
+  gsap.to(deck, {
+    y: "+=14",
+    rotationZ: 1.2,
+    duration: 3.2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+  gsap.to(".hero-orb--a", {
+    scale: 1.08,
+    opacity: 0.65,
+    duration: 5.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+  gsap.to(".hero-shard--one", {
+    y: "+=-10",
+    x: "+=6",
+    duration: 4,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+  gsap.to(".hero-shard--two", {
+    y: "+=12",
+    duration: 3.6,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    delay: 0.4,
+  });
+}
+```
+
+animateHero:
+```javascript
+function animateHero() {
+  const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  tl.from(".hero-scene", { opacity: 0, duration: 1.1 }, 0)
+    .from(".hero-brand", ...
+```
+
+Call initHeroSceneMotion at end:
+`.call(initHeroSceneMotion, [], ">")`
+
+Actually scene motion should start after scene visible - use .call(initHeroSceneMotion, [], ">-0.3") after first tween completes or at position 0.6
+
+I'll add call at end of timeline.
+
+Update prefers-reduced-motion block in CSS for hero-card - already have scroll-cue - add .hero-mesh
+
+Script edits
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Check if animateHero includes hero-trust - read full animateHero again
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+hero-trust is not in timeline - that's pre-existing. OK
+
+Fix: hero-mesh rotation - rotating entire SVG might cause performance issues - 28s is fine. On reduced motion disabled in CSS.
+
+Potential issue: hero-mesh-drift transform on svg - might need transform-origin center 400 400 - default for svg might be wrong. Add style transform-origin: center center or 50% 50%
+
+```css
+.hero-mesh {
+  transform-origin: 50% 50%;
+}
+```
+
+Also gsap to hero-orb--a applies scale - might conflict with filter blur - ok
+
+initHeroSceneMotion: gsap.to(".hero-orb--a" changes opacity - CSS has opacity 0.72 - tween overrides - ok
+
+Verify build/index.html - user might use build script - should update build when they run npm run build - I won't duplicate unless scripts copy - build copies from root
+
+Read lints
+
+Double-check HTML duplicate id heroMeshGrad - only one svg on page - ok
+
+Safari: mix-blend-mode on orb might look odd - acceptable
+
+Consider will-change on animated elements for perf - optional
+
+I'll add transform-origin to hero-mesh
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Add hero-trust to animate timeline - optional - user didn't ask - skip
+
+design-system MASTER.md - user skill suggested persist - optional one line update that hero has 3d-inspired scene - user said avoid editing md unless asked - skip
+
+Read lints
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/styles.css",
+    "/Users/st/Projects/capital-scroll-ad/script.js",
+    "/Users/st/Projects/capital-scroll-ad/index.html"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Provide summary with link to dribbble and note we can't replicate full WebGL 3D
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what was added, aligned with the **fintech hero + depth + motion** vibe of shots like [this Dribbble hero](https://dribbble.com/shots/25500758-Hero-for-fintech-landing-page-web-design-3D-animation) (without a full WebGL/Three.js stack).
+
+### What changed
+
+1. **`index.html` — `.hero-scene` (decorative only, `aria-hidden`)**  
+   - **SVG mesh rings** — concentric circles with a navy → blue → red gradient stroke (brand-aligned “tech” halo).  
+   - **Two soft orbs** — large cool blur + smaller warm blur for depth.  
+   - **Stacked “3D” cards** — three glassy panels with a **navy → red** band and chip strip, `transform-style: preserve-3d` + perspective (credit-card–like deck).  
+   - **Two glass “shards”** — smaller floating panels for extra layering.
+
+2. **`styles.css`**  
+   - Z-index: **scene `0`**, copy **`2`** (updated selector so `.hero-scene` isn’t forced above content).  
+   - **Slow ring rotation** (`hero-mesh-drift`, **28s**) — disabled under **`prefers-reduced-motion`**.  
+   - **Responsive tuning**: deck recenters / scales down on tablet; lighter on small phones so type stays readable.
+
+3. **`script.js`**  
+   - **`initHeroSceneMotion()`** — gentle GSAP **float** on the deck, orbs, and shards (also skipped when **`prefers-reduced-motion`**).  
+   - **`animateHero()`** — scene **fades in** with the hero; motion starts near the end of the intro timeline.
+
+### Notes
+- This is **CSS + SVG + GSAP** “3D-inspired” depth, not a real 3D asset pipeline like a full Dribbble 3D render.  
+- **`ui-ux-pro-max`** landing search was run for fintech/hero/gradient cues; layout follows your existing **Capital One** tokens (`--co-navy`, `--co-red`, `--blue`).
+
+Run `npm run build` when you want `build/index.html` to match.
+
+---
+
+_**User**_
+
+/ui-ux-pro-max  add more visual images in background - banking/creditcard related
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants to add more visual elements in the background of the hero section that are banking/credit card related. I should run the ui-ux-pro-max search briefly and then implement SVG-based decorative elements (no emoji, professional icons per the skill) - things like:
+- Credit card silhouette shapes
+- Chip pattern
+- Contactless wave
+- Lock/shield for security
+- Wallet or card stack outline
+- Minimal line-art payment icons
+
+I'll read the current hero-scene in index.html and styles.css to extend it with additional SVG graphics or CSS shapes, keeping aria-hidden and decorative.
+
+Strategy:
+1. Add a `.hero-motifs` layer with multiple inline SVGs positioned absolutely - card outline, smaller card faint, chip icon, maybe a subtle "contactless" arcs
+2. K</details></think>

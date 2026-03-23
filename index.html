@@ -33,6 +33,203 @@
 
     <header class="hero">
       <div class="hero-glow" aria-hidden="true"></div>
+      <!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) -->
+      <div class="hero-scene" aria-hidden="true">
+        <div class="hero-scene-inner">
+          <svg
+            class="hero-mesh"
+            viewBox="0 0 800 800"
+            preserveAspectRatio="xMidYMid slice"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient
+                id="heroMeshGrad"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#004a7c" stop-opacity="0.28" />
+                <stop offset="50%" stop-color="#0071e3" stop-opacity="0.14" />
+                <stop offset="100%" stop-color="#d03027" stop-opacity="0.2" />
+              </linearGradient>
+            </defs>
+            <circle
+              cx="400"
+              cy="400"
+              r="340"
+              fill="none"
+              stroke="url(#heroMeshGrad)"
+              stroke-width="0.75"
+              opacity="0.35"
+            />
+            <circle
+              cx="400"
+              cy="400"
+              r="275"
+              fill="none"
+              stroke="url(#heroMeshGrad)"
+              stroke-width="1.1"
+              opacity="0.5"
+            />
+            <circle
+              cx="400"
+              cy="400"
+              r="200"
+              fill="none"
+              stroke="url(#heroMeshGrad)"
+              stroke-width="0.9"
+              opacity="0.38"
+            />
+          </svg>
+          <div class="hero-orb hero-orb--a"></div>
+          <div class="hero-orb hero-orb--b"></div>
+          <div class="hero-card-deck">
+            <div class="hero-card-3d hero-card-3d--back"></div>
+            <div class="hero-card-3d hero-card-3d--mid"></div>
+            <div class="hero-card-3d hero-card-3d--front"></div>
+          </div>
+          <div class="hero-shard hero-shard--one"></div>
+          <div class="hero-shard hero-shard--two"></div>
+          <!-- Banking / card line-art + faint product silhouettes -->
+          <svg
+            class="hero-banking-svg"
+            viewBox="0 0 1600 900"
+            preserveAspectRatio="xMidYMid slice"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            focusable="false"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient
+                id="heroBankStroke"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stop-color="#004a7c" stop-opacity="0.42" />
+                <stop offset="55%" stop-color="#0071e3" stop-opacity="0.22" />
+                <stop offset="100%" stop-color="#d03027" stop-opacity="0.28" />
+              </linearGradient>
+              <linearGradient id="heroBankFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#004a7c" stop-opacity="0.06" />
+                <stop offset="100%" stop-color="#004a7c" stop-opacity="0.02" />
+              </linearGradient>
+            </defs>
+            <g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15">
+              <g transform="translate(48 498) rotate(-10)">
+                <rect
+                  width="308"
+                  height="194"
+                  x="0"
+                  y="0"
+                  rx="22"
+                  fill="url(#heroBankFill)"
+                />
+                <rect width="308" height="56" x="0" y="0" rx="22" fill="rgba(0,74,124,0.07)" stroke="none" />
+                <rect x="28" y="76" width="52" height="40" rx="7" fill="rgba(0,74,124,0.05)" stroke-width="1" />
+                <line x1="28" y1="88" x2="80" y2="88" stroke-width="0.7" opacity="0.5" />
+                <line x1="28" y1="96" x2="80" y2="96" stroke-width="0.7" opacity="0.5" />
+                <line x1="28" y1="104" x2="80" y2="104" stroke-width="0.7" opacity="0.5" />
+                <rect x="108" y="142" width="172" height="10" rx="4" fill="rgba(0,113,227,0.06)" stroke="none" />
+              </g>
+              <g transform="translate(1188 96) rotate(11)">
+                <rect
+                  width="220"
+                  height="138"
+                  rx="16"
+                  fill="url(#heroBankFill)"
+                />
+                <rect width="220" height="42" x="0" y="0" rx="16" fill="rgba(208,48,39,0.05)" stroke="none" />
+                <rect x="20" y="58" width="38" height="30" rx="5" fill="rgba(0,74,124,0.04)" stroke-width="0.9" />
+              </g>
+              <g transform="translate(560 712) rotate(-3)">
+                <rect
+                  width="380"
+                  height="118"
+                  rx="18"
+                  fill="url(#heroBankFill)"
+                />
+                <rect width="380" height="44" rx="18" fill="rgba(0,74,124,0.05)" stroke="none" />
+                <rect x="320" y="62" width="44" height="34" rx="6" fill="rgba(0,113,227,0.05)" stroke-width="1" />
+              </g>
+            </g>
+            <g
+              transform="translate(1272 388)"
+              stroke="url(#heroBankStroke)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              opacity="0.5"
+            >
+              <path d="M8 36 Q 28 8 56 36" />
+              <path d="M18 36 Q 30 18 48 36" />
+              <path d="M26 36 Q 34 26 42 36" />
+            </g>
+            <g transform="translate(96 152)" opacity="0.45" stroke="url(#heroBankStroke)" stroke-width="1.2">
+              <path
+                fill="url(#heroBankFill)"
+                stroke="url(#heroBankStroke)"
+                d="M52 10 L88 24 V58 Q72 78 52 86 Q32 78 16 58V24Z"
+              />
+              <path
+                fill="none"
+                d="M34 48 L46 60 L72 32"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </g>
+            <g
+              transform="translate(1008 604) rotate(8)"
+              stroke="url(#heroBankStroke)"
+              stroke-width="1"
+              opacity="0.48"
+            >
+              <rect x="0" y="0" width="48" height="38" rx="7" fill="rgba(255,255,255,0.35)" />
+              <line x1="8" y1="10" x2="40" y2="10" />
+              <line x1="8" y1="17" x2="40" y2="17" />
+              <line x1="8" y1="24" x2="40" y2="24" />
+              <line x1="8" y1="31" x2="28" y2="31" />
+            </g>
+            <g transform="translate(380 120)" opacity="0.35" stroke="url(#heroBankStroke)" stroke-width="1">
+              <circle cx="0" cy="0" r="3" fill="rgba(0,74,124,0.25)" stroke="none" />
+              <circle cx="28" cy="0" r="3" fill="rgba(0,74,124,0.2)" stroke="none" />
+              <circle cx="56" cy="0" r="3" fill="rgba(0,74,124,0.15)" stroke="none" />
+              <path d="M0 16 H56" stroke-linecap="round" />
+              <path d="M0 26 H40" stroke-linecap="round" opacity="0.7" />
+            </g>
+          </svg>
+          <div class="hero-product-ghosts" aria-hidden="true">
+            <img
+              src="cards/platinum-removebg-preview.png"
+              alt=""
+              class="hero-ghost-card hero-ghost-card--a"
+              width="320"
+              height="202"
+              decoding="async"
+            />
+            <img
+              src="cards/venture-removebg-preview.png"
+              alt=""
+              class="hero-ghost-card hero-ghost-card--b"
+              width="320"
+              height="202"
+              decoding="async"
+            />
+            <img
+              src="cards/quicksilver-removebg-preview.png"
+              alt=""
+              class="hero-ghost-card hero-ghost-card--c"
+              width="320"
+              height="202"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
       <p class="hero-brand">
         <span class="hero-brand--capital">Capital</span>
         <span class="hero-brand--one">One</span>

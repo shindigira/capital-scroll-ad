@@ -185,6 +185,45 @@ const HERO_TYPED_STRINGS = [
 	"Empowering.",
 ];
 
+function initHeroSceneMotion() {
+	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+	const deck = document.querySelector(".hero-card-deck");
+	if (!deck || typeof gsap === "undefined") return;
+
+	gsap.to(deck, {
+		y: "+=14",
+		rotationZ: 1.2,
+		duration: 3.2,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-orb--a", {
+		scale: 1.08,
+		opacity: 0.62,
+		duration: 5.5,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-shard--one", {
+		y: "+=-10",
+		x: "+=6",
+		duration: 4,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-shard--two", {
+		y: "+=12",
+		duration: 3.6,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+		delay: 0.35,
+	});
+}
+
 function initHeroTyped() {
 	const el = document.getElementById("hero-typed");
 	if (!el) return;
@@ -217,7 +256,8 @@ function initHeroTyped() {
 
 function animateHero() {
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-	tl.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 })
+	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
+		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
 		.from(
 			".hero-tagline",
 			{ y: 16, opacity: 0, duration: 0.55 },
@@ -231,7 +271,8 @@ function animateHero() {
 			".scroll-cue-line",
 			{ scaleY: 0, duration: 0.8, ease: "power2.inOut" },
 			"-=0.4",
-		);
+		)
+		.call(initHeroSceneMotion, [], ">-0.2");
 }
 
 /* ── stat count-up ── */
