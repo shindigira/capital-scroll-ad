@@ -18632,3 +18632,456 @@ Finished.
 - **Pushed** to `origin/feat/hero-catchy-update`.
 
 **Left unstaged:** `.cursor/.../__pycache__/*.pyc`. Say if you want those ignored via `.gitignore` or reverted.
+
+---
+
+_**User**_
+
+creating a PR with last 5 commits, give me PR descrpition message
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants a PR description for the last 5 commits on their branch. I should run git log to see what those commits contain and synthesize a good PR description.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git log -5 --oneline && echo "---" && git log -5 --format="%h %s%n%b---"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git log -5 --oneline && echo "---" && git log -5 --format="%h %s%n%b---"
+```
+
+```
+90a4cca specstory, ui-ux-pro skill update
+00f5d03 Update Specstory history and statistics
+a6a64cc Nav: official Capital One SVG logo; favicon and touch icon
+bcae2fc Hero: fintech 3D scene, banking SVG motifs, ghost card watermarks
+defddfc Hero refresh: brand colors, Typed one-word loop, fintech polish
+---
+90a4cca specstory, ui-ux-pro skill update
+---
+00f5d03 Update Specstory history and statistics
+---
+a6a64cc Nav: official Capital One SVG logo; favicon and touch icon
+- Replace navbar PNG with inline vector wordmark and swoosh
+- Add favicon.svg and apple-touch-icon.png; copy in build script
+- Hero brand and stylesheet updates as staged
+---
+bcae2fc Hero: fintech 3D scene, banking SVG motifs, ghost card watermarks
+- Add hero-scene mesh, orbs, stacked card deck, shards, GSAP float motion
+- Banking SVG: card outlines, chip, contactless, shield, statement hints
+- Subtle product PNG watermarks from cards/; responsive opacity
+- Specstory updates
+---
+defddfc Hero refresh: brand colors, Typed one-word loop, fintech polish
+- Split Capital One wordmark; larger navy/red styling; institutional tagline and body copy
+- Typed.js rotating single words with periods; slower timing; fallback and a11y
+- Hero typography, trust row, scroll cue, and background wash tuned for finance UI
+- Specstory updates
+---
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user has a different latest commit than what I pushed (90a4cca) - they've added more locally. I'll write PR title + description covering these 5 commits as a cohesive feature branch story.
+
+PR structure:
+- Title suggestion
+- Summary
+- What's included (bullets by theme)
+- Technical notes (build, a11y)
+- Optional testing checklist
+
+No AI attribution in PR per project rules - the description is from me helping the user draft it, they paste it.
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s a PR title and description you can paste (covers the last **5** commits on `feat/hero-catchy-update`):
+
+---
+
+## Title
+**feat: hero & brand refresh — fintech visuals, SVG nav logo, favicons**
+
+---
+
+## Description
+
+### Summary
+Refines the landing **hero** for a more **financial / fintech** feel, adds a **layered decorative scene** (mesh, depth, motion), strengthens **brand** presentation, swaps the **navbar** for the **inline Capital One SVG** wordmark + swoosh, and ships **favicon / Apple touch icon** support in the build.
+
+### What’s in this PR
+- **Hero copy & hierarchy** — Institutional tagline and body; trust row and scroll cue tweaks; background wash aligned with brand tones.
+- **Typed headline** — Single-word rotating lines with periods, slower timing, fallback + reduced-motion handling; `aria-label` on the `<h1>`.
+- **Hero visuals** — `hero-scene`: gradient mesh, soft orbs, stacked “3D” card deck, glass shards; **GSAP** float motion (skipped when `prefers-reduced-motion`).
+- **Banking motifs** — Full-bleed SVG line art (cards, chip, contactless, shield, etc.) plus very light **product card** watermarks from `cards/`, with responsive opacity.
+- **Brand lockup** — Hero uses the **graphical logo** asset; navbar uses the **official-style inline SVG** (navy `#013d5b`, red `#cc2427`) instead of PNG.
+- **Favicons** — `favicon.svg`, `apple-touch-icon.png`, `<link>` tags in `index.html`, and **`scripts/build.js`** updated to copy them.
+- **Tooling / meta** — Specstory (and related Cursor skill) updates in recent commits.
+
+### Build / deploy
+Run **`npm run build`** so `build/` includes the latest `index.html`, icons, and asset list.
+
+### Notes
+- Decorative hero layers are **`aria-hidden`**; meaningful text stays in headings / labels for accessibility.
+- **`prefers-reduced-motion`** disables mesh spin and GSAP scene motion where applicable.
+
+---
+
+Adjust the title if your default branch naming or ticket convention differs (e.g. prepend `JIRA-123:`).
+
+---
+
+_**User**_
+
+in markdown format
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants the PR description I provided earlier in markdown format - they may want it as a clean markdown document they can copy. I'll output the same content formatted clearly as markdown (it was already mostly markdown but I'll make it a single cohesive block).
+</details></think>
+
+_**Agent (default)**_
+
+
+```markdown
+# feat: hero & brand refresh — fintech visuals, SVG nav logo, favicons
+
+## Summary
+
+Refines the landing **hero** for a more financial / fintech feel, adds a layered decorative scene (mesh, depth, motion), strengthens brand presentation, swaps the navbar for the **inline Capital One SVG** wordmark + swoosh, and ships **favicon / Apple touch icon** support in the build.
+
+## What’s included
+
+- **Hero copy & hierarchy** — Institutional tagline and body; trust row and scroll cue tweaks; background wash aligned with brand tones.
+- **Typed headline** — Single-word rotating lines with periods, slower timing, fallback + reduced-motion handling; `aria-label` on the `<h1>`.
+- **Hero visuals** — `hero-scene`: gradient mesh, soft orbs, stacked “3D” card deck, glass shards; **GSAP** float motion (skipped when `prefers-reduced-motion`).
+- **Banking motifs** — Full-bleed SVG line art (cards, chip, contactless, shield, etc.) plus very light product card watermarks from `cards/`, with responsive opacity.
+- **Brand lockup** — Hero uses the graphical logo asset; navbar uses the official-style inline SVG (navy `#013d5b`, red `#cc2427`) instead of PNG.
+- **Favicons** — `favicon.svg`, `apple-touch-icon.png`, `<link>` tags in `index.html`, and `scripts/build.js` updated to copy them.
+- **Tooling / meta** — Specstory and related Cursor skill updates in recent commits.
+
+## Build / deploy
+
+Run `npm run build` so `build/` includes the latest `index.html`, icons, and asset list.
+
+## Notes
+
+- Decorative hero layers use `aria-hidden`; meaningful text stays in headings / labels for accessibility.
+- `prefers-reduced-motion` disables mesh spin and GSAP scene motion where applicable.
+```
+
+---
+
+_**User**_
+
+/ui-ux-pro-max  Continue -- looks like a user can interact with this @index.html:320-323 
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user is concerned that the scroll cue (lines 320-323) looks interactive - like a button or link - when it's actually decorative (aria-hidden="true"). Per ui-ux-pro-max: users should get clear feedback on interactive elements, but non-interactive things shouldn't look clickable.
+
+I need to:
+1. Read current scroll-cue CSS
+2. Make it visually read as "hint" not "control" - e.g. lower contrast, softer typography, maybe add `cursor: default` explicitly, remove any hover states that suggest clickability, perhaps use a subtler label style
+3. Optionally add `role="presentation"` or keep aria-hidden - it's already not focusable as a div
+
+I'll read the styles for scroll-cue and related
+</details></think>
+
+_**Agent (default)**_
+
+
+Reviewing scroll-cue styles and adjusting them so it reads as a passive hint, not an interactive control.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "scroll-cue"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "scroll-cue",
+  "topFiles": [
+    {
+      "matchCount": 3,
+      "uri": "styles.css"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 3
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Read full scroll-cue block in styles.css
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The scroll-cue looks like a CTA because:
+- font-weight: 600 + uppercase + letter-spacing reads like pill/button label ("CONTINUE")
+- Bold uppercase microcopy is often used for buttons
+
+Fixes:
+1. Change wording from "Continue" to something less imperative/button-like: "Scroll" or "More below" or "Next section" in sentence case - ui-ux: passive discovery hint
+2. CSS: 
+   - `cursor: default` on .scroll-cue
+   - `pointer-events: none` - ensures no accidental interaction expectation AND prevents any ghost clicks (though div is not clickable anyway)
+   - `user-select: none`
+   - **Remove button-like styling**: use `font-weight: 500` or 400, `text-transform: none`, normal sentence case in HTML
+   - Lighter color - gray-3 or color-mix to look more "metadata" 
+   - Maybe smaller italic? Could feel editorial. Simple: "More below" lowercase, font-weight 400, letter-spacing normal, color gray-1 at 0.55 opacity
+
+3. Add `role="note"` or keep decorative - actually it's aria-hidden so assistive tech ignores it. For sighted users only.
+
+4. Optional: add tiny chevron SVG instead of pill styling - lucide style minimal
+
+I'll update HTML text to: `More below` or `Scroll for more` - softer
+
+And CSS:
+```css
+.scroll-cue {
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+  color: color-mix(in srgb, var(--gray-2) 55%, transparent); /* or var(--gray-1) with opacity */
+  font-size: 0.6875rem;
+  font-weight: 450; /* or 500 */
+  letter-spacing: 0.06em; /* less button-like */
+  text-transform: none;
+  font-variant: normal;
+}
+```
+
+Actually font-weight 450 might not exist - use 400
+
+Text: "Scroll for more" - sentence case, friendly hint
+
+Or keep uppercase but ultra-light: opacity 0.45 - might be too faint
+
+I'll go with:
+- HTML: `<span class="scroll-cue-label">Scroll for more</span>` 
+- CSS: font-weight 400, text-transform none, letter-spacing 0.04em, color with opacity, cursor default, pointer-events none, user-select none
+
+Animating line subtly is ok - already no hover
+
+remove any suggestion of button - no border, no background - there isn't one, good
+
+Update animateHero if it targets .scroll-cue - still works
+</details></think>
+
+_**Agent (default)**_
+
+
+Softening copy and styles: uppercase “Continue” reads like a button. Making it a passive, non-interactive hint with `pointer-events: none`, `cursor: default`, and lighter typography.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+GSAP animateHero targets .scroll-cue and .scroll-cue-line - still valid. Read lints
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/styles.css",
+    "/Users/st/Projects/capital-scroll-ad/index.html"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Brief summary - matches ui-ux-pro-max: don't look clickable, no pointer, passive
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what changed, aligned with **ui-ux-pro-max** (controls should look clickable; passive hints should not).
+
+### Why it felt clickable
+- **“CONTINUE”** in **uppercase + tight tracking + semibold** reads like a **secondary CTA**, similar to your nav pill, even though it’s only a `<div>`.
+
+### Updates
+1. **Copy** — **`Scroll for more`** in **sentence case** so it reads as guidance, not a command.
+2. **`.scroll-cue-label`** — **`font-weight: 400`**, normal case, looser tracking, **muted** `gray-1` at **0.55 opacity** so it sits in the “helper text” tier, not the “button label” tier.
+3. **Non-interactive affordances** — **`pointer-events: none`**, **`cursor: default`**, **`user-select: none`** on `.scroll-cue` so it doesn’t feel hoverable/clickable and can’t steal clicks.
+4. **Line** — Slightly shorter, **lighter** gradient/opacity so it stays a **decorative cue**, not a strong UI bar.
+
+It stays **`aria-hidden="true"`** because it’s decorative for screen readers; real structure is still the heading + main content below.

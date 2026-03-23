@@ -629,24 +629,33 @@ img {
   flex-shrink: 0;
 }
 
+/* Passive wayfinding — not a control (avoid button-like uppercase + bold) */
 .scroll-cue {
   margin-top: clamp(2.5rem, 5vh, 3.25rem);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
-  color: var(--gray-2);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  gap: 0.55rem;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+
+.scroll-cue-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--gray-1);
+  opacity: 0.55;
 }
 
 .scroll-cue-line {
   width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--co-navy) 55%, transparent), transparent);
+  height: 36px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--co-navy) 35%, transparent), transparent);
   transform-origin: top;
+  opacity: 0.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
