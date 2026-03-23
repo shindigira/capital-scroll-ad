@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="favCard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d03027" />
+      <stop offset="32%" stop-color="#d03027" />
+      <stop offset="32%" stop-color="#004a7c" />
+      <stop offset="100%" stop-color="#003a63" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#favCard)" />
+  <rect x="5" y="18" width="12" height="8" rx="1.5" fill="rgba(255,255,255,0.92)" />
+  <rect x="20" y="21" width="7" height="2" rx="1" fill="rgba(255,255,255,0.35)" />
+</svg>

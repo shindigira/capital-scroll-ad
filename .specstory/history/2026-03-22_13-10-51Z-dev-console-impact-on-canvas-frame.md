@@ -16603,4 +16603,1610 @@ I'll read the current hero-scene in index.html and styles.css to extend it with 
 
 Strategy:
 1. Add a `.hero-motifs` layer with multiple inline SVGs positioned absolutely - card outline, smaller card faint, chip icon, maybe a subtle "contactless" arcs
-2. K</details></think>
+2. Keep performance - simple paths, low opacity, no heavy images unless we use existing assets from cards/ folder
+
+The project has `cards/` folder with PNG images - could use very faded img elements with opacity 0.08 - might look nice but could be heavy. Better: pure SVG line art for consistency.
+
+I'll add:
+- Large faint credit card outline (rounded rect + stripe)
+- Second smaller rotated card ghost
+- Contactless payment symbol (4 curved lines) - common banking UI
+- Maybe EUR-style chip rectangle pattern in SVG
+
+All in banking aesthetic with co-navy at low opacity.
+
+Let me read current hero scene HTML to append new elements
+</details></think>
+
+_**Agent (default)**_
+
+
+Adding subtle banking/credit-card SVG motifs to the hero background. Checking the hero scene structure.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll add a new wrapper `.hero-banking-motifs` inside `.hero-scene-inner` with several inline SVGs:
+
+1. **Large ghost card outline** - positioned left bottom - rounded rect, mag stripe, chip rect
+2. **Contactless symbol** - 4 arcs
+3. **Small lock + card** combo or shield - banking security
+4. **Chip detail** - grid pattern in a rounded rect
+5. **Horizontal card silhouette** - very faint top right
+
+Use unique gradient IDs per SVG or shared defs in one SVG - multiple SVGs need unique IDs to avoid clashes. I'll use one consolidated SVG with multiple groups positioned with transform, OR separate SVGs each with unique ids like heroMotifGradA, heroMotifGradB.
+
+Actually one `<svg class="hero-motifs-sheet" viewBox="0 0 1200 800">` with all elements as separate groups with transform translate - easier to position with CSS on the single svg (width 100%, height auto, absolute positioned).
+
+Or multiple `.hero-motif` divs each containing small svg.
+
+I'll use one wrapper:
+```html
+<div class="hero-banking-motifs">
+  <svg class="hero-motif hero-motif--card-outline" ...>...</svg>
+  <svg class="hero-motif hero-motif--nfc" ...>...</svg>
+  ...
+</div>
+```
+
+Each svg self-contained with defs inside for no id collision iferns if I use heroMotifChip1 etc in each file - still need unique across document. Safer: use single parent SVG with `<defs>` once and groups:
+
+```html
+<svg class="hero-banking-svg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="hmStroke" .../>
+  </defs>
+  <g transform="translate(80, 480) rotate(-8)"> card outline </g>
+  <g transform="translate(1180, 120)"> nfc </g>
+  ...
+</svg>
+```
+
+Single SVG, one set of defs id="hmStroke" "hmFill".
+
+CSS:
+```css
+.hero-banking-motifs {
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.hero-banking-svg {
+  width: 100%;
+  height: 100%;
+}
+```
+
+Stroke color rgba(0, 74, 124, 0.22) etc.
+
+Content for groups:
+1. Card: rounded rect rx=24, w=280 h=176, stroke only. Inner line for mag stripe (thick rect). Small rounded rect for chip at 32,48.
+
+2. NFC: 4 quarter-circle arcs radiating from corner - standard tap to pay
+
+3. Shield with check or lock - simple path
+
+4. Second smaller card outline rotate 12deg translate different
+
+5. Bank building column lines? optional - might clutter - skip
+
+6. Dollar or generic "points" - user said banking/card - chip + nfc + cards enough
+
+7. Swipe/card insert slot line - subtle horizontal.slot
+
+I'll implement the single large SVG with viewBox 0 0 1600 900, elements positioned in artboard space.
+
+Actually SVG scaling: if viewBox covers full artboard and we position groups at coordinates, the svg stretch to fill .hero-banking-motifs which is inset 0 - good.
+
+
+
+```html
+<svg class="hero-banking-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="hmLine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#004a7c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0071e3" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <!-- ghost card lower left -->
+  <g transform="translate(40, 520) rotate(-11)" opacity="0.5">
+    <rect x="0" y="0" width="300" height="188" rx="22" fill="rgba(255,255,255,0.35)" stroke="url(#hmLine)" stroke-width="1.2"/>
+    <rect x="0" y="0" width="300" height="52" rx="22" fill="url(#hmLine)" opacity="0.15"/> <!-- wait top stripe - use simple rect with clip or separate rounded only top -->
+```
+
+For rounded top only stripe use path or rect y=0 height=50 with rx=22 on card - the stripe could be rect 0,0 300 48 with fill navy low opacity
+
+Let me simplify:
+- Card outline: rect with rx 20 stroke #004a7c at 0.18 opacity
+- Stripe: rect full width top 28% height, fill rgb(0,74,124) 0.08
+
+I'll add to HTML after hero-mesh opening... better after shards before closing hero-scene-inner
+
+```html
+<svg class="hero-banking-svg" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="heroBankStroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#004a7c" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0071e3" stop-opacity="0.22"/>
+    </linearGradient>
+    <linearGradient id="heroBankSoft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#004a7c" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#d03027" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  ...
+</svg>
+```
+
+
+
+Groups:
+1. translate(60,500) rotate(-9) - big card
+2. translate(1240, 80) rotate(8) - smaller card
+3. translate(1320, 420) - NFC waves
+4. translate(100, 180) - shield path
+5. translate(620, 720) - horizontal mini card (landscape)
+6. translate(1050, 620) - EMV chip detail (rounded rect + grid lines)
+
+Optional watermark pattern of tiny card icons - might be too busy
+
+Add CSS .hero-banking-svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.55; }
+
+initHeroSceneMotion - optionally animate banking svg elements - subtle parallax - could use gsap to .hero-banking-svg yoyo - skip for scope, or add slow float on whole svg opacity pulse - keep static for perf
+
+Reduced motion - no animation on banking layer
+
+Also add 2 faint `<img>` with cards from project? User asked "visual images" - could use product PNGs with opacity 0.06 and mix-blend - heavy load. Prefer SVG. If they want photos, we could add:
+```html
+<img src="cards/platinum-removebg-preview.png" alt="" class="hero-watermark-img" aria-hidden="true" />
+```
+with css opacity 0.04 blur 2px - adds "more visual". I'll add one decorative product ghost image very subtle + SVG motifs.
+
+Actually user said "more visual images" - I'll add:
+1. Rich SVG layer (primary)
+2. One or two absolutely positioned img from cards/ with very low opacity, pointer-events none, aria-hidden - "banking related"
+
+Check cards path: cards/platinum-removebg-preview.png etc from earlier conversation
+
+I'll add:
+```html
+<div class="hero-product-ghosts" aria-hidden="true">
+  <img src="cards/quicksilver-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--a" />
+  <img src="cards/venture-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--b" />
+</div>
+```
+
+CSS:
+```css
+.hero-product-ghosts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-ghost-card {
+  position: absolute;
+  opacity: 0.035;
+  filter: grayscale(0.3) blur(1px);
+  mix-blend-mode: multiply;
+  max-width: min(42vw, 320px);
+  height: auto;
+}
+.hero-ghost-card--a { left: -6%; bottom: 8%; transform: rotate(-18deg); }
+.hero-ghost-card--b { right: -4%; top: 38%; transform: rotate(14deg) scale(0.85); }
+```
+
+Very low opacity - if too invisible bump to 0.055
+
+Let me implement SVG + optional ghost images together.
+
+Unique id: heroBankStroke - only one svg
+
+For multi-SVG would duplicate ids - use single svg.
+
+Implement chip as nested rects:
+```svg
+<g transform="translate(1180, 560) rotate(12)">
+  <rect width="44" height="34" rx="6" stroke="..." />
+  <line x1="10" y1="8" x2="34" y2="8" stroke="..." stroke-width="0.8"/>
+  ...
+</g>
+```
+
+NFC icon (4 arcs):
+```svg
+<g transform="translate(1280, 380)">
+  <path d="M 0 24 Q 24 0 48 24" stroke="currentColor" />
+  ... simplified: 4 concentric quarter arcs
+</g>
+```
+
+Standard contactless: paths like M30,30 m0,-20 a20,20 0 1,1 0,40 (approximate)
+
+Simpler NFC: use 3 curved paths radiating from bottom-right.
+
+I'll use Wikipedia-style tap icon - 3 nested arcs from point.
+
+```svg
+<g transform="translate(1260, 340)" stroke="url(#heroBankStroke)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55">
+  <path d="M4 28 Q 16 4 36 28" />
+  <path d="M12 28 Q 20 12 32 28" />
+</g>
+```
+That's 2 arcs - add third smaller
+
+Shield with check:
+```svg
+<path d="M 40 8 L 72 20 V 52 Q 56 70 40 76 Q 24 70 8 52 V 20 Z" />
+```
+
+I'll insert the HTML block and full CSS.
+
+Also extend initHeroSceneMotion for optional very subtle opacity on .hero-banking-svg - skip
+
+Mobile: hide or reduce ghost images
+```css
+@media (max-width: 540px) {
+  .hero-ghost-card { opacity: 0.02; }
+}
+</details></think>
+
+_**Agent (default)**_
+
+
+Adding a layered SVG motif sheet (cards, chip, contactless, shield) plus very subtle product-card watermarks from your `cards/` assets.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Fix SVG - I have invalid nested rects with duplicate stroke on first card group. Let me simplify the SVG - the first group has `<rect ... rx="22" stroke="none" />` overlapping - clean up.
+
+Also check: first big card - the stripe rect has fill but I drew two rects for top - simplify.
+
+Actually there might be SVG errors - `<rect width="308" height="56" x="0" y="0" rx="22" stroke="none" />` after one with fill - redundant.
+
+Let me read the inserted SVG and fix any issues. Also shield path - might need stroke on shield outline.
+
+I'll add CSS for hero-banking-svg and hero-product-ghosts
+
+Fix SVG groups:
+1. Big card - single rect stroke, inner stripe with path or clip
+
+Also img dimensions - PNG might not be 320x202 - width/height on img is hint, ok
+
+Let me add styles and fix svg if broken -validator: g transform="translate(48 498)" needs comma in some parsers - SVG allows space
+
+heroBankStroke used in path stroke for logo check - ok
+
+Shield: path has fill and stroke - need stroke on shield outline
+
+I'll add stroke to shield path: duplicate path with fill only and stroke path
+
+Let me read lints and validate svg structure - the line elements inside g need stroke inherited - ok
+
+Fix redundant rect in first card group - remove duplicate
+
+Also `alt=""` for decorative images is correct; aria-hidden on parent better - add aria-hidden to hero-product-ghosts
+
+I'll wrap or add aria-hidden to div.hero-product-ghosts - already in user html it doesn't have it - add class and aria-hidden="true" on div
+
+StrReplace to add aria-hidden on product ghosts div
+
+CSsS block before .hero-brand or after hero-shard media queries
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Fix first card SVG - the outer rect needs stroke - currently group has stroke on children - the big rect might need explicit stroke
+
+Looking at the group:
+```xml
+<g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15">
+  <g transform="translate(48 498) rotate(-10)">
+    <rect width="308" height="194" ... fill="url(#heroBankFill)" />
+```
+
+The rect doesn't have stroke attribute - inherits stroke url - good
+
+Chip lines use stroke-width 0.7 - good
+
+Second card: `<rect width="220" height="42" ... fill="rgba(208,48,39,0.05)" stroke="none" />` - good
+
+Landscape card at bottom: has fill rects - ok
+
+NFC paths - no fill - stroke only - good
+
+Shield: path with fill - might need stroke on outer shield - add stroke to first path
+
+```xml
+<path fill="url(#heroBankFill)" stroke="url(#heroBankStroke)" d="M52 10..."/>
+```
+
+Let me update shield path to include stroke
+
+Chip emv group - rect with stroke - good
+
+Bank statement mini icon at translate(380 120) - circles and lines - ok
+
+Verify build script copies cards folder - yes from earlier
+
+Read HTML for any malformed SVG - the g for first card - inner rect chip has stroke-width="1" - inherits stroke color - ok
+
+Run read_lints
+
+Optional: fix shield path coordinates if broken visually - user can tweak
+
+I notice potential issue: `<line>` elements in chip need x2 y2 - I have x1="28" y1="88" x2="80" y2="88" - ok
+
+script.js build/index - no change needed
+
+Double-check img paths exist
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "" • **4** results in **1** directory</summary>
+
+Directory: **/Users/st/Projects/capital-scroll-ad/cards** (4 files)
+
+| File |
+|------|
+| `savor-removebg-preview.png` |
+| `venture-removebg-preview.png` |
+| `platinum-removebg-preview.png` |
+| `quicksilver-removebg-preview.png` |
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search"><details>
+<summary>Tool use: **glob_file_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+PNG files exist. Read lints
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/index.html",
+    "/Users/st/Projects/capital-scroll-ad/styles.css"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Summarize - ui-ux-pro-max: used SVG icons not emoji, decorative empty alt, aria-hidden, low contrast watermarks, reduced opacity on mobile
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what was added, in line with **ui-ux-pro-max** (no emoji icons, decorative assets marked `aria-hidden`, contrast kept subtle so body copy stays primary).
+
+### 1. **`.hero-banking-svg` — banking / card line art**
+Single full-bleed SVG (brand gradient stroke) with:
+- **Large tilted card** — outline, tinted mag-stripe band, **EMV-style chip** with horizontal lines, faint “number” bar.
+- **Smaller tilted card** — top-right, stripe + chip block.
+- **Wide horizontal card** — lower area, landscape “wallet / dashboard” feel, corner chip.
+- **Contactless arcs** — three nested curves (tap-to-pay cue).
+- **Shield + check** — trust / protection cue.
+- **EMV chip grid** — small detailed chip rectangle with lines.
+- **Minimal “statement” dots + lines** — subtle ledger / activity hint.
+
+### 2. **`.hero-product-ghosts` — real card art, ultra-light**
+Three PNGs from your **`cards/`** folder (`platinum`, `venture`, `quicksilver`):
+- **Very low opacity** (~0.03–0.045), slight **blur** and **multiply** so they read as texture, not competing UI.
+- Placed **left / right / top** with rotation for depth.
+- **`alt=""`**, parent **`aria-hidden="true"`** (purely decorative).
+
+### 3. **CSS**
+- `.hero-banking-svg` — full scene, opacity ~0.62 (drops on tablet / phone).
+- `.hero-ghost-card` — responsive width, `user-select: none`, toned down further under **540px** so small screens stay clean.
+
+Together with your existing mesh, orbs, and 3D deck, the hero background should feel **more explicitly banking / card-related** without hurting readability. If you want the photos a touch stronger, raise `.hero-ghost-card` opacity slightly (e.g. `0.06`).
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants to git add, commit, and push. I'll check git status first, then stage all, commit with a descriptive message, and push.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git status</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git status
+```
+
+```
+On branch feat/hero-catchy-update
+Your branch is up to date with 'origin/feat/hero-catchy-update'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/core.cpython-311.pyc
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-311.pyc
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   index.html
+	modified:   script.js
+	modified:   styles.css
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I should NOT commit __pycache__ files - they're typically gitignored. Let me check .gitignore - if pycache is in gitignore they wouldn't show as modified unless they were tracked. They're showing as modified so they're tracked - I'll stage only the meaningful project files: index.html, script.js, styles.css, specstory - NOT pycache
+
+I'll use:
+git add index.html script.js styles.css .specstory/
+
+Or git add -A then reset __pycache__ - cleaner to explicitly add files without pycache
+
+git add index.html script.js styles.css .specstory/
+
+If user wanted everything they can add pycache separately - normally we don't commit bytecode.
+</details></think>
+
+_**Agent (default)**_
+
+
+Staging source and Specstory only — excluding `__pycache__` bytecode.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git add index.html script.js styles.css .specstory/ && git status && git commit -m "Hero: fintech 3D scene, banking SVG motifs, ghost card watermarks
+
+- Add hero-scene mesh, orbs, stacked card deck, shards, GSAP float motion
+- Banking SVG: card outlines, chip, contactless, shield, statement hints
+- Subtle product PNG watermarks from cards/; responsive opacity
+- Specstory updates"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git add index.html script.js styles.css .specstory/ && git status && git commit -m "Hero: fintech 3D scene, banking SVG motifs, ghost card watermarks
+
+- Add hero-scene mesh, orbs, stacked card deck, shards, GSAP float motion
+- Banking SVG: card outlines, chip, contactless, shield, statement hints
+- Subtle product PNG watermarks from cards/; responsive opacity
+- Specstory updates"
+```
+
+```
+On branch feat/hero-catchy-update
+Your branch is up to date with 'origin/feat/hero-catchy-update'.
+
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   index.html
+	modified:   script.js
+	modified:   styles.css
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/core.cpython-311.pyc
+	modified:   .cursor/skills/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-311.pyc
+
+[feat/hero-catchy-update bcae2fc] Hero: fintech 3D scene, banking SVG motifs, ghost card watermarks
+ 5 files changed, 2065 insertions(+), 8 deletions(-)
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Push to origin
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git push</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git push
+```
+
+```
+To https://github.com/shindigira/capital-scroll-ad.git
+   defddfc..bcae2fc  feat/hero-catchy-update -&gt; feat/hero-catchy-update
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Tell user about excluded pycache
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what was done:
+
+- **Committed** `bcae2fc` on **`feat/hero-catchy-update`**: `index.html`, `script.js`, `styles.css`, and `.specstory/` (hero scene, banking SVGs, ghost cards, Specstory).
+- **Pushed** to `origin/feat/hero-catchy-update`.
+
+**Not committed:** `.cursor/skills/ui-ux-pro-max/scripts/__pycache__/*.pyc` (bytecode). Restore or discard those locally; consider adding `**/__pycache__/` under `.cursor/` to `.gitignore` if they keep showing up as tracked changes.
+
+Run **`npm run build`** when you want `build/` to match the latest `index.html`.
+
+---
+
+_**User**_
+
+favicon should be updated
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants to update the favicon for the project. I should:
+1. Check current index.html for favicon link(s)
+2. See if there's an existing favicon or if we need to create one - they have capital-one-logo png - could use that or create a simple SVG favicon
+
+Let me read index.html head and check for existing favicon files in the project.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "" • **0** results in **1** directory</summary>
+
+Directory: **/Users/st/Projects/capital-scroll-ad** (0 files)
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search"><details>
+<summary>Tool use: **glob_file_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/scripts/build.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+No favicon exists currently. I'll create:
+1. An SVG favicon - clean approach for modern browsers, uses brand colors (navy/red simplified mark - not copying full trademark logo precisely to avoid legal issues - user project is Capital One themed demo)
+
+Actually for a Capital One themed project, using their logo as favicon could be trademark concern. The user asked to "update" favicon - they likely want something that matches the site. I can:
+- Use `favicon.svg` with a simple abstract "C" or card shape in brand navy - original enough
+- Or link to the existing PNG - PNG as favicon works but large file for favicon
+
+Best practice: create `favicon.svg` with simple geometric mark (rounded square + stripe suggesting card, or monogram style C in #004a7c)
+
+I'll add:
+- `public/` or root `favicon.svg` - professional minimal mark
+- `apple-touch-icon` - could use same SVG or skip (Safari prefers PNG 180x180)
+
+Apple touch icon: optional 180x180 png - would need to generate. For simplicity:
+- favicon.svg in project root
+- link rel="icon" href="/favicon.svg" type="image/svg+xml"
+- link rel="apple-touch-icon" href="capital-one-logo..." - that PNG might be huge - not ideal
+
+I'll create a compact SVG favicon (32x32 viewBox) with stylized credit-card corner or CO-inspired minimal shapes without using their exact logo.
+
+Simple design: rounded rect (card) with small chip and gradient navy-to-red top band - reads "fintech card" at favicon size.
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#004a7c"/>
+  <rect y="8" width="32" height="8" fill="#d03027"/>
+  <rect x="6" y="20" width="10" height="6" rx="1" fill="rgba(255,255,255,0.85)"/>
+</svg>
+```
+
+That's readable at small size.
+
+Also add to build.js itemsToCopy: "favicon.svg"
+
+Update index.html head with:
+```html
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="alternate icon" href="favicon.ico" /> 
+```
+Skip ico if we don't generate - SVG only is fine for modern browsers.
+
+Some old favicon.ico requests - browser may 404 - optional add tiny ICO via online tool - user didn't ask. SVG + Safari support is good.
+
+Add manifest later? skip
+
+I'll write favicon.svg and update index.html and build.js
+</details></think>
+
+_**Agent (default)**_
+
+
+Adding a brand-aligned SVG favicon (card-inspired mark) and wiring it in `index.html` and the build script.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/favicon.svg</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/scripts/build.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I added apple-touch-icon.png but the file doesn't exist - build will fail and user gets 404. I should either:
+1. Remove apple-touch-icon link and build entry
+2. Generate apple-touch-icon - I could use sharp if in project - package.json has sharp
+
+Let me check if we can run node script to create apple-touch-icon from favicon - sharp can rasterize SVG to PNG 180x180.
+
+Or remove apple-touch-icon until we have file.
+
+Simplest: remove apple-touch-icon lines from index and build - only SVG favicon.
+
+Alternative: use sharp to generate from favicon.svg
+
+```bash
+node -e "
+const sharp = require('sharp');
+const fs = require('fs');
+const svg = fs.readFileSync('favicon.svg');
+sharp(svg).resize(180,180).png().toFile('apple-touch-icon.png');
+"
+```
+
+I'll run that if sharp is available
+</details></think>
+
+_**Agent (default)**_
+
+
+Generating `apple-touch-icon.png` with Sharp so the build doesn't break.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && node -e "
+const fs = require('fs');
+const path = require('path');
+try {
+  const sharp = require('sharp');
+  const svg = fs.readFileSync('favicon.svg');
+  sharp(svg).resize(180, 180).png().toFile('apple-touch-icon.png').then(() => console.log('ok'));
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
+}
+"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && node -e "
+const fs = require('fs');
+const path = require('path');
+try {
+  const sharp = require('sharp');
+  const svg = fs.readFileSync('favicon.svg');
+  sharp(svg).resize(180, 180).png().toFile('apple-touch-icon.png').then(() => console.log('ok'));
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
+}
+"
+```
+
+```
+ok
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+apple-touch-icon.png was created. The ensureExists in build will pass. Should we add apple-touch-icon.png to .gitignore? No - it should be committed for deploy without running sharp.
+
+Revert favicon.svg - I made a redundant rect for red band - let me view the SVG - the top rounded might have visual glitch. Simplify favicon.svg for cleaner look at 32px.
+
+Actually read the svg I wrote - two rects for red band overlapping with navy - the card should read: navy body, red stripe top, white chip
+
+Let me simplify:
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#004a7c"/>
+  <rect width="32" height="9" rx="7" fill="#d03027"/> 
+  <!-- top stripe - clip to top -->
+```
+
+If rect is full width red with rx 7 on top corners only - use path or mask. Simpler: use linear gradient on single rect
+
+```svg
+<defs>
+  <linearGradient id="g" y1="0" y2="1">
+    <stop offset="0" stop-color="#d03027"/>
+    <stop offset="0.28" stop-color="#d03027"/>
+    <stop offset="0.28" stop-color="#004a7c"/>
+    <stop offset="1" stop-color="#003d66"/>
+  </linearGradient>
+</defs>
+<rect width="32" height="32" rx="8" fill="url(#g)"/>
+```
+
+Then chip as white rects - cleaner at small size.
+
+I'll update favicon.svg to gradient version and regenerate apple-touch-icon.png
+</details></think>
+
+_**Agent (default)**_
+
+
+Cleaning up the favicon graphic for clarity at small sizes and regenerating the PNG.
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/favicon.svg</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && node -e "require('sharp')(require('fs').readFileSync('favicon.svg')).resize(180,180).png().toFile('apple-touch-icon.png').then(()=>console.log('ok'))"</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && node -e "require('sharp')(require('fs').readFileSync('favicon.svg')).resize(180,180).png().toFile('apple-touch-icon.png').then(()=>console.log('ok'))"
+```
+
+```
+ok
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+document theme-color meta optional - skip
+
+README about favicon - user didn't ask
+
+apple-touch-icon.png is binary - git will track
+
+Done summary
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what was added and wired up:
+
+### `favicon.svg`
+- Small **card** icon: **red** top band + **navy** body (`#004a7c` / `#d03027`), **chip** + stripe details so it stays readable at 16–32px.
+
+### `index.html`
+- `<link rel="icon" href="favicon.svg" type="image/svg+xml" />`
+- `<link rel="apple-touch-icon" href="apple-touch-icon.png" />`
+
+### `apple-touch-icon.png`
+- **180×180** PNG generated from the SVG with **Sharp** (your existing dependency) for iOS home screen / bookmarks.
+
+### `scripts/build.js`
+- Copies **`favicon.svg`** and **`apple-touch-icon.png`** into `build/` with the rest of the assets.
+
+Run **`npm run build`** so `build/index.html` picks up the new links and files. Commit **`favicon.svg`** and **`apple-touch-icon.png`** with your next change so deploys don’t depend on regenerating the PNG locally.
+
+The icon is an **original simplified card** (not the full Capital One logo) to keep the favicon crisp and avoid trademark misuse in a tiny mark.
+
+---
+
+_**User**_
+
+@index.html:235-238 this should be graphical like the logo @capital-one-logo-png_seeklogo-425557.png 
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants the hero brand section (lines 235-238 in index.html) to be graphical like the Capital One logo - using the actual logo image or recreating the swoosh + wordmark style.
+
+The simplest and most accurate approach is to replace the text spans with the logo image they already have: `capital-one-logo-png_seeklogo-425557.png` which is used in the navbar too.
+
+Alternatively:
+1. Use `<img src="capital-one-logo-png_seeklogo-425557.png" alt="Capital One" class="hero-brand-logo" />` 
+2. Style it with appropriate max-height/width for hero prominence
+
+Or combine: keep accessible text visually hidden + show the logo image for graphical fidelity.
+
+Let me read the current index.html around those lines for exact context and existing hero-brand CSS.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "hero-brand"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/styles.css",
+  "pattern": "hero-brand",
+  "topFiles": [
+    {
+      "matchCount": 3,
+      "uri": "styles.css"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 3
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+I'll replace the paragraph with text spans with a structure that uses the official logo image for the graphical treatment, plus screen-reader text.
+
+```html
+<p class="hero-brand">
+  <img
+    src="capital-one-logo-png_seeklogo-425557.png"
+    alt="Capital One"
+    class="hero-brand-logo"
+    width="280"
+    height="80"
+    decoding="async"
+  />
+</p>
+```
+
+Update CSS:
+- Remove or repurpose .hero-brand--capital and .hero-brand--one (used only here)
+- .hero-brand becomes flex center, .hero-brand-logo with height clamp for hero scale
+
+Read full hero-brand block in styles.css
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "hero-brand"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "hero-brand",
+  "topFiles": [
+    {
+      "matchCount": 1,
+      "uri": "script.js"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 1
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+GSAP still targets `.hero-brand` - works with the img inside p.hero-brand.
+
+Replace HTML with logo img.
+Update CSS:
+```css
+.hero-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 0.55rem;
+  max-width: 100%;
+}
+
+.hero-brand-logo {
+  height: clamp(2.5rem, 8vw, 4.25rem);
+  width: auto;
+  max-width: min(92vw, 340px);
+  object-fit: contain;
+  object-position: center;
+}
+```
+
+Remove .hero-brand--capital and .hero-brand--one rules.
+
+The navbar uses same PNG with height 64px on img - hero needs larger - clamp as above.
+
+For retina, srcset optional - skip
+
+Width/height attributes on img - use natural aspect ratio from logo - typically wide. I'll omit fixed width height or use reasonable: the PNG might be wide - height-based sizing is best.
+</details></think>
+
+_**Agent (default)**_
+
+
+Replacing the split text with the official logo image and updating styles so the hero matches the wordmark (navy text + red swoosh).
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+Check if hero-brand--capital or one referenced elsewhere
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "path": "/Users/st/Projects/capital-scroll-ad",
+  "pattern": "hero-brand--"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad",
+  "pattern": "hero-brand--",
+  "topFiles": [
+    {
+      "matchCount": 16,
+      "uri": ".specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 16
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/index.html",
+    "/Users/st/Projects/capital-scroll-ad/styles.css"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/index.html"
+    },
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/styles.css"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+PNG is already in build copy list. Done.
+
+The width/height 320x72 might be wrong aspect - img will scale by height. Browser uses aspect ratio from intrinsic dimensions if height auto - good.
+
+Brief summary for user
+</details></think>
+
+_**Agent (default)**_
+
+
+Here’s what changed:
+
+### `index.html`
+- Replaced the two colored text spans with the **same asset as your navbar**: `capital-one-logo-png_seeklogo-425557.png`, so the hero shows the **full wordmark** (navy **CapitalOne** + **red swoosh**).
+- Kept a proper **`alt="Capital One"`** on the image.
+
+### `styles.css`
+- **`.hero-brand`** is now a simple flex wrapper (no text sizing).
+- **`.hero-brand-logo`** scales with **`height: clamp(2.65rem, 9.5vw, 4.5rem)`**, **`width: auto`**, and **`max-width: min(88vw, 360px)`** so it stays sharp and proportional on phones and desktops.
+
+`animateHero()` still targets **`.hero-brand`**, so the intro fade/slide still applies to the logo block.
+
+The PNG is already included in **`scripts/build.js`**, so `npm run build` will keep shipping it. If the intrinsic aspect ratio of the file differs from `width`/`height` on the tag, the visible size is driven by **height + `object-fit: contain`**, so layout should stay correct.
+
+---
+
+_**User**_
+
+@index.html:25-27 replace this witih
+
+<svg _ngcontent-web-shell-c2748147077="" xmlns="http://www.w3.org/2000/svg" aria-label="Capital One Home" viewBox="0 0 418 150" role="img" class="site-header__logo ng-star-inserted"><rect _ngcontent-web-shell-c2748147077="" width="418" height="150.01" style="fill: none;"></rect><path _ngcontent-web-shell-c2748147077="" d="M283.7,108.5h-.1c-17.8,12.6-38.8,25.8-61.5,39.7l-.9.5a.7.7,0,1,0,.8,1.1l.7-.4c19.3-10,41.4-21.9,63.6-34.2l.4-.2A24.7,24.7,0,0,1,283.7,108.5ZM400.5,13.9c-28-30.9-208.6-3.1-285.3,13.7l-1.8.4a.8.8,0,0,0-.6.8.6.6,0,0,0,.8.5l1.8-.3C179,17.7,311.3,2,339.7,30.2c8.7,8.6,6.7,19.7-3.4,32.8a25.7,25.7,0,0,1,11,15.8C386.6,52.7,413,27.7,400.5,13.9Z" transform="translate(0 0)" style="fill: #cc2427;"></path><path _ngcontent-web-shell-c2748147077="" d="M295.1,100.4c.3,10.9,7.2,19.8,16.2,19.8,17.4,0,24.8-21.4,24.3-35.7-.4-10.9-7.4-19.8-16.4-19.8C304.2,64.7,294.5,86,295.1,100.4Zm-9.2-.6c-.7-18.6,13.9-37.6,35-37.6,14.2,0,23.4,9.5,23.9,23.9.7,19.6-12.9,37.6-35,37.6C295.6,123.7,286.4,114.3,285.9,99.8Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M85.5,94.9a13,13,0,0,1-2.9.8L76,96.9a10.8,10.8,0,0,0-4.6,1.4,3.2,3.2,0,0,0-1.5,2.3,2.1,2.1,0,0,0,1,2.3,7.3,7.3,0,0,0,4.2.9,16.2,16.2,0,0,0,4.4-.7,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A14.7,14.7,0,0,0,85.5,94.9Zm18.4-11.4c-.1,1.7-.4,3.2-.8,5.8L100,106.7a3.2,3.2,0,0,0,1.7,3.6v.7H83.8v-4.4a40.2,40.2,0,0,1-8.6,3.6,31.8,31.8,0,0,1-8.5,1.1c-5.8,0-9.1-.6-11.3-2.6s-3.5-3.4-3.4-6.3a9.6,9.6,0,0,1,2.2-5.1,13.5,13.5,0,0,1,4.7-3.4,28.9,28.9,0,0,1,7.2-2c3.1-.5,7.5-1,13.4-1.5a15.7,15.7,0,0,0,5.8-1.3c1.3-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.2-18.4.8-24.6,2.4l3.3-9.1a162.8,162.8,0,0,1,23.9-2C99.9,75.1,104,78.8,103.9,83.5Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M155.5,111l6.2-34.9h17.1L172.6,111Zm7.2-42.9c.5-2.9,5-5.2,10.1-5.2s8.7,2.3,8.2,5.2-5,5.2-10.1,5.2S162.2,70.9,162.7,68.1Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M239.3,95l-2.9.8L229.7,97a10.8,10.8,0,0,0-4.5,1.4,3,3,0,0,0-1.5,2.2,2.2,2.2,0,0,0,.9,2.4c.9.6,2.3.8,4.3.8a16.1,16.1,0,0,0,4.4-.6,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A22.4,22.4,0,0,0,239.3,95Zm18.4-11.5c-.1,1.7-.4,3.3-.8,5.8l-3.1,17.5a3.2,3.2,0,0,0,1.7,3.6v.6H237.6v-4.5a36,36,0,0,1-8.6,3.7,32.2,32.2,0,0,1-8.6,1c-5.7,0-9-.6-11.3-2.6s-3.4-3.4-3.3-6.2a9.5,9.5,0,0,1,2.2-5.2,13.3,13.3,0,0,1,4.7-3.3,25.4,25.4,0,0,1,7.1-2c3.2-.5,7.6-1,13.5-1.5a24,24,0,0,0,5.8-1.3c1.2-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.3-18.4.8-24.6,2.3l3.3-9a161.7,161.7,0,0,1,23.9-2C253.7,75.2,257.8,78.9,257.7,83.5Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M49.6,98.5A62.3,62.3,0,0,1,35.4,100c-8.1,0-14.6-4-14.2-11.5.2-4.9,6.1-15.3,20.9-15.3a24.3,24.3,0,0,1,13.3,3.6l2.1-12.1a40.3,40.3,0,0,0-16.8-2.8c-19.5.2-38.2,9-40.5,27s20,22.9,29.9,22.9c5.7,0,11.7-.3,17.2-.8Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M188.2,75.9l1.2-7.1L207.2,65l-1.9,10.9h8.8L212.4,83h-8.5l-5.1,28H181.5l5.2-28h-6.5l1.3-7h6.7Z" transform="translate(0 0)" style="fill: #013d5b;"></path><polygon _ngcontent-web-shell-c2748147077="" points="275 111 257.6 111 266.4 62.4 283.3 62.8 275 111" style="fill: #013d5b;"></polygon><path _ngcontent-web-shell-c2748147077="" d="M133,84.3a10.4,10.4,0,0,0-6.1,2,9.4,9.4,0,0,0-3.3,6c-.6,3.1-.3,5.2.9,6.6a7.1,7.1,0,0,0,5.3,2,10.2,10.2,0,0,0,4.4-.9,8.1,8.1,0,0,0,3.3-2.8,12.5,12.5,0,0,0,1.9-4.6c.5-2.8.1-4.8-1.2-6.2A6.7,6.7,0,0,0,133,84.3Zm-31.1,38.8,8.3-46.8h15l-1.2,6a14.2,14.2,0,0,1,6.3-4.5,27,27,0,0,1,9.7-2c3.9,0,6.3.2,9.2,1.7a12.4,12.4,0,0,1,6,6.6,16.8,16.8,0,0,1,.8,9.5,20.7,20.7,0,0,1-8.4,13.7c-4.6,3.3-8.7,4.2-14.6,4.2a20.4,20.4,0,0,1-5.3-.6,12.1,12.1,0,0,1-3.4-1.3,15.5,15.5,0,0,1-2.8-2.6l-2.8,16.1Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M411.5,88.6c-.1-2.8-1.5-4.7-4.4-4.7-7,0-14.4,13.7-15.7,19.2C402.8,103.1,411.8,96.3,411.5,88.6Zm1.5,21.5,1.3.9c-3.4,6.9-10.3,12.5-18.5,12.5-6.7,0-12.1-4.4-12.4-12.7-.6-15,13.5-28.9,24.9-28.9,4.9,0,9.5,2.2,9.7,7.5.4,11.9-16.3,15.5-27.3,15.7a14.3,14.3,0,0,0-.4,4.4c.2,5,3.2,9.1,9.3,9.1S410.3,114.3,413,110.1Z" transform="translate(0 0)" style="fill: #013d5b;"></path><path _ngcontent-web-shell-c2748147077="" d="M344.6,88.2l3.9-.4c1.3,0,2.4.3,2.5,1.5s-1.3,6-1.6,7.3l-2.7,11.7c-1,4.8-2.2,9.8-3.2,13.8h6.8l3.8-18.6c11.8-12.2,16.3-16.2,19-16.2a2,2,0,0,1,2.2,2.2c.1,2.1-1.3,7-1.7,8.4l-4,13.5c-.8,3.1-1.5,5.8-1.4,7.8s1.9,4.3,4.5,4.3c5,0,8.7-5.2,11.8-10.3l-.9-1.7c-1.3,2-4.2,6.5-6.6,6.5-.7,0-1.4-.5-1.4-1.7a20.5,20.5,0,0,1,1-5.5L381,94.9c1.1-4.4,1.7-7.2,1.7-8.7s-1.9-4.3-4.5-4.3c-4.5,0-10.5,3.3-23.1,17.8h-.2l1.6-7.1c.9-3.9,1.7-7.9,2.5-10.7A114.5,114.5,0,0,1,344.5,86Z" transform="translate(0 0)" style="fill: #013d5b;"></path></svg>
+
+---
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: </summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: </summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/index.html</summary>
+
+Status: **loading**
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/styles.css</summary>
+
+Status: **loading**
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>

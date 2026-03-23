@@ -148,13 +148,12 @@ img {
   cursor: pointer;
 }
 
-.navbar-logo img {
-  height: 64px;
+.navbar-logo-svg {
+  height: 44px;
   width: auto;
-  max-width: none;
-  object-fit: contain;
-  object-position: left center;
+  max-width: min(200px, 52vw);
   display: block;
+  flex-shrink: 0;
 }
 
 .navbar-links {
@@ -521,27 +520,22 @@ img {
   }
 }
 
-/* Company name — primary emphasis above the headline */
+/* Official wordmark + swoosh (graphical logo) */
 .hero-brand {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  display: flex;
   justify-content: center;
-  gap: 0.3em;
-  font-size: clamp(2rem, 4.75vw, 3.15rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
+  align-items: center;
   margin: 0 auto 0.55rem;
   max-width: 100%;
 }
 
-.hero-brand--capital {
-  color: var(--co-navy);
-}
-
-.hero-brand--one {
-  color: var(--co-red);
+.hero-brand-logo {
+  display: block;
+  height: clamp(2.65rem, 9.5vw, 4.5rem);
+  width: auto;
+  max-width: min(88vw, 360px);
+  object-fit: contain;
+  object-position: center;
 }
 
 .hero-tagline {
