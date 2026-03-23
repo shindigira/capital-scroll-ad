@@ -19,9 +19,36 @@ const calloutEls = {
 	fairbank: document.querySelector('[data-callout="fairbank"]'),
 	trusted: document.querySelector('[data-callout="trusted"]'),
 };
+const loaderEl = document.querySelector("[data-frame-loader]");
+const loaderProgressEl = document.querySelector("[data-loader-progress]");
+const loaderBarEl = document.querySelector("[data-loader-bar]");
 
 const state = { frame: 0 };
 const images = [];
+
+function setLoaderProgress(loaded, total) {
+	if (!loaderProgressEl || !loaderBarEl || total < 1) return;
+	const percent = Math.round((loaded / total) * 100);
+	loaderProgressEl.textContent = `${percent}%`;
+	loaderBarEl.style.width = `${percent}%`;
+}
+
+function showLoader() {
+	if (!loaderEl) return;
+	document.body.classList.add("is-loading");
+	loaderEl.classList.remove("is-hidden");
+	setLoaderProgress(0, FRAME_COUNT);
+}
+
+function hideLoader() {
+	if (!loaderEl) {
+		document.body.classList.remove("is-loading");
+		return;
+	}
+	loaderEl.classList.add("is-hidden");
+	document.body.classList.remove("is-loading");
+	loaderEl.addEventListener("transitionend", () => loaderEl.remove(), { once: true });
+}
 
 function getCanvasFillColor() {
 	const shell = document.querySelector(".sequence-shell");
@@ -141,19 +168,32 @@ function updateCallouts(f) {
 
 /* ── frame preloading ── */
 
-function preloadFrames() {
+function preloadFrames(onProgress) {
+	images.length = 0;
+	let loaded = 0;
 	for (let i = 0; i < FRAME_COUNT; i++) {
 		const img = new Image();
-		img.src = FRAME_PATH(i);
 		img.decoding = "async";
+		img.src = FRAME_PATH(i);
 		images.push(img);
 	}
 	return Promise.all(
 		images.map(
 			(img) =>
 				new Promise((r) => {
-					img.onload = r;
-					img.onerror = r;
+					const settle = () => {
+						loaded += 1;
+						if (typeof onProgress === "function") {
+							onProgress(loaded, FRAME_COUNT);
+						}
+						r();
+					};
+					if (img.complete) {
+						settle();
+						return;
+					}
+					img.onload = settle;
+					img.onerror = settle;
 				}),
 		),
 	).then(() => drawFrame(0));
@@ -443,11 +483,13 @@ function setupScrollStory() {
 /* ── init ── */
 
 function init() {
-	updateCallouts(0);
-	resizeCanvas();
-	animateHero();
+	showLoader();
 
-	preloadFrames().then(() => {
+	preloadFrames(setLoaderProgress).then(() => {
+		updateCallouts(0);
+		resizeCanvas();
+		animateHero();
+		hideLoader();
 		setupNavbar();
 		setupScrollStory();
 		animateStats();

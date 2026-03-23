@@ -19,6 +19,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="frame-loader" data-frame-loader role="status" aria-live="polite" aria-atomic="true">
+      <div class="frame-loader__panel">
+        <p class="frame-loader__label">Loading sequence</p>
+        <p class="frame-loader__progress" data-loader-progress>0%</p>
+        <div class="frame-loader__track" aria-hidden="true">
+          <span class="frame-loader__bar" data-loader-bar></span>
+        </div>
+      </div>
+    </div>
     <a class="skip-link" href="#story">Skip to content</a>
     <nav class="navbar" aria-label="Primary">
       <div class="navbar-inner">
