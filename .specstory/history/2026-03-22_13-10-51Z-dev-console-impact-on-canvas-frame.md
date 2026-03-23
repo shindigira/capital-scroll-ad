@@ -19085,3 +19085,57 @@ Here’s what changed, aligned with **ui-ux-pro-max** (controls should look clic
 4. **Line** — Slightly shorter, **lighter** gradient/opacity so it stays a **decorative cue**, not a strong UI bar.
 
 It stays **`aria-hidden="true"`** because it’s decorative for screen readers; real structure is still the heading + main content below.
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+<think><details><summary>Thought Process</summary>
+
+The user wants git add, commit, push. I'll check git status, stage appropriate files (exclude __pycache__), commit with message about scroll cue UX, push.
+</details></think>
+
+_**Agent (default)**_
+
+
+
+
+
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /Users/st/Projects/capital-scroll-ad && git status</summary>
+
+```bash
+cd /Users/st/Projects/capital-scroll-ad && git status
+```
+
+```
+On branch feat/hero-catchy-update
+Your branch is up to date with 'origin/feat/hero-catchy-update'.
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+	modified:   .specstory/statistics.json
+	modified:   index.html
+	modified:   styles.css
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
