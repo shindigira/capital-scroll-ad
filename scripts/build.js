@@ -11,6 +11,8 @@ const itemsToCopy = [
   "frames",
   "cards",
   "capital-one-logo-png_seeklogo-425557.png",
+  "favicon.svg",
+  "apple-touch-icon.png",
 ];
 
 function ensureExists(relPath) {

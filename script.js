@@ -173,22 +173,106 @@ function setupNavbar() {
 
 /* ── hero entrance ── */
 
+/** One-word rotating hero line — product / service emphasis */
+const HERO_TYPED_STRINGS = [
+	"Simplified.",
+	"Rewarding.",
+	"Effortless.",
+	"Insightful.",
+	"Secure.",
+	"Flexible.",
+	"Streamlined.",
+	"Empowering.",
+];
+
+function initHeroSceneMotion() {
+	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+	const deck = document.querySelector(".hero-card-deck");
+	if (!deck || typeof gsap === "undefined") return;
+
+	gsap.to(deck, {
+		y: "+=14",
+		rotationZ: 1.2,
+		duration: 3.2,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-orb--a", {
+		scale: 1.08,
+		opacity: 0.62,
+		duration: 5.5,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-shard--one", {
+		y: "+=-10",
+		x: "+=6",
+		duration: 4,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+	});
+	gsap.to(".hero-shard--two", {
+		y: "+=12",
+		duration: 3.6,
+		repeat: -1,
+		yoyo: true,
+		ease: "sine.inOut",
+		delay: 0.35,
+	});
+}
+
+function initHeroTyped() {
+	const el = document.getElementById("hero-typed");
+	if (!el) return;
+
+	const fallback =
+		el.dataset.typedFallback || HERO_TYPED_STRINGS[0] || "";
+	if (typeof Typed === "undefined") {
+		el.textContent = fallback;
+		return;
+	}
+
+	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		el.textContent = fallback;
+		return;
+	}
+
+	el.textContent = "";
+	new Typed("#hero-typed", {
+		strings: HERO_TYPED_STRINGS,
+		typeSpeed: 95,
+		backSpeed: 55,
+		backDelay: 2800,
+		startDelay: 400,
+		smartBackspace: true,
+		loop: true,
+		showCursor: true,
+		cursorChar: "|",
+	});
+}
+
 function animateHero() {
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-	tl.from(".hero-eyebrow", { y: 20, opacity: 0, duration: 0.7 })
+	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
+		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
 		.from(
-			".hero-subeyebrow",
+			".hero-tagline",
 			{ y: 16, opacity: 0, duration: 0.55 },
 			"-=0.55",
 		)
-		.from(".hero h1", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
+		.from(".hero-title", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
+		.call(initHeroTyped, [], ">+0.06")
 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
 		.from(".scroll-cue", { opacity: 0, duration: 0.6 }, "-=0.3")
 		.from(
 			".scroll-cue-line",
 			{ scaleY: 0, duration: 0.8, ease: "power2.inOut" },
 			"-=0.4",
-		);
+		)
+		.call(initHeroSceneMotion, [], ">-0.2");
 }
 
 /* ── stat count-up ── */
