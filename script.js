@@ -90,13 +90,11 @@ const PHASES = {
 
 function drawFrame(index) {
 	const img = images[index];
-	/* Match backing-store size (set in resizeCanvas) so the fill always covers the bitmap */
 	const scale = ctx.getTransform().a || 1;
 	const cw = canvas.width / scale;
 	const ch = canvas.height / scale;
 	if (cw < 2 || ch < 2) return;
 
-	/* Solid background — matches --canvas-fill on .sequence-shell (frame letterbox) */
 	ctx.globalCompositeOperation = "source-over";
 	ctx.fillStyle = getCanvasFillColor();
 	ctx.fillRect(0, 0, cw, ch);
@@ -114,7 +112,6 @@ function drawFrame(index) {
 		dh = dw / imgR;
 	}
 
-	/* Integer dest avoids subpixel hairlines with multiply compositing */
 	const dx = Math.round((cw - dw) / 2);
 	const dy = Math.round((ch - dh) / 2);
 	ctx.globalCompositeOperation = "multiply";
@@ -127,7 +124,6 @@ function resizeCanvas(retryCount = 0) {
 	const w = canvas.clientWidth;
 	const h = canvas.clientHeight;
 
-	/* Pin / layout on mobile can briefly report 0×0; retry next frame before giving up */
 	if (w < 2 || h < 2) {
 		if (retryCount < 5) {
 			requestAnimationFrame(() => resizeCanvas(retryCount + 1));
@@ -135,7 +131,6 @@ function resizeCanvas(retryCount = 0) {
 		return;
 	}
 
-	/* Same box model as drawFrame (avoid rect vs client mismatch + unfilled edge rows) */
 	canvas.width = Math.max(1, Math.round(w * dpr));
 	canvas.height = Math.max(1, Math.round(h * dpr));
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -235,7 +230,6 @@ function setupNavbar() {
 
 /* ── hero entrance ── */
 
-/** One-word rotating hero line — product / service emphasis */
 const HERO_TYPED_STRINGS = [
 	"Simplified.",
 	"Rewarding.",
@@ -290,8 +284,7 @@ function initHeroTyped() {
 	const el = document.getElementById("hero-typed");
 	if (!el) return;
 
-	const fallback =
-		el.dataset.typedFallback || HERO_TYPED_STRINGS[0] || "";
+	const fallback = el.dataset.typedFallback || HERO_TYPED_STRINGS[0] || "";
 	if (typeof Typed === "undefined") {
 		el.textContent = fallback;
 		return;
@@ -320,20 +313,12 @@ function animateHero() {
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
 		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
-		.from(
-			".hero-tagline",
-			{ y: 16, opacity: 0, duration: 0.55 },
-			"-=0.55",
-		)
+		.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
 		.from(".hero-title", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
 		.call(initHeroTyped, [], ">+0.06")
 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
 		.from(".scroll-cue", { opacity: 0, duration: 0.6 }, "-=0.3")
-		.from(
-			".scroll-cue-line",
-			{ scaleY: 0, duration: 0.8, ease: "power2.inOut" },
-			"-=0.4",
-		)
+		.from(".scroll-cue-line", { scaleY: 0, duration: 0.8, ease: "power2.inOut" }, "-=0.4")
 		.call(initHeroSceneMotion, [], ">-0.2");
 }
 
@@ -398,8 +383,8 @@ function setupScrollStory() {
 		pin: ".sequence-pin",
 		pinSpacing: false,
 		anticipatePin: 1,
-		scrub: 0.35,
 		invalidateOnRefresh: true,
+		fastScrollEnd: true,
 		onUpdate: (self) => {
 			syncSequenceToProgress(self.progress);
 		},
@@ -420,7 +405,6 @@ function setupScrollStory() {
 		},
 	});
 
-	/* Momentum / fling scroll on mobile often coalesces; resync frame when scroll settles */
 	if ("onscrollend" in window) {
 		window.addEventListener(
 			"scrollend",
@@ -465,6 +449,7 @@ function setupScrollStory() {
 		toggleActions: "play none none none",
 		once: true,
 	};
+
 	const cardsMM = gsap.matchMedia();
 	cardsMM.add("(min-width: 821px)", () => {
 		gsap.from(".card-item", {
@@ -526,7 +511,6 @@ function init() {
 		animateStats();
 		ScrollTrigger.refresh();
 
-		/* Browser scroll restoration often lands after first paint — refresh again */
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
 				ScrollTrigger.refresh();
