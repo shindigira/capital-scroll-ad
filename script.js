@@ -313,9 +313,8 @@ function initHeroTyped() {
 
 function animateHero() {
 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
-		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
-		.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
+	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0);
+	tl.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
 		.from(".hero-title", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
 		.call(initHeroTyped, [], ">+0.06")
 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")

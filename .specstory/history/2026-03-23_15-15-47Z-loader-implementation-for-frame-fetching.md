@@ -27776,29 +27776,33 @@ Only `script.js` was committed; `.specstory` files remain uncommitted locally.
 
 _**User**_
 
-git pull from orgin main
+git pull from origin main, keep our stuff
 
 ---
 
 _**Agent (default)**_
 
+I’ll pull `origin/main` into your current branch using an “ours on conflicts” merge strategy so your branch behavior is preserved wherever conflicts happen. I’ll run it and report exactly what changed.
+
+_**Agent (default)**_
+
 <tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
-<details><summary>Tool use: **run_terminal_command_v2** • Run command: git pull origin main</summary>
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short && git pull -X ours origin main</summary>
 
 ```bash
-git pull origin main
+git status --short && git pull -X ours origin main
 ```
 
 ```
-CONFLICT (modify/delete): .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md deleted in 14ec56073464b1b8696bd16ca54129beb52acbe6 and modified in HEAD.  Version HEAD of .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md left in tree.
-Auto-merging .specstory/statistics.json
-CONFLICT (content): Merge conflict in .specstory/statistics.json
-Auto-merging script.js
-CONFLICT (content): Merge conflict in script.js
-Automatic merge failed; fix conflicts and then commit the result.
+ M .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+ M .specstory/statistics.json
 From https://github.com/shindigira/capital-scroll-ad
  * branch            main       -&gt; FETCH_HEAD
-   58449c5..14ec560  main       -&gt; origin/main
+error: Your local changes to the following files would be overwritten by merge:
+	.specstory/statistics.json
+Please commit your changes or stash them before you merge.
+Aborting
+Merge with strategy ort failed.
 
 ```
 </details>
@@ -27811,31 +27815,423 @@ From https://github.com/shindigira/capital-scroll-ad
 
 _**Agent (default)**_
 
-`git pull origin main` ran, but it resulted in merge conflicts.
+Pull was blocked by uncommitted `.specstory` changes. I’ll temporarily stash those local edits, run the pull preferring your branch on conflicts, then re-apply the stash.
 
-Conflicts:
-- `.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md` (deleted in `origin/main`, modified locally)
-- `.specstory/statistics.json` (content conflict)
-- `script.js` (content conflict)
+_**Agent (default)**_
 
-Merge is in progress and needs conflict resolution + commit to complete.  
-If you want, I can resolve these now (typically keep your `script.js`, accept `origin/main` for `.specstory` files).
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git stash push -m "temp-specstory-before-main-pull" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/statistics.json" && git pull -X ours origin main && git stash pop</summary>
+
+```bash
+git stash push -m "temp-specstory-before-main-pull" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/statistics.json" && git pull -X ours origin main && git stash pop
+```
+
+```
+Saved working directory and index state On fix/gsap-chatgpt-solution: temp-specstory-before-main-pull
+CONFLICT (modify/delete): .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md deleted in 14ec56073464b1b8696bd16ca54129beb52acbe6 and modified in HEAD.  Version HEAD of .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md left in tree.
+Auto-merging .specstory/statistics.json
+Auto-merging script.js
+Automatic merge failed; fix conflicts and then commit the result.
+From https://github.com/shindigira/capital-scroll-ad
+ * branch            main       -&gt; FETCH_HEAD
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short</summary>
+
+```bash
+git status --short
+```
+
+```
+M  .specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md
+M  .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
+UD .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+M  .specstory/statistics.json
+M  script.js
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+Merge conflicts happened despite `-X ours` because one file was deleted on `main`. I’m now explicitly taking **our version** for conflicted/overlapping files, completing the merge commit, then restoring your stashed local `.specstory` edits.
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git checkout --ours "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" && git add "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md" ".specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md" && git commit -m "$(cat <<'EOF'
+Merge origin/main into fix/gsap-chatgpt-solution.
+
+Keep branch-specific sequence behavior and local specstory history where main introduced conflicting/deleted changes.
+EOF
+)" && git stash pop && git status --short</summary>
+
+```bash
+git checkout --ours "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" && git add "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md" ".specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md" && git commit -m "$(cat <<'EOF'
+Merge origin/main into fix/gsap-chatgpt-solution.
+
+Keep branch-specific sequence behavior and local specstory history where main introduced conflicting/deleted changes.
+EOF
+)" && git stash pop && git status --short
+```
+
+```
+[fix/gsap-chatgpt-solution 806ca27] Merge origin/main into fix/gsap-chatgpt-solution.
+Auto-merging .specstory/statistics.json
+On branch fix/gsap-chatgpt-solution
+Your branch is ahead of 'origin/fix/gsap-chatgpt-solution' by 4 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	modified:   .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+	modified:   .specstory/statistics.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (d8423a60f9f452c248514d777e62534ec24037ab)
+ M .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+ M .specstory/statistics.json
+Updated 1 path from the index
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+Completed: pulled `origin/main` into your branch and kept your branch behavior where conflicts occurred.
+
+What happened:
+- Stashed your local `.specstory` edits temporarily.
+- Merged `origin/main` into `fix/gsap-chatgpt-solution` with conflict resolution favoring your side.
+- Created merge commit: `806ca27`
+- Restored your stashed local `.specstory` edits after the merge.
+
+Current working tree:
+- Uncommitted local edits restored in:
+  - `.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md`
+  - `.specstory/statistics.json`
+
+Your branch is now ahead of remote and ready to push when you want (`git push`).
 
 ---
 
 _**User**_
 
-merge abort
+installHook.js:1 GSAP target .hero-brand not found. https://gsap.com
+overrideMethod @ installHook.js:1
+R @ gsap.min.js:10
+Tween @ gsap.min.js:10
+Va @ gsap.min.js:10
+from @ gsap.min.js:10
+animateHero @ script.js:317
+(anonymous) @ script.js:513
+Promise.then
+init @ script.js:510
+(anonymous) @ script.js:546Understand this warning
+installHook.js:1 GSAP target  not found. https://gsap.com
 
 ---
 
 _**Agent (default)**_
 
+I’ll remove the missing `.hero-brand` animation reference and scan for any GSAP call that could be passing an empty selector, then patch `script.js` so those warnings disappear without changing behavior.
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "gsap\\.(from|to|set)\\("
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
+  "pattern": "gsap\\.(from|to|set)\\(",
+  "topFiles": [
+    {
+      "matchCount": 16,
+      "uri": "script.js"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 16
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/index.html",
+  "pattern": "hero-brand"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/Users/st/Projects/capital-scroll-ad/index.html",
+  "pattern": "hero-brand",
+  "topFiles": [
+    {
+      "matchCount": 3,
+      "uri": "index.html"
+    }
+  ],
+  "totalFiles": 1,
+  "totalMatches": 3
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/script.js"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+That warning is because `script.js` still animates `.hero-brand`, but in `index.html` that element is commented out.
+
+I fixed it by guarding that tween in `animateHero()`:
+
+- Only run `.from(".hero-brand", ...)` if `document.querySelector(".hero-brand")` exists.
+- Rest of the hero timeline stays unchanged.
+
+This removes the explicit:
+
+- `GSAP target .hero-brand not found`
+
+The second generic `GSAP target  not found` is usually a follow-on from missing targets in chained timeline calls, so this should clear that too. If it still appears, I can add the same existence guard pattern to any other optional selector quickly.
+
+---
+
+_**User**_
+
+remove that code then
+
+---
+
+_**Agent (default)**_
+
+I’ll remove the `.hero-brand` animation block entirely from `script.js` so there’s no dead/optional logic around it anymore.
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/Users/st/Projects/capital-scroll-ad/script.js"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+Removed.
+
+I deleted the `.hero-brand` animation code from `animateHero()` in `script.js`, so there’s no reference to that selector at all now.  
+This is cleaner and avoids the missing-target warning entirely.
+
+---
+
+_**User**_
+
+git add commit push
+
+---
+
+_**Agent (default)**_
+
+I’ll commit and push the latest `script.js` cleanup (removing `.hero-brand` animation reference), while leaving unrelated local `.specstory` edits out. I’ll verify status/diff/log first.
+
+_**Agent (default)**_
+
 <tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
-<details><summary>Tool use: **run_terminal_command_v2** • Run command: git merge --abort && git status --short</summary>
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git status --short</summary>
 
 ```bash
-git merge --abort && git status --short
+git status --short
+```
+
+```
+ M .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+ M .specstory/statistics.json
+ M index.html
+ M script.js
+
 ```
 </details>
 </tool-use>
@@ -27847,5 +28243,2124 @@ git merge --abort && git status --short
 
 _**Agent (default)**_
 
-Merge aborted successfully.  
-Working tree is now clean (no pending merge, no local changes).
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git diff --staged && git diff</summary>
+
+```bash
+git diff --staged && git diff
+```
+
+```
+diff --git a/.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md b/.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+index 6f57f00..2e58da3 100644
+--- a/.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
++++ b/.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
+@@ -27776,29 +27776,64 @@ Only &#96;script.js&#96; was committed; &#96;.specstory&#96; files remain uncommitted locally.
+ 
+ _**User**_
+ 
+-git pull from orgin main
++git pull from origin main, keep our stuff
+ 
+ ---
+ 
+ _**Agent (default)**_
+ 
++I’ll pull &#96;origin/main&#96; into your current branch using an “ours on conflicts” merge strategy so your branch behavior is preserved wherever conflicts happen. I’ll run it and report exactly what changed.
++
++_**Agent (default)**_
++
+ &lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
+-&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git pull origin main&lt;/summary&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git status --short &amp;&amp; git pull -X ours origin main&lt;/summary&gt;
+ 
+ &#96;&#96;&#96;bash
+-git pull origin main
++git status --short &amp;&amp; git pull -X ours origin main
+ &#96;&#96;&#96;
+ 
+ &#96;&#96;&#96;
++ M .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
++ M .specstory/statistics.json
++From https://github.com/shindigira/capital-scroll-ad
++ * branch            main       -&amp;gt; FETCH_HEAD
++error: Your local changes to the following files would be overwritten by merge:
++	.specstory/statistics.json
++Please commit your changes or stash them before you merge.
++Aborting
++Merge with strategy ort failed.
++
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++Pull was blocked by uncommitted &#96;.specstory&#96; changes. I’ll temporarily stash those local edits, run the pull preferring your branch on conflicts, then re-apply the stash.
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git stash push -m "temp-specstory-before-main-pull" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/statistics.json" &amp;&amp; git pull -X ours origin main &amp;&amp; git stash pop&lt;/summary&gt;
++
++&#96;&#96;&#96;bash
++git stash push -m "temp-specstory-before-main-pull" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/statistics.json" &amp;&amp; git pull -X ours origin main &amp;&amp; git stash pop
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++Saved working directory and index state On fix/gsap-chatgpt-solution: temp-specstory-before-main-pull
+ CONFLICT (modify/delete): .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md deleted in 14ec56073464b1b8696bd16ca54129beb52acbe6 and modified in HEAD.  Version HEAD of .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md left in tree.
+ Auto-merging .specstory/statistics.json
+-CONFLICT (content): Merge conflict in .specstory/statistics.json
+ Auto-merging script.js
+-CONFLICT (content): Merge conflict in script.js
+ Automatic merge failed; fix conflicts and then commit the result.
+ From https://github.com/shindigira/capital-scroll-ad
+  * branch            main       -&amp;gt; FETCH_HEAD
+-   58449c5..14ec560  main       -&amp;gt; origin/main
+ 
+ &#96;&#96;&#96;
+ &lt;/details&gt;
+@@ -27811,31 +27846,71 @@ From https://github.com/shindigira/capital-scroll-ad
+ 
+ _**Agent (default)**_
+ 
+-&#96;git pull origin main&#96; ran, but it resulted in merge conflicts.
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git status --short&lt;/summary&gt;
+ 
+-Conflicts:
+-- &#96;.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md&#96; (deleted in &#96;origin/main&#96;, modified locally)
+-- &#96;.specstory/statistics.json&#96; (content conflict)
+-- &#96;script.js&#96; (content conflict)
++&#96;&#96;&#96;bash
++git status --short
++&#96;&#96;&#96;
+ 
+-Merge is in progress and needs conflict resolution + commit to complete.  
+-If you want, I can resolve these now (typically keep your &#96;script.js&#96;, accept &#96;origin/main&#96; for &#96;.specstory&#96; files).
++&#96;&#96;&#96;
++M  .specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md
++M  .specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md
++UD .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
++M  .specstory/statistics.json
++M  script.js
+ 
+----
++&#96;&#96;&#96;
++&lt;/details&gt;
++&lt;/tool-use&gt;
+ 
+-_**User**_
++&lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **run_terminal_command_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
+ 
+-merge abort
++_**Agent (default)**_
+ 
+----
++Merge conflicts happened despite &#96;-X ours&#96; because one file was deleted on &#96;main&#96;. I’m now explicitly taking **our version** for conflicted/overlapping files, completing the merge commit, then restoring your stashed local &#96;.specstory&#96; edits.
+ 
+ _**Agent (default)**_
+ 
+ &lt;tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"&gt;
+-&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git merge --abort &amp;&amp; git status --short&lt;/summary&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **run_terminal_command_v2** • Run command: git checkout --ours "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" &amp;&amp; git add "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md" ".specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md" &amp;&amp; git commit -m "$(cat &lt;&lt;'EOF'
++Merge origin/main into fix/gsap-chatgpt-solution.
++
++Keep branch-specific sequence behavior and local specstory history where main introduced conflicting/deleted changes.
++EOF
++)" &amp;&amp; git stash pop &amp;&amp; git status --short&lt;/summary&gt;
+ 
+ &#96;&#96;&#96;bash
+-git merge --abort &amp;&amp; git status --short
++git checkout --ours "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" &amp;&amp; git add "script.js" ".specstory/statistics.json" ".specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md" ".specstory/history/2026-03-22_04-10-47Z-gsap-animation-order-setup.md" ".specstory/history/2026-03-22_13-10-51Z-dev-console-impact-on-canvas-frame.md" &amp;&amp; git commit -m "$(cat &lt;&lt;'EOF'
++Merge origin/main into fix/gsap-chatgpt-solution.
++
++Keep branch-specific sequence behavior and local specstory history where main introduced conflicting/deleted changes.
++EOF
++)" &amp;&amp; git stash pop &amp;&amp; git status --short
++&#96;&#96;&#96;
++
++&#96;&#96;&#96;
++[fix/gsap-chatgpt-solution 806ca27] Merge origin/main into fix/gsap-chatgpt-solution.
++Auto-merging .specstory/statistics.json
++On branch fix/gsap-chatgpt-solution
++Your branch is ahead of 'origin/fix/gsap-chatgpt-solution' by 4 commits.
++  (use "git push" to publish your local commits)
++
++Changes not staged for commit:
++  (use "git add &amp;lt;file&amp;gt;..." to update what will be committed)
++  (use "git restore &amp;lt;file&amp;gt;..." to discard changes in working directory)
++	modified:   .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
++	modified:   .specstory/statistics.json
++
++no changes added to commit (use "git add" and/or "git commit -a")
++Dropped refs/stash@{0} (d8423a60f9f452c248514d777e62534ec24037ab)
++ M .specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md
++ M .specstory/statistics.json
++Updated 1 path from the index
++
+ &#96;&#96;&#96;
+ &lt;/details&gt;
+ &lt;/tool-use&gt;
+@@ -27847,5 +27922,242 @@ git merge --abort &amp;&amp; git status --short
+ 
+ _**Agent (default)**_
+ 
+-Merge aborted successfully.  
+-Working tree is now clean (no pending merge, no local changes).
++Completed: pulled &#96;origin/main&#96; into your branch and kept your branch behavior where conflicts occurred.
++
++What happened:
++- Stashed your local &#96;.specstory&#96; edits temporarily.
++- Merged &#96;origin/main&#96; into &#96;fix/gsap-chatgpt-solution&#96; with conflict resolution favoring your side.
++- Created merge commit: &#96;806ca27&#96;
++- Restored your stashed local &#96;.specstory&#96; edits after the merge.
++
++Current working tree:
++- Uncommitted local edits restored in:
++  - &#96;.specstory/history/2026-03-23_15-15-47Z-loader-implementation-for-frame-fetching.md&#96;
++  - &#96;.specstory/statistics.json&#96;
++
++Your branch is now ahead of remote and ready to push when you want (&#96;git push&#96;).
++
++---
++
++_**User**_
++
++installHook.js:1 GSAP target .hero-brand not found. https://gsap.com
++overrideMethod @ installHook.js:1
++R @ gsap.min.js:10
++Tween @ gsap.min.js:10
++Va @ gsap.min.js:10
++from @ gsap.min.js:10
++animateHero @ script.js:317
++(anonymous) @ script.js:513
++Promise.then
++init @ script.js:510
++(anonymous) @ script.js:546Understand this warning
++installHook.js:1 GSAP target  not found. https://gsap.com
++
++---
++
++_**Agent (default)**_
++
++I’ll remove the missing &#96;.hero-brand&#96; animation reference and scan for any GSAP call that could be passing an empty selector, then patch &#96;script.js&#96; so those warnings disappear without changing behavior.
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"&gt;
++&lt;details&gt;
++&lt;summary&gt;Tool use: **ripgrep_raw_search**&lt;/summary&gt;
++
++
++Parameters:
++
++&#96;&#96;&#96;json
++{
++  "caseInsensitive": false,
++  "outputMode": "content",
++  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
++  "pattern": "gsap\\.(from|to|set)\\("
++}
++&#96;&#96;&#96;
++Additional data:
++
++&#96;&#96;&#96;json
++{
++  "isPruned": true,
++  "outputMode": "content",
++  "path": "/Users/st/Projects/capital-scroll-ad/script.js",
++  "pattern": "gsap\\.(from|to|set)\\(",
++  "topFiles": [
++    {
++      "matchCount": 16,
++      "uri": "script.js"
++    }
++  ],
++  "totalFiles": 1,
++  "totalMatches": 16
++}
++&#96;&#96;&#96;
++Status: **completed**
++
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **ripgrep_raw_search**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;
++&lt;details&gt;&lt;summary&gt;Tool use: **read_file_v2** • Read file: /Users/st/Projects/capital-scroll-ad/script.js&lt;/summary&gt;
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="read" data-tool-name="read_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **read_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"&gt;
++&lt;details&gt;
++&lt;summary&gt;Tool use: **ripgrep_raw_search**&lt;/summary&gt;
++
++
++Parameters:
++
++&#96;&#96;&#96;json
++{
++  "caseInsensitive": false,
++  "outputMode": "content",
++  "path": "/Users/st/Projects/capital-scroll-ad/index.html",
++  "pattern": "hero-brand"
++}
++&#96;&#96;&#96;
++Additional data:
++
++&#96;&#96;&#96;json
++{
++  "isPruned": true,
++  "outputMode": "content",
++  "path": "/Users/st/Projects/capital-scroll-ad/index.html",
++  "pattern": "hero-brand",
++  "topFiles": [
++    {
++      "matchCount": 3,
++      "uri": "index.html"
++    }
++  ],
++  "totalFiles": 1,
++  "totalMatches": 3
++}
++&#96;&#96;&#96;
++Status: **completed**
++
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **ripgrep_raw_search**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;
++
++&lt;details&gt;&lt;summary&gt;Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js&lt;/summary&gt;
++
++&lt;/details&gt;
++
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **edit_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="read_lints"&gt;
++&lt;details&gt;
++&lt;summary&gt;Tool use: **read_lints**&lt;/summary&gt;
++
++
++Parameters:
++
++&#96;&#96;&#96;json
++{
++  "paths": [
++    "/Users/st/Projects/capital-scroll-ad/script.js"
++  ]
++}
++&#96;&#96;&#96;
++Result:
++
++&#96;&#96;&#96;json
++{
++  "linterErrorsByFile": [
++    {
++      "relativeWorkspacePath": "/Users/st/Projects/capital-scroll-ad/script.js"
++    }
++  ]
++}
++&#96;&#96;&#96;
++Status: **completed**
++
++
++&lt;/details&gt;
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="unknown" data-tool-name="read_lints"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **read_lints**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
++
++_**Agent (default)**_
++
++That warning is because &#96;script.js&#96; still animates &#96;.hero-brand&#96;, but in &#96;index.html&#96; that element is commented out.
++
++I fixed it by guarding that tween in &#96;animateHero()&#96;:
++
++- Only run &#96;.from(".hero-brand", ...)&#96; if &#96;document.querySelector(".hero-brand")&#96; exists.
++- Rest of the hero timeline stays unchanged.
++
++This removes the explicit:
++
++- &#96;GSAP target .hero-brand not found&#96;
++
++The second generic &#96;GSAP target  not found&#96; is usually a follow-on from missing targets in chained timeline calls, so this should clear that too. If it still appears, I can add the same existence guard pattern to any other optional selector quickly.
++
++---
++
++_**User**_
++
++remove that code then
++
++---
++
++_**Agent (default)**_
++
++I’ll remove the &#96;.hero-brand&#96; animation block entirely from &#96;script.js&#96; so there’s no dead/optional logic around it anymore.
++
++_**Agent (default)**_
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;
++
++&lt;details&gt;&lt;summary&gt;Tool use: **edit_file_v2** • Edit file: /Users/st/Projects/capital-scroll-ad/script.js&lt;/summary&gt;
++
++Status: **loading**
++
++&lt;/details&gt;
++
++&lt;/tool-use&gt;
++
++&lt;tool-use data-tool-type="write" data-tool-name="edit_file_v2"&gt;&lt;details&gt;
++&lt;summary&gt;Tool use: **edit_file_v2**&lt;/summary&gt;
++
++&lt;/details&gt;&lt;/tool-use&gt;
+diff --git a/.specstory/statistics.json b/.specstory/statistics.json
+index aca9f71..5222339 100644
+--- a/.specstory/statistics.json
++++ b/.specstory/statistics.json
+@@ -28,13 +28,13 @@
+       "last_updated": "2026-03-24T08:35:53Z"
+     },
+     "62350959-d3df-49b9-a2ef-8aa56e5129d7": {
+-      "user_message_count": 17,
+-      "agent_message_count": 102,
++      "user_message_count": 18,
++      "agent_message_count": 115,
+       "start_timestamp": "2026-03-23T11:15:47-04:00",
+       "end_timestamp": "2026-03-23T11:15:47-04:00",
+-      "markdown_size_bytes": 1214544,
++      "markdown_size_bytes": 1224285,
+       "provider": "cursoride",
+-      "last_updated": "2026-03-24T10:14:06Z"
++      "last_updated": "2026-03-24T10:25:12Z"
+     },
+     "6972d10a-8076-473b-9735-1919e472ba10": {
+       "user_message_count": 36,
+diff --git a/index.html b/index.html
+index 8fd453f..4adc966 100644
+--- a/index.html
++++ b/index.html
+@@ -1,466 +1,339 @@
+ &lt;!doctype html&gt;
+ &lt;html lang="en"&gt;
+-  &lt;head&gt;
+-    &lt;meta charset="UTF-8" /&gt;
+-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+-    &lt;title&gt;Capital One | Credit &amp;amp; rewards in one place&lt;/title&gt;
+-    &lt;meta
+-      name="description"
+-      content="Capital One — credit, rewards, and spending tools with a modern, bank-grade experience."
+-    /&gt;
+-    &lt;link rel="icon" href="favicon.svg" type="image/svg+xml" /&gt;
+-    &lt;link rel="apple-touch-icon" href="apple-touch-icon.png" /&gt;
+-    &lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
+-    &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
+-    &lt;link
+-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
+-      rel="stylesheet"
+-    /&gt;
+-    &lt;link rel="stylesheet" href="styles.css" /&gt;
+-  &lt;/head&gt;
+-  &lt;body&gt;
+-    &lt;div class="frame-loader" data-frame-loader role="status" aria-live="polite" aria-atomic="true"&gt;
+-      &lt;div class="frame-loader__panel"&gt;
+-        &lt;p class="frame-loader__label"&gt;Loading sequence&lt;/p&gt;
+-        &lt;p class="frame-loader__progress" data-loader-progress&gt;0%&lt;/p&gt;
+-        &lt;div class="frame-loader__track" aria-hidden="true"&gt;
+-          &lt;span class="frame-loader__bar" data-loader-bar&gt;&lt;/span&gt;
+-        &lt;/div&gt;
++
++&lt;head&gt;
++  &lt;meta charset="UTF-8" /&gt;
++  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
++  &lt;title&gt;Capital One | Credit &amp;amp; rewards in one place&lt;/title&gt;
++  &lt;meta name="description"
++    content="Capital One — credit, rewards, and spending tools with a modern, bank-grade experience." /&gt;
++  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml" /&gt;
++  &lt;link rel="apple-touch-icon" href="apple-touch-icon.png" /&gt;
++  &lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
++  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
++  &lt;link
++    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
++    rel="stylesheet" /&gt;
++  &lt;link rel="stylesheet" href="styles.css" /&gt;
++&lt;/head&gt;
++
++&lt;body&gt;
++  &lt;div class="frame-loader" data-frame-loader role="status" aria-live="polite" aria-atomic="true"&gt;
++    &lt;div class="frame-loader__panel"&gt;
++      &lt;p class="frame-loader__label"&gt;Loading sequence&lt;/p&gt;
++      &lt;p class="frame-loader__progress" data-loader-progress&gt;0%&lt;/p&gt;
++      &lt;div class="frame-loader__track" aria-hidden="true"&gt;
++        &lt;span class="frame-loader__bar" data-loader-bar&gt;&lt;/span&gt;
+       &lt;/div&gt;
+     &lt;/div&gt;
+-    &lt;a class="skip-link" href="#story"&gt;Skip to content&lt;/a&gt;
+-    &lt;nav class="navbar" aria-label="Primary"&gt;
+-      &lt;div class="navbar-inner"&gt;
+-        &lt;a href="#" class="navbar-logo" aria-label="Capital One home"&gt;
+-          &lt;svg
+-            xmlns="http://www.w3.org/2000/svg"
+-            viewBox="0 0 418 150"
+-            class="navbar-logo-svg"
+-            aria-hidden="true"
+-            focusable="false"
+-          &gt;
+-            &lt;rect width="418" height="150.01" fill="none" /&gt;
+-            &lt;path
+-              d="M283.7,108.5h-.1c-17.8,12.6-38.8,25.8-61.5,39.7l-.9.5a.7.7,0,1,0,.8,1.1l.7-.4c19.3-10,41.4-21.9,63.6-34.2l.4-.2A24.7,24.7,0,0,1,283.7,108.5ZM400.5,13.9c-28-30.9-208.6-3.1-285.3,13.7l-1.8.4a.8.8,0,0,0-.6.8.6.6,0,0,0,.8.5l1.8-.3C179,17.7,311.3,2,339.7,30.2c8.7,8.6,6.7,19.7-3.4,32.8a25.7,25.7,0,0,1,11,15.8C386.6,52.7,413,27.7,400.5,13.9Z"
+-              fill="#cc2427"
+-            /&gt;
+-            &lt;path
+-              d="M295.1,100.4c.3,10.9,7.2,19.8,16.2,19.8,17.4,0,24.8-21.4,24.3-35.7-.4-10.9-7.4-19.8-16.4-19.8C304.2,64.7,294.5,86,295.1,100.4Zm-9.2-.6c-.7-18.6,13.9-37.6,35-37.6,14.2,0,23.4,9.5,23.9,23.9.7,19.6-12.9,37.6-35,37.6C295.6,123.7,286.4,114.3,285.9,99.8Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M85.5,94.9a13,13,0,0,1-2.9.8L76,96.9a10.8,10.8,0,0,0-4.6,1.4,3.2,3.2,0,0,0-1.5,2.3,2.1,2.1,0,0,0,1,2.3,7.3,7.3,0,0,0,4.2.9,16.2,16.2,0,0,0,4.4-.7,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A14.7,14.7,0,0,0,85.5,94.9Zm18.4-11.4c-.1,1.7-.4,3.2-.8,5.8L100,106.7a3.2,3.2,0,0,0,1.7,3.6v.7H83.8v-4.4a40.2,40.2,0,0,1-8.6,3.6,31.8,31.8,0,0,1-8.5,1.1c-5.8,0-9.1-.6-11.3-2.6s-3.5-3.4-3.4-6.3a9.6,9.6,0,0,1,2.2-5.1,13.5,13.5,0,0,1,4.7-3.4,28.9,28.9,0,0,1,7.2-2c3.1-.5,7.5-1,13.4-1.5a15.7,15.7,0,0,0,5.8-1.3c1.3-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.2-18.4.8-24.6,2.4l3.3-9.1a162.8,162.8,0,0,1,23.9-2C99.9,75.1,104,78.8,103.9,83.5Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M155.5,111l6.2-34.9h17.1L172.6,111Zm7.2-42.9c.5-2.9,5-5.2,10.1-5.2s8.7,2.3,8.2,5.2-5,5.2-10.1,5.2S162.2,70.9,162.7,68.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M239.3,95l-2.9.8L229.7,97a10.8,10.8,0,0,0-4.5,1.4,3,3,0,0,0-1.5,2.2,2.2,2.2,0,0,0,.9,2.4c.9.6,2.3.8,4.3.8a16.1,16.1,0,0,0,4.4-.6,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A22.4,22.4,0,0,0,239.3,95Zm18.4-11.5c-.1,1.7-.4,3.3-.8,5.8l-3.1,17.5a3.2,3.2,0,0,0,1.7,3.6v.6H237.6v-4.5a36,36,0,0,1-8.6,3.7,32.2,32.2,0,0,1-8.6,1c-5.7,0-9-.6-11.3-2.6s-3.4-3.4-3.3-6.2a9.5,9.5,0,0,1,2.2-5.2,13.3,13.3,0,0,1,4.7-3.3,25.4,25.4,0,0,1,7.1-2c3.2-.5,7.6-1,13.5-1.5a24,24,0,0,0,5.8-1.3c1.2-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.3-18.4.8-24.6,2.3l3.3-9a161.7,161.7,0,0,1,23.9-2C253.7,75.2,257.8,78.9,257.7,83.5Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M49.6,98.5A62.3,62.3,0,0,1,35.4,100c-8.1,0-14.6-4-14.2-11.5.2-4.9,6.1-15.3,20.9-15.3a24.3,24.3,0,0,1,13.3,3.6l2.1-12.1a40.3,40.3,0,0,0-16.8-2.8c-19.5.2-38.2,9-40.5,27s20,22.9,29.9,22.9c5.7,0,11.7-.3,17.2-.8Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M188.2,75.9l1.2-7.1L207.2,65l-1.9,10.9h8.8L212.4,83h-8.5l-5.1,28H181.5l5.2-28h-6.5l1.3-7h6.7Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;polygon points="275 111 257.6 111 266.4 62.4 283.3 62.8 275 111" fill="#013d5b" /&gt;
+-            &lt;path
+-              d="M133,84.3a10.4,10.4,0,0,0-6.1,2,9.4,9.4,0,0,0-3.3,6c-.6,3.1-.3,5.2.9,6.6a7.1,7.1,0,0,0,5.3,2,10.2,10.2,0,0,0,4.4-.9,8.1,8.1,0,0,0,3.3-2.8,12.5,12.5,0,0,0,1.9-4.6c.5-2.8.1-4.8-1.2-6.2A6.7,6.7,0,0,0,133,84.3Zm-31.1,38.8,8.3-46.8h15l-1.2,6a14.2,14.2,0,0,1,6.3-4.5,27,27,0,0,1,9.7-2c3.9,0,6.3.2,9.2,1.7a12.4,12.4,0,0,1,6,6.6,16.8,16.8,0,0,1,.8,9.5,20.7,20.7,0,0,1-8.4,13.7c-4.6,3.3-8.7,4.2-14.6,4.2a20.4,20.4,0,0,1-5.3-.6,12.1,12.1,0,0,1-3.4-1.3,15.5,15.5,0,0,1-2.8-2.6l-2.8,16.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M411.5,88.6c-.1-2.8-1.5-4.7-4.4-4.7-7,0-14.4,13.7-15.7,19.2C402.8,103.1,411.8,96.3,411.5,88.6Zm1.5,21.5,1.3.9c-3.4,6.9-10.3,12.5-18.5,12.5-6.7,0-12.1-4.4-12.4-12.7-.6-15,13.5-28.9,24.9-28.9,4.9,0,9.5,2.2,9.7,7.5.4,11.9-16.3,15.5-27.3,15.7a14.3,14.3,0,0,0-.4,4.4c.2,5,3.2,9.1,9.3,9.1S410.3,114.3,413,110.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M344.6,88.2l3.9-.4c1.3,0,2.4.3,2.5,1.5s-1.3,6-1.6,7.3l-2.7,11.7c-1,4.8-2.2,9.8-3.2,13.8h6.8l3.8-18.6c11.8-12.2,16.3-16.2,19-16.2a2,2,0,0,1,2.2,2.2c.1,2.1-1.3,7-1.7,8.4l-4,13.5c-.8,3.1-1.5,5.8-1.4,7.8s1.9,4.3,4.5,4.3c5,0,8.7-5.2,11.8-10.3l-.9-1.7c-1.3,2-4.2,6.5-6.6,6.5-.7,0-1.4-.5-1.4-1.7a20.5,20.5,0,0,1,1-5.5L381,94.9c1.1-4.4,1.7-7.2,1.7-8.7s-1.9-4.3-4.5-4.3c-4.5,0-10.5,3.3-23.1,17.8h-.2l1.6-7.1c.9-3.9,1.7-7.9,2.5-10.7A114.5,114.5,0,0,1,344.5,86Z"
+-              fill="#013d5b"
+-            /&gt;
+-          &lt;/svg&gt;
+-        &lt;/a&gt;
+-        &lt;div class="navbar-links"&gt;
+-          &lt;a href="#story"&gt;Overview&lt;/a&gt;
+-          &lt;a href="#cards-section"&gt;Products&lt;/a&gt;
+-          &lt;a href="#cta-section" class="nav-cta"&gt;Open account&lt;/a&gt;
+-        &lt;/div&gt;
++  &lt;/div&gt;
++  &lt;a class="skip-link" href="#story"&gt;Skip to content&lt;/a&gt;
++  &lt;nav class="navbar" aria-label="Primary"&gt;
++    &lt;div class="navbar-inner"&gt;
++      &lt;a href="#" class="navbar-logo" aria-label="Capital One home"&gt;
++        &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 418 150" class="navbar-logo-svg" aria-hidden="true"
++          focusable="false"&gt;
++          &lt;rect width="418" height="150.01" fill="none" /&gt;
++          &lt;path
++            d="M283.7,108.5h-.1c-17.8,12.6-38.8,25.8-61.5,39.7l-.9.5a.7.7,0,1,0,.8,1.1l.7-.4c19.3-10,41.4-21.9,63.6-34.2l.4-.2A24.7,24.7,0,0,1,283.7,108.5ZM400.5,13.9c-28-30.9-208.6-3.1-285.3,13.7l-1.8.4a.8.8,0,0,0-.6.8.6.6,0,0,0,.8.5l1.8-.3C179,17.7,311.3,2,339.7,30.2c8.7,8.6,6.7,19.7-3.4,32.8a25.7,25.7,0,0,1,11,15.8C386.6,52.7,413,27.7,400.5,13.9Z"
++            fill="#cc2427" /&gt;
++          &lt;path
++            d="M295.1,100.4c.3,10.9,7.2,19.8,16.2,19.8,17.4,0,24.8-21.4,24.3-35.7-.4-10.9-7.4-19.8-16.4-19.8C304.2,64.7,294.5,86,295.1,100.4Zm-9.2-.6c-.7-18.6,13.9-37.6,35-37.6,14.2,0,23.4,9.5,23.9,23.9.7,19.6-12.9,37.6-35,37.6C295.6,123.7,286.4,114.3,285.9,99.8Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M85.5,94.9a13,13,0,0,1-2.9.8L76,96.9a10.8,10.8,0,0,0-4.6,1.4,3.2,3.2,0,0,0-1.5,2.3,2.1,2.1,0,0,0,1,2.3,7.3,7.3,0,0,0,4.2.9,16.2,16.2,0,0,0,4.4-.7,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A14.7,14.7,0,0,0,85.5,94.9Zm18.4-11.4c-.1,1.7-.4,3.2-.8,5.8L100,106.7a3.2,3.2,0,0,0,1.7,3.6v.7H83.8v-4.4a40.2,40.2,0,0,1-8.6,3.6,31.8,31.8,0,0,1-8.5,1.1c-5.8,0-9.1-.6-11.3-2.6s-3.5-3.4-3.4-6.3a9.6,9.6,0,0,1,2.2-5.1,13.5,13.5,0,0,1,4.7-3.4,28.9,28.9,0,0,1,7.2-2c3.1-.5,7.5-1,13.4-1.5a15.7,15.7,0,0,0,5.8-1.3c1.3-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.2-18.4.8-24.6,2.4l3.3-9.1a162.8,162.8,0,0,1,23.9-2C99.9,75.1,104,78.8,103.9,83.5Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M155.5,111l6.2-34.9h17.1L172.6,111Zm7.2-42.9c.5-2.9,5-5.2,10.1-5.2s8.7,2.3,8.2,5.2-5,5.2-10.1,5.2S162.2,70.9,162.7,68.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M239.3,95l-2.9.8L229.7,97a10.8,10.8,0,0,0-4.5,1.4,3,3,0,0,0-1.5,2.2,2.2,2.2,0,0,0,.9,2.4c.9.6,2.3.8,4.3.8a16.1,16.1,0,0,0,4.4-.6,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A22.4,22.4,0,0,0,239.3,95Zm18.4-11.5c-.1,1.7-.4,3.3-.8,5.8l-3.1,17.5a3.2,3.2,0,0,0,1.7,3.6v.6H237.6v-4.5a36,36,0,0,1-8.6,3.7,32.2,32.2,0,0,1-8.6,1c-5.7,0-9-.6-11.3-2.6s-3.4-3.4-3.3-6.2a9.5,9.5,0,0,1,2.2-5.2,13.3,13.3,0,0,1,4.7-3.3,25.4,25.4,0,0,1,7.1-2c3.2-.5,7.6-1,13.5-1.5a24,24,0,0,0,5.8-1.3c1.2-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.3-18.4.8-24.6,2.3l3.3-9a161.7,161.7,0,0,1,23.9-2C253.7,75.2,257.8,78.9,257.7,83.5Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M49.6,98.5A62.3,62.3,0,0,1,35.4,100c-8.1,0-14.6-4-14.2-11.5.2-4.9,6.1-15.3,20.9-15.3a24.3,24.3,0,0,1,13.3,3.6l2.1-12.1a40.3,40.3,0,0,0-16.8-2.8c-19.5.2-38.2,9-40.5,27s20,22.9,29.9,22.9c5.7,0,11.7-.3,17.2-.8Z"
++            fill="#013d5b" /&gt;
++          &lt;path d="M188.2,75.9l1.2-7.1L207.2,65l-1.9,10.9h8.8L212.4,83h-8.5l-5.1,28H181.5l5.2-28h-6.5l1.3-7h6.7Z"
++            fill="#013d5b" /&gt;
++          &lt;polygon points="275 111 257.6 111 266.4 62.4 283.3 62.8 275 111" fill="#013d5b" /&gt;
++          &lt;path
++            d="M133,84.3a10.4,10.4,0,0,0-6.1,2,9.4,9.4,0,0,0-3.3,6c-.6,3.1-.3,5.2.9,6.6a7.1,7.1,0,0,0,5.3,2,10.2,10.2,0,0,0,4.4-.9,8.1,8.1,0,0,0,3.3-2.8,12.5,12.5,0,0,0,1.9-4.6c.5-2.8.1-4.8-1.2-6.2A6.7,6.7,0,0,0,133,84.3Zm-31.1,38.8,8.3-46.8h15l-1.2,6a14.2,14.2,0,0,1,6.3-4.5,27,27,0,0,1,9.7-2c3.9,0,6.3.2,9.2,1.7a12.4,12.4,0,0,1,6,6.6,16.8,16.8,0,0,1,.8,9.5,20.7,20.7,0,0,1-8.4,13.7c-4.6,3.3-8.7,4.2-14.6,4.2a20.4,20.4,0,0,1-5.3-.6,12.1,12.1,0,0,1-3.4-1.3,15.5,15.5,0,0,1-2.8-2.6l-2.8,16.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M411.5,88.6c-.1-2.8-1.5-4.7-4.4-4.7-7,0-14.4,13.7-15.7,19.2C402.8,103.1,411.8,96.3,411.5,88.6Zm1.5,21.5,1.3.9c-3.4,6.9-10.3,12.5-18.5,12.5-6.7,0-12.1-4.4-12.4-12.7-.6-15,13.5-28.9,24.9-28.9,4.9,0,9.5,2.2,9.7,7.5.4,11.9-16.3,15.5-27.3,15.7a14.3,14.3,0,0,0-.4,4.4c.2,5,3.2,9.1,9.3,9.1S410.3,114.3,413,110.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M344.6,88.2l3.9-.4c1.3,0,2.4.3,2.5,1.5s-1.3,6-1.6,7.3l-2.7,11.7c-1,4.8-2.2,9.8-3.2,13.8h6.8l3.8-18.6c11.8-12.2,16.3-16.2,19-16.2a2,2,0,0,1,2.2,2.2c.1,2.1-1.3,7-1.7,8.4l-4,13.5c-.8,3.1-1.5,5.8-1.4,7.8s1.9,4.3,4.5,4.3c5,0,8.7-5.2,11.8-10.3l-.9-1.7c-1.3,2-4.2,6.5-6.6,6.5-.7,0-1.4-.5-1.4-1.7a20.5,20.5,0,0,1,1-5.5L381,94.9c1.1-4.4,1.7-7.2,1.7-8.7s-1.9-4.3-4.5-4.3c-4.5,0-10.5,3.3-23.1,17.8h-.2l1.6-7.1c.9-3.9,1.7-7.9,2.5-10.7A114.5,114.5,0,0,1,344.5,86Z"
++            fill="#013d5b" /&gt;
++        &lt;/svg&gt;
++      &lt;/a&gt;
++      &lt;div class="navbar-links"&gt;
++        &lt;a href="#story"&gt;Overview&lt;/a&gt;
++        &lt;a href="#cards-section"&gt;Products&lt;/a&gt;
++        &lt;a href="#cta-section" class="nav-cta"&gt;Open account&lt;/a&gt;
+       &lt;/div&gt;
+-    &lt;/nav&gt;
++    &lt;/div&gt;
++  &lt;/nav&gt;
+ 
+-    &lt;header class="hero"&gt;
+-      &lt;div class="hero-glow" aria-hidden="true"&gt;&lt;/div&gt;
+-      &lt;!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) --&gt;
+-      &lt;div class="hero-scene" aria-hidden="true"&gt;
+-        &lt;div class="hero-scene-inner"&gt;
+-          &lt;svg
+-            class="hero-mesh"
+-            viewBox="0 0 800 800"
+-            preserveAspectRatio="xMidYMid slice"
+-            focusable="false"
+-          &gt;
+-            &lt;defs&gt;
+-              &lt;linearGradient
+-                id="heroMeshGrad"
+-                x1="0%"
+-                y1="0%"
+-                x2="100%"
+-                y2="100%"
+-              &gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.28" /&gt;
+-                &lt;stop offset="50%" stop-color="#0071e3" stop-opacity="0.14" /&gt;
+-                &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.2" /&gt;
+-              &lt;/linearGradient&gt;
+-            &lt;/defs&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="340"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="0.75"
+-              opacity="0.35"
+-            /&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="275"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="1.1"
+-              opacity="0.5"
+-            /&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="200"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="0.9"
+-              opacity="0.38"
+-            /&gt;
+-          &lt;/svg&gt;
+-          &lt;div class="hero-orb hero-orb--a"&gt;&lt;/div&gt;
+-          &lt;div class="hero-orb hero-orb--b"&gt;&lt;/div&gt;
+-          &lt;div class="hero-card-deck"&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--back"&gt;&lt;/div&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--mid"&gt;&lt;/div&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--front"&gt;&lt;/div&gt;
+-          &lt;/div&gt;
+-          &lt;div class="hero-shard hero-shard--one"&gt;&lt;/div&gt;
+-          &lt;div class="hero-shard hero-shard--two"&gt;&lt;/div&gt;
+-          &lt;!-- Banking / card line-art + faint product silhouettes --&gt;
+-          &lt;svg
+-            class="hero-banking-svg"
+-            viewBox="0 0 1600 900"
+-            preserveAspectRatio="xMidYMid slice"
+-            xmlns="http://www.w3.org/2000/svg"
+-            fill="none"
+-            focusable="false"
+-            aria-hidden="true"
+-          &gt;
+-            &lt;defs&gt;
+-              &lt;linearGradient
+-                id="heroBankStroke"
+-                x1="0%"
+-                y1="0%"
+-                x2="100%"
+-                y2="100%"
+-              &gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.42" /&gt;
+-                &lt;stop offset="55%" stop-color="#0071e3" stop-opacity="0.22" /&gt;
+-                &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.28" /&gt;
+-              &lt;/linearGradient&gt;
+-              &lt;linearGradient id="heroBankFill" x1="0%" y1="0%" x2="0%" y2="100%"&gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.06" /&gt;
+-                &lt;stop offset="100%" stop-color="#004a7c" stop-opacity="0.02" /&gt;
+-              &lt;/linearGradient&gt;
+-            &lt;/defs&gt;
+-            &lt;g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15"&gt;
+-              &lt;g transform="translate(48 498) rotate(-10)"&gt;
+-                &lt;rect
+-                  width="308"
+-                  height="194"
+-                  x="0"
+-                  y="0"
+-                  rx="22"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="308" height="56" x="0" y="0" rx="22" fill="rgba(0,74,124,0.07)" stroke="none" /&gt;
+-                &lt;rect x="28" y="76" width="52" height="40" rx="7" fill="rgba(0,74,124,0.05)" stroke-width="1" /&gt;
+-                &lt;line x1="28" y1="88" x2="80" y2="88" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;line x1="28" y1="96" x2="80" y2="96" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;line x1="28" y1="104" x2="80" y2="104" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;rect x="108" y="142" width="172" height="10" rx="4" fill="rgba(0,113,227,0.06)" stroke="none" /&gt;
+-              &lt;/g&gt;
+-              &lt;g transform="translate(1188 96) rotate(11)"&gt;
+-                &lt;rect
+-                  width="220"
+-                  height="138"
+-                  rx="16"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="220" height="42" x="0" y="0" rx="16" fill="rgba(208,48,39,0.05)" stroke="none" /&gt;
+-                &lt;rect x="20" y="58" width="38" height="30" rx="5" fill="rgba(0,74,124,0.04)" stroke-width="0.9" /&gt;
+-              &lt;/g&gt;
+-              &lt;g transform="translate(560 712) rotate(-3)"&gt;
+-                &lt;rect
+-                  width="380"
+-                  height="118"
+-                  rx="18"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="380" height="44" rx="18" fill="rgba(0,74,124,0.05)" stroke="none" /&gt;
+-                &lt;rect x="320" y="62" width="44" height="34" rx="6" fill="rgba(0,113,227,0.05)" stroke-width="1" /&gt;
+-              &lt;/g&gt;
+-            &lt;/g&gt;
+-            &lt;g
+-              transform="translate(1272 388)"
+-              stroke="url(#heroBankStroke)"
+-              stroke-width="1.6"
+-              stroke-linecap="round"
+-              opacity="0.5"
+-            &gt;
+-              &lt;path d="M8 36 Q 28 8 56 36" /&gt;
+-              &lt;path d="M18 36 Q 30 18 48 36" /&gt;
+-              &lt;path d="M26 36 Q 34 26 42 36" /&gt;
+-            &lt;/g&gt;
+-            &lt;g transform="translate(96 152)" opacity="0.45" stroke="url(#heroBankStroke)" stroke-width="1.2"&gt;
+-              &lt;path
+-                fill="url(#heroBankFill)"
+-                stroke="url(#heroBankStroke)"
+-                d="M52 10 L88 24 V58 Q72 78 52 86 Q32 78 16 58V24Z"
+-              /&gt;
+-              &lt;path
+-                fill="none"
+-                d="M34 48 L46 60 L72 32"
+-                stroke-width="2"
+-                stroke-linecap="round"
+-                stroke-linejoin="round"
+-              /&gt;
++  &lt;header class="hero"&gt;
++    &lt;div class="hero-glow" aria-hidden="true"&gt;&lt;/div&gt;
++    &lt;!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) --&gt;
++    &lt;div class="hero-scene" aria-hidden="true"&gt;
++      &lt;div class="hero-scene-inner"&gt;
++        &lt;svg class="hero-mesh" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice" focusable="false"&gt;
++          &lt;defs&gt;
++            &lt;linearGradient id="heroMeshGrad" x1="0%" y1="0%" x2="100%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.28" /&gt;
++              &lt;stop offset="50%" stop-color="#0071e3" stop-opacity="0.14" /&gt;
++              &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.2" /&gt;
++            &lt;/linearGradient&gt;
++          &lt;/defs&gt;
++          &lt;circle cx="400" cy="400" r="340" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.75"
++            opacity="0.35" /&gt;
++          &lt;circle cx="400" cy="400" r="275" fill="none" stroke="url(#heroMeshGrad)" stroke-width="1.1" opacity="0.5" /&gt;
++          &lt;circle cx="400" cy="400" r="200" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.9" opacity="0.38" /&gt;
++        &lt;/svg&gt;
++        &lt;div class="hero-orb hero-orb--a"&gt;&lt;/div&gt;
++        &lt;div class="hero-orb hero-orb--b"&gt;&lt;/div&gt;
++        &lt;div class="hero-card-deck"&gt;
++          &lt;div class="hero-card-3d hero-card-3d--back"&gt;&lt;/div&gt;
++          &lt;div class="hero-card-3d hero-card-3d--mid"&gt;&lt;/div&gt;
++          &lt;div class="hero-card-3d hero-card-3d--front"&gt;&lt;/div&gt;
++        &lt;/div&gt;
++        &lt;div class="hero-shard hero-shard--one"&gt;&lt;/div&gt;
++        &lt;div class="hero-shard hero-shard--two"&gt;&lt;/div&gt;
++        &lt;!-- Banking / card line-art + faint product silhouettes --&gt;
++        &lt;svg class="hero-banking-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"
++          xmlns="http://www.w3.org/2000/svg" fill="none" focusable="false" aria-hidden="true"&gt;
++          &lt;defs&gt;
++            &lt;linearGradient id="heroBankStroke" x1="0%" y1="0%" x2="100%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.42" /&gt;
++              &lt;stop offset="55%" stop-color="#0071e3" stop-opacity="0.22" /&gt;
++              &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.28" /&gt;
++            &lt;/linearGradient&gt;
++            &lt;linearGradient id="heroBankFill" x1="0%" y1="0%" x2="0%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.06" /&gt;
++              &lt;stop offset="100%" stop-color="#004a7c" stop-opacity="0.02" /&gt;
++            &lt;/linearGradient&gt;
++          &lt;/defs&gt;
++          &lt;g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15"&gt;
++            &lt;g transform="translate(48 498) rotate(-10)"&gt;
++              &lt;rect width="308" height="194" x="0" y="0" rx="22" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="308" height="56" x="0" y="0" rx="22" fill="rgba(0,74,124,0.07)" stroke="none" /&gt;
++              &lt;rect x="28" y="76" width="52" height="40" rx="7" fill="rgba(0,74,124,0.05)" stroke-width="1" /&gt;
++              &lt;line x1="28" y1="88" x2="80" y2="88" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;line x1="28" y1="96" x2="80" y2="96" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;line x1="28" y1="104" x2="80" y2="104" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;rect x="108" y="142" width="172" height="10" rx="4" fill="rgba(0,113,227,0.06)" stroke="none" /&gt;
+             &lt;/g&gt;
+-            &lt;g
+-              transform="translate(1008 604) rotate(8)"
+-              stroke="url(#heroBankStroke)"
+-              stroke-width="1"
+-              opacity="0.48"
+-            &gt;
+-              &lt;rect x="0" y="0" width="48" height="38" rx="7" fill="rgba(255,255,255,0.35)" /&gt;
+-              &lt;line x1="8" y1="10" x2="40" y2="10" /&gt;
+-              &lt;line x1="8" y1="17" x2="40" y2="17" /&gt;
+-              &lt;line x1="8" y1="24" x2="40" y2="24" /&gt;
+-              &lt;line x1="8" y1="31" x2="28" y2="31" /&gt;
++            &lt;g transform="translate(1188 96) rotate(11)"&gt;
++              &lt;rect width="220" height="138" rx="16" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="220" height="42" x="0" y="0" rx="16" fill="rgba(208,48,39,0.05)" stroke="none" /&gt;
++              &lt;rect x="20" y="58" width="38" height="30" rx="5" fill="rgba(0,74,124,0.04)" stroke-width="0.9" /&gt;
+             &lt;/g&gt;
+-            &lt;g transform="translate(380 120)" opacity="0.35" stroke="url(#heroBankStroke)" stroke-width="1"&gt;
+-              &lt;circle cx="0" cy="0" r="3" fill="rgba(0,74,124,0.25)" stroke="none" /&gt;
+-              &lt;circle cx="28" cy="0" r="3" fill="rgba(0,74,124,0.2)" stroke="none" /&gt;
+-              &lt;circle cx="56" cy="0" r="3" fill="rgba(0,74,124,0.15)" stroke="none" /&gt;
+-              &lt;path d="M0 16 H56" stroke-linecap="round" /&gt;
+-              &lt;path d="M0 26 H40" stroke-linecap="round" opacity="0.7" /&gt;
++            &lt;g transform="translate(560 712) rotate(-3)"&gt;
++              &lt;rect width="380" height="118" rx="18" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="380" height="44" rx="18" fill="rgba(0,74,124,0.05)" stroke="none" /&gt;
++              &lt;rect x="320" y="62" width="44" height="34" rx="6" fill="rgba(0,113,227,0.05)" stroke-width="1" /&gt;
+             &lt;/g&gt;
+-          &lt;/svg&gt;
+-          &lt;div class="hero-product-ghosts" aria-hidden="true"&gt;
+-            &lt;img
+-              src="cards/platinum-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--a"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-            &lt;img
+-              src="cards/venture-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--b"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-            &lt;img
+-              src="cards/quicksilver-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--c"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-          &lt;/div&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(1272 388)" stroke="url(#heroBankStroke)" stroke-width="1.6" stroke-linecap="round"
++            opacity="0.5"&gt;
++            &lt;path d="M8 36 Q 28 8 56 36" /&gt;
++            &lt;path d="M18 36 Q 30 18 48 36" /&gt;
++            &lt;path d="M26 36 Q 34 26 42 36" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(96 152)" opacity="0.45" stroke="url(#heroBankStroke)" stroke-width="1.2"&gt;
++            &lt;path fill="url(#heroBankFill)" stroke="url(#heroBankStroke)"
++              d="M52 10 L88 24 V58 Q72 78 52 86 Q32 78 16 58V24Z" /&gt;
++            &lt;path fill="none" d="M34 48 L46 60 L72 32" stroke-width="2" stroke-linecap="round"
++              stroke-linejoin="round" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(1008 604) rotate(8)" stroke="url(#heroBankStroke)" stroke-width="1" opacity="0.48"&gt;
++            &lt;rect x="0" y="0" width="48" height="38" rx="7" fill="rgba(255,255,255,0.35)" /&gt;
++            &lt;line x1="8" y1="10" x2="40" y2="10" /&gt;
++            &lt;line x1="8" y1="17" x2="40" y2="17" /&gt;
++            &lt;line x1="8" y1="24" x2="40" y2="24" /&gt;
++            &lt;line x1="8" y1="31" x2="28" y2="31" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(380 120)" opacity="0.35" stroke="url(#heroBankStroke)" stroke-width="1"&gt;
++            &lt;circle cx="0" cy="0" r="3" fill="rgba(0,74,124,0.25)" stroke="none" /&gt;
++            &lt;circle cx="28" cy="0" r="3" fill="rgba(0,74,124,0.2)" stroke="none" /&gt;
++            &lt;circle cx="56" cy="0" r="3" fill="rgba(0,74,124,0.15)" stroke="none" /&gt;
++            &lt;path d="M0 16 H56" stroke-linecap="round" /&gt;
++            &lt;path d="M0 26 H40" stroke-linecap="round" opacity="0.7" /&gt;
++          &lt;/g&gt;
++        &lt;/svg&gt;
++        &lt;div class="hero-product-ghosts" aria-hidden="true"&gt;
++          &lt;img src="cards/platinum-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--a" width="320"
++            height="202" decoding="async" /&gt;
++          &lt;img src="cards/venture-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--b" width="320"
++            height="202" decoding="async" /&gt;
++          &lt;img src="cards/quicksilver-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--c"
++            width="320" height="202" decoding="async" /&gt;
+         &lt;/div&gt;
+       &lt;/div&gt;
+-      &lt;!-- &lt;p class="hero-brand"&gt;
+-        &lt;span class="hero-brand--capital"&gt;Capital&lt;/span&gt;
+-        &lt;span class="hero-brand--one"&gt;One&lt;/span&gt;
+-      &lt;/p&gt; --&gt;
+-      &lt;p class="hero-tagline"&gt;Credit cards · Rewards · Insights&lt;/p&gt;
+-      &lt;h1
+-        class="hero-title"
+-        aria-label="Your spending, followed by rotating one-word highlights."
+-      &gt;
+-        &lt;span class="hero-h1-line1" aria-hidden="true"&gt;Your spending,&lt;/span&gt;
+-        &lt;span class="hero-h1-line2" aria-hidden="true"&gt;
+-          &lt;span
+-            id="hero-typed"
+-            class="hero-h1-typed"
+-            data-typed-fallback="Simplified."
+-          &gt;&lt;/span&gt;
+-        &lt;/span&gt;
+-      &lt;/h1&gt;
+-      &lt;p class="hero-body"&gt;
+-        Compare cards, track rewards, and manage spending in one place—with
+-        bank-grade security and tools designed for clarity.
+-      &lt;/p&gt;
+-      &lt;ul class="hero-trust" aria-label="Security and account protections"&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          Bank-level encryption
+-        &lt;/li&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          Real-time purchase alerts
+-        &lt;/li&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          $0 fraud liability
+-        &lt;/li&gt;
+-      &lt;/ul&gt;
+-      &lt;div class="scroll-cue" aria-hidden="true"&gt;
+-        &lt;span class="scroll-cue-label"&gt;Scroll for more&lt;/span&gt;
+-        &lt;span class="scroll-cue-line"&gt;&lt;/span&gt;
+-      &lt;/div&gt;
+-    &lt;/header&gt;
++    &lt;/div&gt;
++    &lt;p class="hero-tagline"&gt;Credit cards · Rewards · Insights&lt;/p&gt;
++    &lt;h1 class="hero-title" aria-label="Your spending, followed by rotating one-word highlights."&gt;
++      &lt;span class="hero-h1-line1" aria-hidden="true"&gt;Your spending,&lt;/span&gt;
++      &lt;span class="hero-h1-line2" aria-hidden="true"&gt;
++        &lt;span id="hero-typed" class="hero-h1-typed" data-typed-fallback="Simplified."&gt;&lt;/span&gt;
++      &lt;/span&gt;
++    &lt;/h1&gt;
++    &lt;p class="hero-body"&gt;
++      Compare cards, track rewards, and manage spending in one place—with
++      bank-grade security and tools designed for clarity.
++    &lt;/p&gt;
++    &lt;ul class="hero-trust" aria-label="Security and account protections"&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        Bank-level encryption
++      &lt;/li&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        Real-time purchase alerts
++      &lt;/li&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        $0 fraud liability
++      &lt;/li&gt;
++    &lt;/ul&gt;
++    &lt;div class="scroll-cue" aria-hidden="true"&gt;
++      &lt;span class="scroll-cue-label"&gt;Scroll for more&lt;/span&gt;
++      &lt;span class="scroll-cue-line"&gt;&lt;/span&gt;
++    &lt;/div&gt;
++  &lt;/header&gt;
+ 
+-    &lt;main&gt;
+-      &lt;section id="story" class="story-intro"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;001 / Our story&lt;/p&gt;
+-          &lt;h2&gt;From trusted brand to everyday financial tool.&lt;/h2&gt;
+-        &lt;/div&gt;
+-      &lt;/section&gt;
++  &lt;main&gt;
++    &lt;section id="story" class="story-intro"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;001 / Our story&lt;/p&gt;
++        &lt;h2&gt;From trusted brand to everyday financial tool.&lt;/h2&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section class="sequence-section"&gt;
+-        &lt;div class="sequence-pin" aria-label="Pinned animation sequence"&gt;
+-          &lt;div class="sequence-shell"&gt;
+-            &lt;canvas id="sequence-canvas" aria-hidden="true"&gt;&lt;/canvas&gt;
++    &lt;section class="sequence-section"&gt;
++      &lt;div class="sequence-pin" aria-label="Pinned animation sequence"&gt;
++        &lt;div class="sequence-shell"&gt;
++          &lt;canvas id="sequence-canvas" aria-hidden="true"&gt;&lt;/canvas&gt;
+ 
+-            &lt;article class="callout callout--left" data-callout="barkley"&gt;
+-              &lt;p class="callout-label"&gt;Charles Barkley&lt;/p&gt;
+-              &lt;p&gt;
+-                One of basketball's most recognizable figures, known for his
+-                Hall of Fame career, larger-than-life presence, and decades
+-                of influence across sports and media.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
++          &lt;article class="callout callout--left" data-callout="barkley"&gt;
++            &lt;p class="callout-label"&gt;Charles Barkley&lt;/p&gt;
++            &lt;p&gt;
++              One of basketball's most recognizable figures, known for his
++              Hall of Fame career, larger-than-life presence, and decades
++              of influence across sports and media.
++            &lt;/p&gt;
++          &lt;/article&gt;
+ 
+-            &lt;article class="callout callout--right" data-callout="fairbank"&gt;
+-              &lt;p class="callout-label"&gt;Richard Fairbank&lt;/p&gt;
+-              &lt;p&gt;
+-                The longtime founder and leader of Capital One, widely
+-                recognized for helping shape the company into one of the most
+-                prominent names in consumer finance.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
++          &lt;article class="callout callout--right" data-callout="fairbank"&gt;
++            &lt;p class="callout-label"&gt;Richard Fairbank&lt;/p&gt;
++            &lt;p&gt;
++              The longtime founder and leader of Capital One, widely
++              recognized for helping shape the company into one of the most
++              prominent names in consumer finance.
++            &lt;/p&gt;
++          &lt;/article&gt;
+ 
+-            &lt;article class="callout callout--bottom" data-callout="trusted"&gt;
+-              &lt;p class="callout-label"&gt;Trusted by millions&lt;/p&gt;
+-              &lt;p&gt;
+-                Capital One cards combine everyday usability with strong
+-                rewards, flexible options, and a trusted brand experience
+-                designed for modern consumers.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
+-          &lt;/div&gt;
++          &lt;article class="callout callout--bottom" data-callout="trusted"&gt;
++            &lt;p class="callout-label"&gt;Trusted by millions&lt;/p&gt;
++            &lt;p&gt;
++              Capital One cards combine everyday usability with strong
++              rewards, flexible options, and a trusted brand experience
++              designed for modern consumers.
++            &lt;/p&gt;
++          &lt;/article&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section class="stats-band"&gt;
+-        &lt;div class="stats-row"&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="100"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;M+&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Customers served&lt;/p&gt;
+-          &lt;/div&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="4"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;x&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Rewards categories&lt;/p&gt;
+-          &lt;/div&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="0"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;%&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Annual fee on select cards&lt;/p&gt;
+-          &lt;/div&gt;
++    &lt;section class="stats-band"&gt;
++      &lt;div class="stats-row"&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="100"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;M+&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Customers served&lt;/p&gt;
++        &lt;/div&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="4"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;x&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Rewards categories&lt;/p&gt;
+         &lt;/div&gt;
+-        &lt;div class="marquee-wrap"&gt;
+-          &lt;p class="marquee-text" aria-hidden="true"&gt;
+-            Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash;
+-          &lt;/p&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="0"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;%&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Annual fee on select cards&lt;/p&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++      &lt;div class="marquee-wrap"&gt;
++        &lt;p class="marquee-text" aria-hidden="true"&gt;
++          Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash;
++        &lt;/p&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section id="cards-section" class="cards-section"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;002 / Card lineup&lt;/p&gt;
+-          &lt;h2&gt;Pick the card that fits how you spend.&lt;/h2&gt;
+-          &lt;div class="cards-grid"&gt;
+-            &lt;article class="card-item card--savor"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/savor-removebg-preview.png" alt="SavorOne credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;SavorOne&lt;/h3&gt;
+-                &lt;p&gt;Everyday rewards built for real life.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--platinum"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/platinum-removebg-preview.png" alt="Platinum credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;Platinum&lt;/h3&gt;
+-                &lt;p&gt;Simple, reliable credit with clarity.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--venture"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/venture-removebg-preview.png" alt="Venture credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;Venture&lt;/h3&gt;
+-                &lt;p&gt;Travel-focused rewards with flexibility.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--quicksilver"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/quicksilver-removebg-preview.png" alt="Quicksilver credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;QuickSilver&lt;/h3&gt;
+-                &lt;p&gt;Straightforward unlimited cash back.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-          &lt;/div&gt;
++    &lt;section id="cards-section" class="cards-section"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;002 / Card lineup&lt;/p&gt;
++        &lt;h2&gt;Pick the card that fits how you spend.&lt;/h2&gt;
++        &lt;div class="cards-grid"&gt;
++          &lt;article class="card-item card--savor"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/savor-removebg-preview.png" alt="SavorOne credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;SavorOne&lt;/h3&gt;
++              &lt;p&gt;Everyday rewards built for real life.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--platinum"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/platinum-removebg-preview.png" alt="Platinum credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;Platinum&lt;/h3&gt;
++              &lt;p&gt;Simple, reliable credit with clarity.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--venture"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/venture-removebg-preview.png" alt="Venture credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;Venture&lt;/h3&gt;
++              &lt;p&gt;Travel-focused rewards with flexibility.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--quicksilver"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/quicksilver-removebg-preview.png" alt="Quicksilver credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;QuickSilver&lt;/h3&gt;
++              &lt;p&gt;Straightforward unlimited cash back.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section id="cta-section" class="cta-section"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;003 / Get started&lt;/p&gt;
+-          &lt;h2&gt;Apply in minutes. Manage anytime.&lt;/h2&gt;
+-          &lt;p&gt;
+-            See rates, rewards, and benefits side by side—then continue in the
+-            app with spending insights and payment tools.
+-          &lt;/p&gt;
+-          &lt;div class="cta-actions"&gt;
+-            &lt;a href="#" class="btn btn-primary"&gt;Compare cards&lt;/a&gt;
+-            &lt;a href="#" class="btn btn-secondary"&gt;View disclosures&lt;/a&gt;
+-          &lt;/div&gt;
++    &lt;section id="cta-section" class="cta-section"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;003 / Get started&lt;/p&gt;
++        &lt;h2&gt;Apply in minutes. Manage anytime.&lt;/h2&gt;
++        &lt;p&gt;
++          See rates, rewards, and benefits side by side—then continue in the
++          app with spending insights and payment tools.
++        &lt;/p&gt;
++        &lt;div class="cta-actions"&gt;
++          &lt;a href="#" class="btn btn-primary"&gt;Compare cards&lt;/a&gt;
++          &lt;a href="#" class="btn btn-secondary"&gt;View disclosures&lt;/a&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
+-    &lt;/main&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
++  &lt;/main&gt;
++
++  &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"&gt;&lt;/script&gt;
++  &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
++  &lt;script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"&gt;&lt;/script&gt;
++  &lt;script src="script.js"&gt;&lt;/script&gt;
++&lt;/body&gt;
+ 
+-    &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"&gt;&lt;/script&gt;
+-    &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
+-    &lt;script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"&gt;&lt;/script&gt;
+-    &lt;script src="script.js"&gt;&lt;/script&gt;
+-  &lt;/body&gt;
+-&lt;/html&gt;
++&lt;/html&gt;
+\ No newline at end of file
+diff --git a/script.js b/script.js
+index bd60491..83ec9f5 100644
+--- a/script.js
++++ b/script.js
+@@ -313,9 +313,8 @@ function initHeroTyped() {
+ 
+ function animateHero() {
+ 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+-	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
+-		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
+-		.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
++	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0);
++	tl.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
+ 		.from(".hero-title", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
+ 		.call(initHeroTyped, [], "&gt;+0.06")
+ 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git log --oneline -6</summary>
+
+```bash
+git log --oneline -6
+```
+
+```
+9b647ae real fix update
+db69413 specstory
+806ca27 Merge origin/main into fix/gsap-chatgpt-solution.
+49ee9d9 specstory
+8631433 Adjust sequence trigger behavior to reduce page regressions.
+14ec560 Merge pull request #20 from shindigira/revert-19-fix/gsap-chatgpt-solution
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: git diff -- "script.js" "index.html"</summary>
+
+```bash
+git diff -- "script.js" "index.html"
+```
+
+```
+diff --git a/index.html b/index.html
+index 8fd453f..4adc966 100644
+--- a/index.html
++++ b/index.html
+@@ -1,466 +1,339 @@
+ &lt;!doctype html&gt;
+ &lt;html lang="en"&gt;
+-  &lt;head&gt;
+-    &lt;meta charset="UTF-8" /&gt;
+-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+-    &lt;title&gt;Capital One | Credit &amp;amp; rewards in one place&lt;/title&gt;
+-    &lt;meta
+-      name="description"
+-      content="Capital One — credit, rewards, and spending tools with a modern, bank-grade experience."
+-    /&gt;
+-    &lt;link rel="icon" href="favicon.svg" type="image/svg+xml" /&gt;
+-    &lt;link rel="apple-touch-icon" href="apple-touch-icon.png" /&gt;
+-    &lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
+-    &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
+-    &lt;link
+-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
+-      rel="stylesheet"
+-    /&gt;
+-    &lt;link rel="stylesheet" href="styles.css" /&gt;
+-  &lt;/head&gt;
+-  &lt;body&gt;
+-    &lt;div class="frame-loader" data-frame-loader role="status" aria-live="polite" aria-atomic="true"&gt;
+-      &lt;div class="frame-loader__panel"&gt;
+-        &lt;p class="frame-loader__label"&gt;Loading sequence&lt;/p&gt;
+-        &lt;p class="frame-loader__progress" data-loader-progress&gt;0%&lt;/p&gt;
+-        &lt;div class="frame-loader__track" aria-hidden="true"&gt;
+-          &lt;span class="frame-loader__bar" data-loader-bar&gt;&lt;/span&gt;
+-        &lt;/div&gt;
++
++&lt;head&gt;
++  &lt;meta charset="UTF-8" /&gt;
++  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
++  &lt;title&gt;Capital One | Credit &amp;amp; rewards in one place&lt;/title&gt;
++  &lt;meta name="description"
++    content="Capital One — credit, rewards, and spending tools with a modern, bank-grade experience." /&gt;
++  &lt;link rel="icon" href="favicon.svg" type="image/svg+xml" /&gt;
++  &lt;link rel="apple-touch-icon" href="apple-touch-icon.png" /&gt;
++  &lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
++  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
++  &lt;link
++    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
++    rel="stylesheet" /&gt;
++  &lt;link rel="stylesheet" href="styles.css" /&gt;
++&lt;/head&gt;
++
++&lt;body&gt;
++  &lt;div class="frame-loader" data-frame-loader role="status" aria-live="polite" aria-atomic="true"&gt;
++    &lt;div class="frame-loader__panel"&gt;
++      &lt;p class="frame-loader__label"&gt;Loading sequence&lt;/p&gt;
++      &lt;p class="frame-loader__progress" data-loader-progress&gt;0%&lt;/p&gt;
++      &lt;div class="frame-loader__track" aria-hidden="true"&gt;
++        &lt;span class="frame-loader__bar" data-loader-bar&gt;&lt;/span&gt;
+       &lt;/div&gt;
+     &lt;/div&gt;
+-    &lt;a class="skip-link" href="#story"&gt;Skip to content&lt;/a&gt;
+-    &lt;nav class="navbar" aria-label="Primary"&gt;
+-      &lt;div class="navbar-inner"&gt;
+-        &lt;a href="#" class="navbar-logo" aria-label="Capital One home"&gt;
+-          &lt;svg
+-            xmlns="http://www.w3.org/2000/svg"
+-            viewBox="0 0 418 150"
+-            class="navbar-logo-svg"
+-            aria-hidden="true"
+-            focusable="false"
+-          &gt;
+-            &lt;rect width="418" height="150.01" fill="none" /&gt;
+-            &lt;path
+-              d="M283.7,108.5h-.1c-17.8,12.6-38.8,25.8-61.5,39.7l-.9.5a.7.7,0,1,0,.8,1.1l.7-.4c19.3-10,41.4-21.9,63.6-34.2l.4-.2A24.7,24.7,0,0,1,283.7,108.5ZM400.5,13.9c-28-30.9-208.6-3.1-285.3,13.7l-1.8.4a.8.8,0,0,0-.6.8.6.6,0,0,0,.8.5l1.8-.3C179,17.7,311.3,2,339.7,30.2c8.7,8.6,6.7,19.7-3.4,32.8a25.7,25.7,0,0,1,11,15.8C386.6,52.7,413,27.7,400.5,13.9Z"
+-              fill="#cc2427"
+-            /&gt;
+-            &lt;path
+-              d="M295.1,100.4c.3,10.9,7.2,19.8,16.2,19.8,17.4,0,24.8-21.4,24.3-35.7-.4-10.9-7.4-19.8-16.4-19.8C304.2,64.7,294.5,86,295.1,100.4Zm-9.2-.6c-.7-18.6,13.9-37.6,35-37.6,14.2,0,23.4,9.5,23.9,23.9.7,19.6-12.9,37.6-35,37.6C295.6,123.7,286.4,114.3,285.9,99.8Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M85.5,94.9a13,13,0,0,1-2.9.8L76,96.9a10.8,10.8,0,0,0-4.6,1.4,3.2,3.2,0,0,0-1.5,2.3,2.1,2.1,0,0,0,1,2.3,7.3,7.3,0,0,0,4.2.9,16.2,16.2,0,0,0,4.4-.7,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A14.7,14.7,0,0,0,85.5,94.9Zm18.4-11.4c-.1,1.7-.4,3.2-.8,5.8L100,106.7a3.2,3.2,0,0,0,1.7,3.6v.7H83.8v-4.4a40.2,40.2,0,0,1-8.6,3.6,31.8,31.8,0,0,1-8.5,1.1c-5.8,0-9.1-.6-11.3-2.6s-3.5-3.4-3.4-6.3a9.6,9.6,0,0,1,2.2-5.1,13.5,13.5,0,0,1,4.7-3.4,28.9,28.9,0,0,1,7.2-2c3.1-.5,7.5-1,13.4-1.5a15.7,15.7,0,0,0,5.8-1.3c1.3-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.2-18.4.8-24.6,2.4l3.3-9.1a162.8,162.8,0,0,1,23.9-2C99.9,75.1,104,78.8,103.9,83.5Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M155.5,111l6.2-34.9h17.1L172.6,111Zm7.2-42.9c.5-2.9,5-5.2,10.1-5.2s8.7,2.3,8.2,5.2-5,5.2-10.1,5.2S162.2,70.9,162.7,68.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M239.3,95l-2.9.8L229.7,97a10.8,10.8,0,0,0-4.5,1.4,3,3,0,0,0-1.5,2.2,2.2,2.2,0,0,0,.9,2.4c.9.6,2.3.8,4.3.8a16.1,16.1,0,0,0,4.4-.6,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A22.4,22.4,0,0,0,239.3,95Zm18.4-11.5c-.1,1.7-.4,3.3-.8,5.8l-3.1,17.5a3.2,3.2,0,0,0,1.7,3.6v.6H237.6v-4.5a36,36,0,0,1-8.6,3.7,32.2,32.2,0,0,1-8.6,1c-5.7,0-9-.6-11.3-2.6s-3.4-3.4-3.3-6.2a9.5,9.5,0,0,1,2.2-5.2,13.3,13.3,0,0,1,4.7-3.3,25.4,25.4,0,0,1,7.1-2c3.2-.5,7.6-1,13.5-1.5a24,24,0,0,0,5.8-1.3c1.2-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.3-18.4.8-24.6,2.3l3.3-9a161.7,161.7,0,0,1,23.9-2C253.7,75.2,257.8,78.9,257.7,83.5Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M49.6,98.5A62.3,62.3,0,0,1,35.4,100c-8.1,0-14.6-4-14.2-11.5.2-4.9,6.1-15.3,20.9-15.3a24.3,24.3,0,0,1,13.3,3.6l2.1-12.1a40.3,40.3,0,0,0-16.8-2.8c-19.5.2-38.2,9-40.5,27s20,22.9,29.9,22.9c5.7,0,11.7-.3,17.2-.8Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M188.2,75.9l1.2-7.1L207.2,65l-1.9,10.9h8.8L212.4,83h-8.5l-5.1,28H181.5l5.2-28h-6.5l1.3-7h6.7Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;polygon points="275 111 257.6 111 266.4 62.4 283.3 62.8 275 111" fill="#013d5b" /&gt;
+-            &lt;path
+-              d="M133,84.3a10.4,10.4,0,0,0-6.1,2,9.4,9.4,0,0,0-3.3,6c-.6,3.1-.3,5.2.9,6.6a7.1,7.1,0,0,0,5.3,2,10.2,10.2,0,0,0,4.4-.9,8.1,8.1,0,0,0,3.3-2.8,12.5,12.5,0,0,0,1.9-4.6c.5-2.8.1-4.8-1.2-6.2A6.7,6.7,0,0,0,133,84.3Zm-31.1,38.8,8.3-46.8h15l-1.2,6a14.2,14.2,0,0,1,6.3-4.5,27,27,0,0,1,9.7-2c3.9,0,6.3.2,9.2,1.7a12.4,12.4,0,0,1,6,6.6,16.8,16.8,0,0,1,.8,9.5,20.7,20.7,0,0,1-8.4,13.7c-4.6,3.3-8.7,4.2-14.6,4.2a20.4,20.4,0,0,1-5.3-.6,12.1,12.1,0,0,1-3.4-1.3,15.5,15.5,0,0,1-2.8-2.6l-2.8,16.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M411.5,88.6c-.1-2.8-1.5-4.7-4.4-4.7-7,0-14.4,13.7-15.7,19.2C402.8,103.1,411.8,96.3,411.5,88.6Zm1.5,21.5,1.3.9c-3.4,6.9-10.3,12.5-18.5,12.5-6.7,0-12.1-4.4-12.4-12.7-.6-15,13.5-28.9,24.9-28.9,4.9,0,9.5,2.2,9.7,7.5.4,11.9-16.3,15.5-27.3,15.7a14.3,14.3,0,0,0-.4,4.4c.2,5,3.2,9.1,9.3,9.1S410.3,114.3,413,110.1Z"
+-              fill="#013d5b"
+-            /&gt;
+-            &lt;path
+-              d="M344.6,88.2l3.9-.4c1.3,0,2.4.3,2.5,1.5s-1.3,6-1.6,7.3l-2.7,11.7c-1,4.8-2.2,9.8-3.2,13.8h6.8l3.8-18.6c11.8-12.2,16.3-16.2,19-16.2a2,2,0,0,1,2.2,2.2c.1,2.1-1.3,7-1.7,8.4l-4,13.5c-.8,3.1-1.5,5.8-1.4,7.8s1.9,4.3,4.5,4.3c5,0,8.7-5.2,11.8-10.3l-.9-1.7c-1.3,2-4.2,6.5-6.6,6.5-.7,0-1.4-.5-1.4-1.7a20.5,20.5,0,0,1,1-5.5L381,94.9c1.1-4.4,1.7-7.2,1.7-8.7s-1.9-4.3-4.5-4.3c-4.5,0-10.5,3.3-23.1,17.8h-.2l1.6-7.1c.9-3.9,1.7-7.9,2.5-10.7A114.5,114.5,0,0,1,344.5,86Z"
+-              fill="#013d5b"
+-            /&gt;
+-          &lt;/svg&gt;
+-        &lt;/a&gt;
+-        &lt;div class="navbar-links"&gt;
+-          &lt;a href="#story"&gt;Overview&lt;/a&gt;
+-          &lt;a href="#cards-section"&gt;Products&lt;/a&gt;
+-          &lt;a href="#cta-section" class="nav-cta"&gt;Open account&lt;/a&gt;
+-        &lt;/div&gt;
++  &lt;/div&gt;
++  &lt;a class="skip-link" href="#story"&gt;Skip to content&lt;/a&gt;
++  &lt;nav class="navbar" aria-label="Primary"&gt;
++    &lt;div class="navbar-inner"&gt;
++      &lt;a href="#" class="navbar-logo" aria-label="Capital One home"&gt;
++        &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 418 150" class="navbar-logo-svg" aria-hidden="true"
++          focusable="false"&gt;
++          &lt;rect width="418" height="150.01" fill="none" /&gt;
++          &lt;path
++            d="M283.7,108.5h-.1c-17.8,12.6-38.8,25.8-61.5,39.7l-.9.5a.7.7,0,1,0,.8,1.1l.7-.4c19.3-10,41.4-21.9,63.6-34.2l.4-.2A24.7,24.7,0,0,1,283.7,108.5ZM400.5,13.9c-28-30.9-208.6-3.1-285.3,13.7l-1.8.4a.8.8,0,0,0-.6.8.6.6,0,0,0,.8.5l1.8-.3C179,17.7,311.3,2,339.7,30.2c8.7,8.6,6.7,19.7-3.4,32.8a25.7,25.7,0,0,1,11,15.8C386.6,52.7,413,27.7,400.5,13.9Z"
++            fill="#cc2427" /&gt;
++          &lt;path
++            d="M295.1,100.4c.3,10.9,7.2,19.8,16.2,19.8,17.4,0,24.8-21.4,24.3-35.7-.4-10.9-7.4-19.8-16.4-19.8C304.2,64.7,294.5,86,295.1,100.4Zm-9.2-.6c-.7-18.6,13.9-37.6,35-37.6,14.2,0,23.4,9.5,23.9,23.9.7,19.6-12.9,37.6-35,37.6C295.6,123.7,286.4,114.3,285.9,99.8Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M85.5,94.9a13,13,0,0,1-2.9.8L76,96.9a10.8,10.8,0,0,0-4.6,1.4,3.2,3.2,0,0,0-1.5,2.3,2.1,2.1,0,0,0,1,2.3,7.3,7.3,0,0,0,4.2.9,16.2,16.2,0,0,0,4.4-.7,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A14.7,14.7,0,0,0,85.5,94.9Zm18.4-11.4c-.1,1.7-.4,3.2-.8,5.8L100,106.7a3.2,3.2,0,0,0,1.7,3.6v.7H83.8v-4.4a40.2,40.2,0,0,1-8.6,3.6,31.8,31.8,0,0,1-8.5,1.1c-5.8,0-9.1-.6-11.3-2.6s-3.5-3.4-3.4-6.3a9.6,9.6,0,0,1,2.2-5.1,13.5,13.5,0,0,1,4.7-3.4,28.9,28.9,0,0,1,7.2-2c3.1-.5,7.5-1,13.4-1.5a15.7,15.7,0,0,0,5.8-1.3c1.3-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.2-18.4.8-24.6,2.4l3.3-9.1a162.8,162.8,0,0,1,23.9-2C99.9,75.1,104,78.8,103.9,83.5Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M155.5,111l6.2-34.9h17.1L172.6,111Zm7.2-42.9c.5-2.9,5-5.2,10.1-5.2s8.7,2.3,8.2,5.2-5,5.2-10.1,5.2S162.2,70.9,162.7,68.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M239.3,95l-2.9.8L229.7,97a10.8,10.8,0,0,0-4.5,1.4,3,3,0,0,0-1.5,2.2,2.2,2.2,0,0,0,.9,2.4c.9.6,2.3.8,4.3.8a16.1,16.1,0,0,0,4.4-.6,10.2,10.2,0,0,0,3.6-1.9,5.1,5.1,0,0,0,1.5-2.3A22.4,22.4,0,0,0,239.3,95Zm18.4-11.5c-.1,1.7-.4,3.3-.8,5.8l-3.1,17.5a3.2,3.2,0,0,0,1.7,3.6v.6H237.6v-4.5a36,36,0,0,1-8.6,3.7,32.2,32.2,0,0,1-8.6,1c-5.7,0-9-.6-11.3-2.6s-3.4-3.4-3.3-6.2a9.5,9.5,0,0,1,2.2-5.2,13.3,13.3,0,0,1,4.7-3.3,25.4,25.4,0,0,1,7.1-2c3.2-.5,7.6-1,13.5-1.5a24,24,0,0,0,5.8-1.3c1.2-.5,1.7-1,1.9-2s-.2-2.8-2.6-3.3c-6.4-1.3-18.4.8-24.6,2.3l3.3-9a161.7,161.7,0,0,1,23.9-2C253.7,75.2,257.8,78.9,257.7,83.5Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M49.6,98.5A62.3,62.3,0,0,1,35.4,100c-8.1,0-14.6-4-14.2-11.5.2-4.9,6.1-15.3,20.9-15.3a24.3,24.3,0,0,1,13.3,3.6l2.1-12.1a40.3,40.3,0,0,0-16.8-2.8c-19.5.2-38.2,9-40.5,27s20,22.9,29.9,22.9c5.7,0,11.7-.3,17.2-.8Z"
++            fill="#013d5b" /&gt;
++          &lt;path d="M188.2,75.9l1.2-7.1L207.2,65l-1.9,10.9h8.8L212.4,83h-8.5l-5.1,28H181.5l5.2-28h-6.5l1.3-7h6.7Z"
++            fill="#013d5b" /&gt;
++          &lt;polygon points="275 111 257.6 111 266.4 62.4 283.3 62.8 275 111" fill="#013d5b" /&gt;
++          &lt;path
++            d="M133,84.3a10.4,10.4,0,0,0-6.1,2,9.4,9.4,0,0,0-3.3,6c-.6,3.1-.3,5.2.9,6.6a7.1,7.1,0,0,0,5.3,2,10.2,10.2,0,0,0,4.4-.9,8.1,8.1,0,0,0,3.3-2.8,12.5,12.5,0,0,0,1.9-4.6c.5-2.8.1-4.8-1.2-6.2A6.7,6.7,0,0,0,133,84.3Zm-31.1,38.8,8.3-46.8h15l-1.2,6a14.2,14.2,0,0,1,6.3-4.5,27,27,0,0,1,9.7-2c3.9,0,6.3.2,9.2,1.7a12.4,12.4,0,0,1,6,6.6,16.8,16.8,0,0,1,.8,9.5,20.7,20.7,0,0,1-8.4,13.7c-4.6,3.3-8.7,4.2-14.6,4.2a20.4,20.4,0,0,1-5.3-.6,12.1,12.1,0,0,1-3.4-1.3,15.5,15.5,0,0,1-2.8-2.6l-2.8,16.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M411.5,88.6c-.1-2.8-1.5-4.7-4.4-4.7-7,0-14.4,13.7-15.7,19.2C402.8,103.1,411.8,96.3,411.5,88.6Zm1.5,21.5,1.3.9c-3.4,6.9-10.3,12.5-18.5,12.5-6.7,0-12.1-4.4-12.4-12.7-.6-15,13.5-28.9,24.9-28.9,4.9,0,9.5,2.2,9.7,7.5.4,11.9-16.3,15.5-27.3,15.7a14.3,14.3,0,0,0-.4,4.4c.2,5,3.2,9.1,9.3,9.1S410.3,114.3,413,110.1Z"
++            fill="#013d5b" /&gt;
++          &lt;path
++            d="M344.6,88.2l3.9-.4c1.3,0,2.4.3,2.5,1.5s-1.3,6-1.6,7.3l-2.7,11.7c-1,4.8-2.2,9.8-3.2,13.8h6.8l3.8-18.6c11.8-12.2,16.3-16.2,19-16.2a2,2,0,0,1,2.2,2.2c.1,2.1-1.3,7-1.7,8.4l-4,13.5c-.8,3.1-1.5,5.8-1.4,7.8s1.9,4.3,4.5,4.3c5,0,8.7-5.2,11.8-10.3l-.9-1.7c-1.3,2-4.2,6.5-6.6,6.5-.7,0-1.4-.5-1.4-1.7a20.5,20.5,0,0,1,1-5.5L381,94.9c1.1-4.4,1.7-7.2,1.7-8.7s-1.9-4.3-4.5-4.3c-4.5,0-10.5,3.3-23.1,17.8h-.2l1.6-7.1c.9-3.9,1.7-7.9,2.5-10.7A114.5,114.5,0,0,1,344.5,86Z"
++            fill="#013d5b" /&gt;
++        &lt;/svg&gt;
++      &lt;/a&gt;
++      &lt;div class="navbar-links"&gt;
++        &lt;a href="#story"&gt;Overview&lt;/a&gt;
++        &lt;a href="#cards-section"&gt;Products&lt;/a&gt;
++        &lt;a href="#cta-section" class="nav-cta"&gt;Open account&lt;/a&gt;
+       &lt;/div&gt;
+-    &lt;/nav&gt;
++    &lt;/div&gt;
++  &lt;/nav&gt;
+ 
+-    &lt;header class="hero"&gt;
+-      &lt;div class="hero-glow" aria-hidden="true"&gt;&lt;/div&gt;
+-      &lt;!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) --&gt;
+-      &lt;div class="hero-scene" aria-hidden="true"&gt;
+-        &lt;div class="hero-scene-inner"&gt;
+-          &lt;svg
+-            class="hero-mesh"
+-            viewBox="0 0 800 800"
+-            preserveAspectRatio="xMidYMid slice"
+-            focusable="false"
+-          &gt;
+-            &lt;defs&gt;
+-              &lt;linearGradient
+-                id="heroMeshGrad"
+-                x1="0%"
+-                y1="0%"
+-                x2="100%"
+-                y2="100%"
+-              &gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.28" /&gt;
+-                &lt;stop offset="50%" stop-color="#0071e3" stop-opacity="0.14" /&gt;
+-                &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.2" /&gt;
+-              &lt;/linearGradient&gt;
+-            &lt;/defs&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="340"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="0.75"
+-              opacity="0.35"
+-            /&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="275"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="1.1"
+-              opacity="0.5"
+-            /&gt;
+-            &lt;circle
+-              cx="400"
+-              cy="400"
+-              r="200"
+-              fill="none"
+-              stroke="url(#heroMeshGrad)"
+-              stroke-width="0.9"
+-              opacity="0.38"
+-            /&gt;
+-          &lt;/svg&gt;
+-          &lt;div class="hero-orb hero-orb--a"&gt;&lt;/div&gt;
+-          &lt;div class="hero-orb hero-orb--b"&gt;&lt;/div&gt;
+-          &lt;div class="hero-card-deck"&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--back"&gt;&lt;/div&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--mid"&gt;&lt;/div&gt;
+-            &lt;div class="hero-card-3d hero-card-3d--front"&gt;&lt;/div&gt;
+-          &lt;/div&gt;
+-          &lt;div class="hero-shard hero-shard--one"&gt;&lt;/div&gt;
+-          &lt;div class="hero-shard hero-shard--two"&gt;&lt;/div&gt;
+-          &lt;!-- Banking / card line-art + faint product silhouettes --&gt;
+-          &lt;svg
+-            class="hero-banking-svg"
+-            viewBox="0 0 1600 900"
+-            preserveAspectRatio="xMidYMid slice"
+-            xmlns="http://www.w3.org/2000/svg"
+-            fill="none"
+-            focusable="false"
+-            aria-hidden="true"
+-          &gt;
+-            &lt;defs&gt;
+-              &lt;linearGradient
+-                id="heroBankStroke"
+-                x1="0%"
+-                y1="0%"
+-                x2="100%"
+-                y2="100%"
+-              &gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.42" /&gt;
+-                &lt;stop offset="55%" stop-color="#0071e3" stop-opacity="0.22" /&gt;
+-                &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.28" /&gt;
+-              &lt;/linearGradient&gt;
+-              &lt;linearGradient id="heroBankFill" x1="0%" y1="0%" x2="0%" y2="100%"&gt;
+-                &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.06" /&gt;
+-                &lt;stop offset="100%" stop-color="#004a7c" stop-opacity="0.02" /&gt;
+-              &lt;/linearGradient&gt;
+-            &lt;/defs&gt;
+-            &lt;g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15"&gt;
+-              &lt;g transform="translate(48 498) rotate(-10)"&gt;
+-                &lt;rect
+-                  width="308"
+-                  height="194"
+-                  x="0"
+-                  y="0"
+-                  rx="22"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="308" height="56" x="0" y="0" rx="22" fill="rgba(0,74,124,0.07)" stroke="none" /&gt;
+-                &lt;rect x="28" y="76" width="52" height="40" rx="7" fill="rgba(0,74,124,0.05)" stroke-width="1" /&gt;
+-                &lt;line x1="28" y1="88" x2="80" y2="88" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;line x1="28" y1="96" x2="80" y2="96" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;line x1="28" y1="104" x2="80" y2="104" stroke-width="0.7" opacity="0.5" /&gt;
+-                &lt;rect x="108" y="142" width="172" height="10" rx="4" fill="rgba(0,113,227,0.06)" stroke="none" /&gt;
+-              &lt;/g&gt;
+-              &lt;g transform="translate(1188 96) rotate(11)"&gt;
+-                &lt;rect
+-                  width="220"
+-                  height="138"
+-                  rx="16"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="220" height="42" x="0" y="0" rx="16" fill="rgba(208,48,39,0.05)" stroke="none" /&gt;
+-                &lt;rect x="20" y="58" width="38" height="30" rx="5" fill="rgba(0,74,124,0.04)" stroke-width="0.9" /&gt;
+-              &lt;/g&gt;
+-              &lt;g transform="translate(560 712) rotate(-3)"&gt;
+-                &lt;rect
+-                  width="380"
+-                  height="118"
+-                  rx="18"
+-                  fill="url(#heroBankFill)"
+-                /&gt;
+-                &lt;rect width="380" height="44" rx="18" fill="rgba(0,74,124,0.05)" stroke="none" /&gt;
+-                &lt;rect x="320" y="62" width="44" height="34" rx="6" fill="rgba(0,113,227,0.05)" stroke-width="1" /&gt;
+-              &lt;/g&gt;
+-            &lt;/g&gt;
+-            &lt;g
+-              transform="translate(1272 388)"
+-              stroke="url(#heroBankStroke)"
+-              stroke-width="1.6"
+-              stroke-linecap="round"
+-              opacity="0.5"
+-            &gt;
+-              &lt;path d="M8 36 Q 28 8 56 36" /&gt;
+-              &lt;path d="M18 36 Q 30 18 48 36" /&gt;
+-              &lt;path d="M26 36 Q 34 26 42 36" /&gt;
+-            &lt;/g&gt;
+-            &lt;g transform="translate(96 152)" opacity="0.45" stroke="url(#heroBankStroke)" stroke-width="1.2"&gt;
+-              &lt;path
+-                fill="url(#heroBankFill)"
+-                stroke="url(#heroBankStroke)"
+-                d="M52 10 L88 24 V58 Q72 78 52 86 Q32 78 16 58V24Z"
+-              /&gt;
+-              &lt;path
+-                fill="none"
+-                d="M34 48 L46 60 L72 32"
+-                stroke-width="2"
+-                stroke-linecap="round"
+-                stroke-linejoin="round"
+-              /&gt;
++  &lt;header class="hero"&gt;
++    &lt;div class="hero-glow" aria-hidden="true"&gt;&lt;/div&gt;
++    &lt;!-- Fintech-style depth: mesh + orbs + stacked “3D” cards (inspired by premium hero motion shots) --&gt;
++    &lt;div class="hero-scene" aria-hidden="true"&gt;
++      &lt;div class="hero-scene-inner"&gt;
++        &lt;svg class="hero-mesh" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice" focusable="false"&gt;
++          &lt;defs&gt;
++            &lt;linearGradient id="heroMeshGrad" x1="0%" y1="0%" x2="100%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.28" /&gt;
++              &lt;stop offset="50%" stop-color="#0071e3" stop-opacity="0.14" /&gt;
++              &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.2" /&gt;
++            &lt;/linearGradient&gt;
++          &lt;/defs&gt;
++          &lt;circle cx="400" cy="400" r="340" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.75"
++            opacity="0.35" /&gt;
++          &lt;circle cx="400" cy="400" r="275" fill="none" stroke="url(#heroMeshGrad)" stroke-width="1.1" opacity="0.5" /&gt;
++          &lt;circle cx="400" cy="400" r="200" fill="none" stroke="url(#heroMeshGrad)" stroke-width="0.9" opacity="0.38" /&gt;
++        &lt;/svg&gt;
++        &lt;div class="hero-orb hero-orb--a"&gt;&lt;/div&gt;
++        &lt;div class="hero-orb hero-orb--b"&gt;&lt;/div&gt;
++        &lt;div class="hero-card-deck"&gt;
++          &lt;div class="hero-card-3d hero-card-3d--back"&gt;&lt;/div&gt;
++          &lt;div class="hero-card-3d hero-card-3d--mid"&gt;&lt;/div&gt;
++          &lt;div class="hero-card-3d hero-card-3d--front"&gt;&lt;/div&gt;
++        &lt;/div&gt;
++        &lt;div class="hero-shard hero-shard--one"&gt;&lt;/div&gt;
++        &lt;div class="hero-shard hero-shard--two"&gt;&lt;/div&gt;
++        &lt;!-- Banking / card line-art + faint product silhouettes --&gt;
++        &lt;svg class="hero-banking-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"
++          xmlns="http://www.w3.org/2000/svg" fill="none" focusable="false" aria-hidden="true"&gt;
++          &lt;defs&gt;
++            &lt;linearGradient id="heroBankStroke" x1="0%" y1="0%" x2="100%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.42" /&gt;
++              &lt;stop offset="55%" stop-color="#0071e3" stop-opacity="0.22" /&gt;
++              &lt;stop offset="100%" stop-color="#d03027" stop-opacity="0.28" /&gt;
++            &lt;/linearGradient&gt;
++            &lt;linearGradient id="heroBankFill" x1="0%" y1="0%" x2="0%" y2="100%"&gt;
++              &lt;stop offset="0%" stop-color="#004a7c" stop-opacity="0.06" /&gt;
++              &lt;stop offset="100%" stop-color="#004a7c" stop-opacity="0.02" /&gt;
++            &lt;/linearGradient&gt;
++          &lt;/defs&gt;
++          &lt;g opacity="0.55" stroke="url(#heroBankStroke)" stroke-width="1.15"&gt;
++            &lt;g transform="translate(48 498) rotate(-10)"&gt;
++              &lt;rect width="308" height="194" x="0" y="0" rx="22" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="308" height="56" x="0" y="0" rx="22" fill="rgba(0,74,124,0.07)" stroke="none" /&gt;
++              &lt;rect x="28" y="76" width="52" height="40" rx="7" fill="rgba(0,74,124,0.05)" stroke-width="1" /&gt;
++              &lt;line x1="28" y1="88" x2="80" y2="88" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;line x1="28" y1="96" x2="80" y2="96" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;line x1="28" y1="104" x2="80" y2="104" stroke-width="0.7" opacity="0.5" /&gt;
++              &lt;rect x="108" y="142" width="172" height="10" rx="4" fill="rgba(0,113,227,0.06)" stroke="none" /&gt;
+             &lt;/g&gt;
+-            &lt;g
+-              transform="translate(1008 604) rotate(8)"
+-              stroke="url(#heroBankStroke)"
+-              stroke-width="1"
+-              opacity="0.48"
+-            &gt;
+-              &lt;rect x="0" y="0" width="48" height="38" rx="7" fill="rgba(255,255,255,0.35)" /&gt;
+-              &lt;line x1="8" y1="10" x2="40" y2="10" /&gt;
+-              &lt;line x1="8" y1="17" x2="40" y2="17" /&gt;
+-              &lt;line x1="8" y1="24" x2="40" y2="24" /&gt;
+-              &lt;line x1="8" y1="31" x2="28" y2="31" /&gt;
++            &lt;g transform="translate(1188 96) rotate(11)"&gt;
++              &lt;rect width="220" height="138" rx="16" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="220" height="42" x="0" y="0" rx="16" fill="rgba(208,48,39,0.05)" stroke="none" /&gt;
++              &lt;rect x="20" y="58" width="38" height="30" rx="5" fill="rgba(0,74,124,0.04)" stroke-width="0.9" /&gt;
+             &lt;/g&gt;
+-            &lt;g transform="translate(380 120)" opacity="0.35" stroke="url(#heroBankStroke)" stroke-width="1"&gt;
+-              &lt;circle cx="0" cy="0" r="3" fill="rgba(0,74,124,0.25)" stroke="none" /&gt;
+-              &lt;circle cx="28" cy="0" r="3" fill="rgba(0,74,124,0.2)" stroke="none" /&gt;
+-              &lt;circle cx="56" cy="0" r="3" fill="rgba(0,74,124,0.15)" stroke="none" /&gt;
+-              &lt;path d="M0 16 H56" stroke-linecap="round" /&gt;
+-              &lt;path d="M0 26 H40" stroke-linecap="round" opacity="0.7" /&gt;
++            &lt;g transform="translate(560 712) rotate(-3)"&gt;
++              &lt;rect width="380" height="118" rx="18" fill="url(#heroBankFill)" /&gt;
++              &lt;rect width="380" height="44" rx="18" fill="rgba(0,74,124,0.05)" stroke="none" /&gt;
++              &lt;rect x="320" y="62" width="44" height="34" rx="6" fill="rgba(0,113,227,0.05)" stroke-width="1" /&gt;
+             &lt;/g&gt;
+-          &lt;/svg&gt;
+-          &lt;div class="hero-product-ghosts" aria-hidden="true"&gt;
+-            &lt;img
+-              src="cards/platinum-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--a"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-            &lt;img
+-              src="cards/venture-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--b"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-            &lt;img
+-              src="cards/quicksilver-removebg-preview.png"
+-              alt=""
+-              class="hero-ghost-card hero-ghost-card--c"
+-              width="320"
+-              height="202"
+-              decoding="async"
+-            /&gt;
+-          &lt;/div&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(1272 388)" stroke="url(#heroBankStroke)" stroke-width="1.6" stroke-linecap="round"
++            opacity="0.5"&gt;
++            &lt;path d="M8 36 Q 28 8 56 36" /&gt;
++            &lt;path d="M18 36 Q 30 18 48 36" /&gt;
++            &lt;path d="M26 36 Q 34 26 42 36" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(96 152)" opacity="0.45" stroke="url(#heroBankStroke)" stroke-width="1.2"&gt;
++            &lt;path fill="url(#heroBankFill)" stroke="url(#heroBankStroke)"
++              d="M52 10 L88 24 V58 Q72 78 52 86 Q32 78 16 58V24Z" /&gt;
++            &lt;path fill="none" d="M34 48 L46 60 L72 32" stroke-width="2" stroke-linecap="round"
++              stroke-linejoin="round" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(1008 604) rotate(8)" stroke="url(#heroBankStroke)" stroke-width="1" opacity="0.48"&gt;
++            &lt;rect x="0" y="0" width="48" height="38" rx="7" fill="rgba(255,255,255,0.35)" /&gt;
++            &lt;line x1="8" y1="10" x2="40" y2="10" /&gt;
++            &lt;line x1="8" y1="17" x2="40" y2="17" /&gt;
++            &lt;line x1="8" y1="24" x2="40" y2="24" /&gt;
++            &lt;line x1="8" y1="31" x2="28" y2="31" /&gt;
++          &lt;/g&gt;
++          &lt;g transform="translate(380 120)" opacity="0.35" stroke="url(#heroBankStroke)" stroke-width="1"&gt;
++            &lt;circle cx="0" cy="0" r="3" fill="rgba(0,74,124,0.25)" stroke="none" /&gt;
++            &lt;circle cx="28" cy="0" r="3" fill="rgba(0,74,124,0.2)" stroke="none" /&gt;
++            &lt;circle cx="56" cy="0" r="3" fill="rgba(0,74,124,0.15)" stroke="none" /&gt;
++            &lt;path d="M0 16 H56" stroke-linecap="round" /&gt;
++            &lt;path d="M0 26 H40" stroke-linecap="round" opacity="0.7" /&gt;
++          &lt;/g&gt;
++        &lt;/svg&gt;
++        &lt;div class="hero-product-ghosts" aria-hidden="true"&gt;
++          &lt;img src="cards/platinum-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--a" width="320"
++            height="202" decoding="async" /&gt;
++          &lt;img src="cards/venture-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--b" width="320"
++            height="202" decoding="async" /&gt;
++          &lt;img src="cards/quicksilver-removebg-preview.png" alt="" class="hero-ghost-card hero-ghost-card--c"
++            width="320" height="202" decoding="async" /&gt;
+         &lt;/div&gt;
+       &lt;/div&gt;
+-      &lt;!-- &lt;p class="hero-brand"&gt;
+-        &lt;span class="hero-brand--capital"&gt;Capital&lt;/span&gt;
+-        &lt;span class="hero-brand--one"&gt;One&lt;/span&gt;
+-      &lt;/p&gt; --&gt;
+-      &lt;p class="hero-tagline"&gt;Credit cards · Rewards · Insights&lt;/p&gt;
+-      &lt;h1
+-        class="hero-title"
+-        aria-label="Your spending, followed by rotating one-word highlights."
+-      &gt;
+-        &lt;span class="hero-h1-line1" aria-hidden="true"&gt;Your spending,&lt;/span&gt;
+-        &lt;span class="hero-h1-line2" aria-hidden="true"&gt;
+-          &lt;span
+-            id="hero-typed"
+-            class="hero-h1-typed"
+-            data-typed-fallback="Simplified."
+-          &gt;&lt;/span&gt;
+-        &lt;/span&gt;
+-      &lt;/h1&gt;
+-      &lt;p class="hero-body"&gt;
+-        Compare cards, track rewards, and manage spending in one place—with
+-        bank-grade security and tools designed for clarity.
+-      &lt;/p&gt;
+-      &lt;ul class="hero-trust" aria-label="Security and account protections"&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          Bank-level encryption
+-        &lt;/li&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          Real-time purchase alerts
+-        &lt;/li&gt;
+-        &lt;li&gt;
+-          &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
+-          $0 fraud liability
+-        &lt;/li&gt;
+-      &lt;/ul&gt;
+-      &lt;div class="scroll-cue" aria-hidden="true"&gt;
+-        &lt;span class="scroll-cue-label"&gt;Scroll for more&lt;/span&gt;
+-        &lt;span class="scroll-cue-line"&gt;&lt;/span&gt;
+-      &lt;/div&gt;
+-    &lt;/header&gt;
++    &lt;/div&gt;
++    &lt;p class="hero-tagline"&gt;Credit cards · Rewards · Insights&lt;/p&gt;
++    &lt;h1 class="hero-title" aria-label="Your spending, followed by rotating one-word highlights."&gt;
++      &lt;span class="hero-h1-line1" aria-hidden="true"&gt;Your spending,&lt;/span&gt;
++      &lt;span class="hero-h1-line2" aria-hidden="true"&gt;
++        &lt;span id="hero-typed" class="hero-h1-typed" data-typed-fallback="Simplified."&gt;&lt;/span&gt;
++      &lt;/span&gt;
++    &lt;/h1&gt;
++    &lt;p class="hero-body"&gt;
++      Compare cards, track rewards, and manage spending in one place—with
++      bank-grade security and tools designed for clarity.
++    &lt;/p&gt;
++    &lt;ul class="hero-trust" aria-label="Security and account protections"&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        Bank-level encryption
++      &lt;/li&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        Real-time purchase alerts
++      &lt;/li&gt;
++      &lt;li&gt;
++        &lt;span class="hero-trust-icon" aria-hidden="true"&gt;&lt;/span&gt;
++        $0 fraud liability
++      &lt;/li&gt;
++    &lt;/ul&gt;
++    &lt;div class="scroll-cue" aria-hidden="true"&gt;
++      &lt;span class="scroll-cue-label"&gt;Scroll for more&lt;/span&gt;
++      &lt;span class="scroll-cue-line"&gt;&lt;/span&gt;
++    &lt;/div&gt;
++  &lt;/header&gt;
+ 
+-    &lt;main&gt;
+-      &lt;section id="story" class="story-intro"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;001 / Our story&lt;/p&gt;
+-          &lt;h2&gt;From trusted brand to everyday financial tool.&lt;/h2&gt;
+-        &lt;/div&gt;
+-      &lt;/section&gt;
++  &lt;main&gt;
++    &lt;section id="story" class="story-intro"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;001 / Our story&lt;/p&gt;
++        &lt;h2&gt;From trusted brand to everyday financial tool.&lt;/h2&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section class="sequence-section"&gt;
+-        &lt;div class="sequence-pin" aria-label="Pinned animation sequence"&gt;
+-          &lt;div class="sequence-shell"&gt;
+-            &lt;canvas id="sequence-canvas" aria-hidden="true"&gt;&lt;/canvas&gt;
++    &lt;section class="sequence-section"&gt;
++      &lt;div class="sequence-pin" aria-label="Pinned animation sequence"&gt;
++        &lt;div class="sequence-shell"&gt;
++          &lt;canvas id="sequence-canvas" aria-hidden="true"&gt;&lt;/canvas&gt;
+ 
+-            &lt;article class="callout callout--left" data-callout="barkley"&gt;
+-              &lt;p class="callout-label"&gt;Charles Barkley&lt;/p&gt;
+-              &lt;p&gt;
+-                One of basketball's most recognizable figures, known for his
+-                Hall of Fame career, larger-than-life presence, and decades
+-                of influence across sports and media.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
++          &lt;article class="callout callout--left" data-callout="barkley"&gt;
++            &lt;p class="callout-label"&gt;Charles Barkley&lt;/p&gt;
++            &lt;p&gt;
++              One of basketball's most recognizable figures, known for his
++              Hall of Fame career, larger-than-life presence, and decades
++              of influence across sports and media.
++            &lt;/p&gt;
++          &lt;/article&gt;
+ 
+-            &lt;article class="callout callout--right" data-callout="fairbank"&gt;
+-              &lt;p class="callout-label"&gt;Richard Fairbank&lt;/p&gt;
+-              &lt;p&gt;
+-                The longtime founder and leader of Capital One, widely
+-                recognized for helping shape the company into one of the most
+-                prominent names in consumer finance.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
++          &lt;article class="callout callout--right" data-callout="fairbank"&gt;
++            &lt;p class="callout-label"&gt;Richard Fairbank&lt;/p&gt;
++            &lt;p&gt;
++              The longtime founder and leader of Capital One, widely
++              recognized for helping shape the company into one of the most
++              prominent names in consumer finance.
++            &lt;/p&gt;
++          &lt;/article&gt;
+ 
+-            &lt;article class="callout callout--bottom" data-callout="trusted"&gt;
+-              &lt;p class="callout-label"&gt;Trusted by millions&lt;/p&gt;
+-              &lt;p&gt;
+-                Capital One cards combine everyday usability with strong
+-                rewards, flexible options, and a trusted brand experience
+-                designed for modern consumers.
+-              &lt;/p&gt;
+-            &lt;/article&gt;
+-          &lt;/div&gt;
++          &lt;article class="callout callout--bottom" data-callout="trusted"&gt;
++            &lt;p class="callout-label"&gt;Trusted by millions&lt;/p&gt;
++            &lt;p&gt;
++              Capital One cards combine everyday usability with strong
++              rewards, flexible options, and a trusted brand experience
++              designed for modern consumers.
++            &lt;/p&gt;
++          &lt;/article&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section class="stats-band"&gt;
+-        &lt;div class="stats-row"&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="100"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;M+&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Customers served&lt;/p&gt;
+-          &lt;/div&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="4"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;x&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Rewards categories&lt;/p&gt;
+-          &lt;/div&gt;
+-          &lt;div class="stat-item"&gt;
+-            &lt;p class="stat-number"&gt;&lt;span data-count="0"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;%&lt;/span&gt;&lt;/p&gt;
+-            &lt;p class="stat-label"&gt;Annual fee on select cards&lt;/p&gt;
+-          &lt;/div&gt;
++    &lt;section class="stats-band"&gt;
++      &lt;div class="stats-row"&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="100"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;M+&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Customers served&lt;/p&gt;
++        &lt;/div&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="4"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;x&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Rewards categories&lt;/p&gt;
+         &lt;/div&gt;
+-        &lt;div class="marquee-wrap"&gt;
+-          &lt;p class="marquee-text" aria-hidden="true"&gt;
+-            Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash;
+-          &lt;/p&gt;
++        &lt;div class="stat-item"&gt;
++          &lt;p class="stat-number"&gt;&lt;span data-count="0"&gt;0&lt;/span&gt;&lt;span class="stat-suffix"&gt;%&lt;/span&gt;&lt;/p&gt;
++          &lt;p class="stat-label"&gt;Annual fee on select cards&lt;/p&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++      &lt;div class="marquee-wrap"&gt;
++        &lt;p class="marquee-text" aria-hidden="true"&gt;
++          Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash; Confidence in every swipe &amp;mdash;
++        &lt;/p&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section id="cards-section" class="cards-section"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;002 / Card lineup&lt;/p&gt;
+-          &lt;h2&gt;Pick the card that fits how you spend.&lt;/h2&gt;
+-          &lt;div class="cards-grid"&gt;
+-            &lt;article class="card-item card--savor"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/savor-removebg-preview.png" alt="SavorOne credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;SavorOne&lt;/h3&gt;
+-                &lt;p&gt;Everyday rewards built for real life.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--platinum"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/platinum-removebg-preview.png" alt="Platinum credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;Platinum&lt;/h3&gt;
+-                &lt;p&gt;Simple, reliable credit with clarity.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--venture"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/venture-removebg-preview.png" alt="Venture credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;Venture&lt;/h3&gt;
+-                &lt;p&gt;Travel-focused rewards with flexibility.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-            &lt;article class="card-item card--quicksilver"&gt;
+-              &lt;div class="card-visual"&gt;
+-                &lt;img src="cards/quicksilver-removebg-preview.png" alt="Quicksilver credit card" /&gt;
+-              &lt;/div&gt;
+-              &lt;div class="card-body"&gt;
+-                &lt;h3&gt;QuickSilver&lt;/h3&gt;
+-                &lt;p&gt;Straightforward unlimited cash back.&lt;/p&gt;
+-              &lt;/div&gt;
+-            &lt;/article&gt;
+-          &lt;/div&gt;
++    &lt;section id="cards-section" class="cards-section"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;002 / Card lineup&lt;/p&gt;
++        &lt;h2&gt;Pick the card that fits how you spend.&lt;/h2&gt;
++        &lt;div class="cards-grid"&gt;
++          &lt;article class="card-item card--savor"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/savor-removebg-preview.png" alt="SavorOne credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;SavorOne&lt;/h3&gt;
++              &lt;p&gt;Everyday rewards built for real life.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--platinum"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/platinum-removebg-preview.png" alt="Platinum credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;Platinum&lt;/h3&gt;
++              &lt;p&gt;Simple, reliable credit with clarity.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--venture"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/venture-removebg-preview.png" alt="Venture credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;Venture&lt;/h3&gt;
++              &lt;p&gt;Travel-focused rewards with flexibility.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
++          &lt;article class="card-item card--quicksilver"&gt;
++            &lt;div class="card-visual"&gt;
++              &lt;img src="cards/quicksilver-removebg-preview.png" alt="Quicksilver credit card" /&gt;
++            &lt;/div&gt;
++            &lt;div class="card-body"&gt;
++              &lt;h3&gt;QuickSilver&lt;/h3&gt;
++              &lt;p&gt;Straightforward unlimited cash back.&lt;/p&gt;
++            &lt;/div&gt;
++          &lt;/article&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
+ 
+-      &lt;section id="cta-section" class="cta-section"&gt;
+-        &lt;div class="section-inner"&gt;
+-          &lt;p class="section-eyebrow"&gt;003 / Get started&lt;/p&gt;
+-          &lt;h2&gt;Apply in minutes. Manage anytime.&lt;/h2&gt;
+-          &lt;p&gt;
+-            See rates, rewards, and benefits side by side—then continue in the
+-            app with spending insights and payment tools.
+-          &lt;/p&gt;
+-          &lt;div class="cta-actions"&gt;
+-            &lt;a href="#" class="btn btn-primary"&gt;Compare cards&lt;/a&gt;
+-            &lt;a href="#" class="btn btn-secondary"&gt;View disclosures&lt;/a&gt;
+-          &lt;/div&gt;
++    &lt;section id="cta-section" class="cta-section"&gt;
++      &lt;div class="section-inner"&gt;
++        &lt;p class="section-eyebrow"&gt;003 / Get started&lt;/p&gt;
++        &lt;h2&gt;Apply in minutes. Manage anytime.&lt;/h2&gt;
++        &lt;p&gt;
++          See rates, rewards, and benefits side by side—then continue in the
++          app with spending insights and payment tools.
++        &lt;/p&gt;
++        &lt;div class="cta-actions"&gt;
++          &lt;a href="#" class="btn btn-primary"&gt;Compare cards&lt;/a&gt;
++          &lt;a href="#" class="btn btn-secondary"&gt;View disclosures&lt;/a&gt;
+         &lt;/div&gt;
+-      &lt;/section&gt;
+-    &lt;/main&gt;
++      &lt;/div&gt;
++    &lt;/section&gt;
++  &lt;/main&gt;
++
++  &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"&gt;&lt;/script&gt;
++  &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
++  &lt;script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"&gt;&lt;/script&gt;
++  &lt;script src="script.js"&gt;&lt;/script&gt;
++&lt;/body&gt;
+ 
+-    &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"&gt;&lt;/script&gt;
+-    &lt;script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"&gt;&lt;/script&gt;
+-    &lt;script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"&gt;&lt;/script&gt;
+-    &lt;script src="script.js"&gt;&lt;/script&gt;
+-  &lt;/body&gt;
+-&lt;/html&gt;
++&lt;/html&gt;
+\ No newline at end of file
+diff --git a/script.js b/script.js
+index bd60491..83ec9f5 100644
+--- a/script.js
++++ b/script.js
+@@ -313,9 +313,8 @@ function initHeroTyped() {
+ 
+ function animateHero() {
+ 	const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+-	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0)
+-		.from(".hero-brand", { y: 20, opacity: 0, duration: 0.7 }, 0.12)
+-		.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
++	tl.from(".hero-scene", { opacity: 0, duration: 1.05 }, 0);
++	tl.from(".hero-tagline", { y: 16, opacity: 0, duration: 0.55 }, "-=0.55")
+ 		.from(".hero-title", { y: 40, opacity: 0, duration: 0.9 }, "-=0.45")
+ 		.call(initHeroTyped, [], "&gt;+0.06")
+ 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /Users/st/.cursor/projects/Users-st-Projects-capital-scroll-ad/agent-tools/9b529e61-ed33-40b0-a6ea-b4d5c5864ed7.txt</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (default)**_
+
+Before I run the commit, quick check:
+
+- `script.js` has the intended fix (remove `.hero-brand` tween).
+- `index.html` also has a **very large full-file reformat** diff (hundreds of lines, mostly formatting/line-wrap changes).
+- `.specstory` files are also modified (usually excluded).
+
+Choose what you want in this commit:
+1) `script.js` only  
+2) `script.js` + `index.html`  
+3) all tracked changes except `.specstory`  
+4) everything including `.specstory`
