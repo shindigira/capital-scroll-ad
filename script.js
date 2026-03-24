@@ -3,11 +3,13 @@ gsap.registerPlugin(ScrollTrigger);
 const FRAME_COUNT = 146;
 /** Pixels of scroll mapped to the frame strip (must match frameIndexFromProgress). */
 const SCRUB_HEIGHT = FRAME_COUNT * 64;
+/** Extra pinned distance after scrub to hold on final frame. */
+const HOLD_HEIGHT_RATIO = 1;
 const FRAME_PATH = (i) => `frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
 
-/** Total scroll span for the sequence section: scrub + one viewport (hold). Recomputed on resize. */
+/** Total pinned distance for the sequence: scrub + viewport hold. */
 function getSequenceTotalHeight() {
-	return SCRUB_HEIGHT + window.innerHeight;
+	return SCRUB_HEIGHT + window.innerHeight * HOLD_HEIGHT_RATIO;
 }
 
 const canvas = document.getElementById("sequence-canvas");
@@ -344,14 +346,17 @@ function animateStats() {
 /* ── ScrollTrigger setup ── */
 
 function setupScrollStory() {
-	gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
+	let sequenceTotalHeight = getSequenceTotalHeight();
+
+	function refreshSequenceMetrics() {
+		sequenceTotalHeight = getSequenceTotalHeight();
+	}
 
 	function frameIndexFromProgress(progress) {
-		const totalHeight = getSequenceTotalHeight();
 		const animProgress = gsap.utils.clamp(
 			0,
 			1,
-			(progress * totalHeight) / SCRUB_HEIGHT,
+			(progress * sequenceTotalHeight) / SCRUB_HEIGHT,
 		);
 		return Math.min(
 			FRAME_COUNT - 1,
@@ -371,10 +376,13 @@ function setupScrollStory() {
 		id: "sequence-canvas-scrub",
 		trigger: ".sequence-section",
 		start: "top top",
-		end: () => `+=${getSequenceTotalHeight()}`,
+		end: () => `+=${sequenceTotalHeight}`,
 		pin: ".sequence-pin",
-		pinSpacing: false,
+		invalidateOnRefresh: true,
 		anticipatePin: 1,
+		onRefreshInit: () => {
+			refreshSequenceMetrics();
+		},
 		onUpdate: (self) => {
 			syncSequenceToProgress(self.progress, false);
 		},
@@ -385,6 +393,12 @@ function setupScrollStory() {
 			syncSequenceToProgress(self.progress, true);
 		},
 		onEnterBack: (self) => {
+			syncSequenceToProgress(self.progress, true);
+		},
+		onLeave: (self) => {
+			syncSequenceToProgress(self.progress, true);
+		},
+		onLeaveBack: (self) => {
 			syncSequenceToProgress(self.progress, true);
 		},
 	});
@@ -515,7 +529,6 @@ function init() {
 	});
 
 	window.addEventListener("resize", () => {
-		gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
 		ScrollTrigger.refresh();
 		resizeCanvas();
 	});
