@@ -43,6 +43,15 @@
   /* Capital One wordmark — navy “Capital”, red “One” (aligned to brand palette) */
   --co-navy: #004a7c;
   --co-red: #d03027;
+
+  /* HUD-style fintech console accents (from provided screenshots) */
+  --hud-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --hud-fg: rgba(15, 23, 42, 0.92);
+  --hud-muted: rgba(15, 23, 42, 0.62);
+  --hud-border: rgba(1, 61, 91, 0.16);
+  --hud-panel: rgba(255, 255, 255, 0.7);
+  --hud-bg: #f6f7fb;
 }
 
 *,
@@ -287,9 +296,47 @@ img {
   inset: 0;
   background: radial-gradient(circle at 50% 108%, rgba(241, 240, 236, 0.95), transparent 58%);
   pointer-events: none;
+  z-index: 1;
 }
 
-.hero > *:not(.hero-glow):not(.hero-scene) {
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(1, 61, 91, 0.11) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-codebar {
+  position: absolute;
+  top: clamp(1rem, 2.5vh, 1.35rem);
+  left: clamp(1rem, 4vw, 2.5rem);
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  font-family: var(--hud-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(1, 61, 91, 0.58);
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-codebar__meta {
+  opacity: 0.6;
+}
+
+.hero > *:not(.hero-glow):not(.hero-scene):not(.hero-codebar) {
   position: relative;
   z-index: 2;
 }
@@ -611,14 +658,15 @@ img {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--co-navy) 78%, var(--black));
+  font-family: var(--hud-mono);
+  color: var(--hud-muted);
   margin-bottom: clamp(1.35rem, 3vh, 1.75rem);
   max-width: 36rem;
   line-height: 1.45;
 }
 
 .hero-title {
-  font-family: var(--font);
+  font-family: var(--hud-mono);
   font-size: clamp(2.15rem, 5.5vw, 4rem);
   font-weight: 700;
   line-height: 1.06;
@@ -660,7 +708,8 @@ img {
 .hero-body {
   font-size: clamp(1.02rem, 1.65vw, 1.125rem);
   line-height: 1.68;
-  color: var(--gray-2);
+  font-family: var(--hud-mono);
+  color: var(--hud-muted);
   max-width: min(36rem, 92vw);
   margin: 0 auto;
   letter-spacing: -0.01em;
@@ -684,7 +733,8 @@ img {
   gap: 0.5rem;
   font-size: clamp(0.75rem, 1.35vw, 0.8125rem);
   font-weight: 500;
-  color: var(--gray-2);
+  font-family: var(--hud-mono);
+  color: var(--hud-muted);
   letter-spacing: -0.01em;
 }
 
@@ -873,21 +923,45 @@ img {
   border-top: 1px solid var(--border-subtle);
 }
 
+.stats-band::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(1, 61, 91, 0.08) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .stats-row {
   width: var(--inner-w);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   gap: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .stat-item {
   flex: 1;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--hud-border);
+  background: var(--hud-panel);
+  border-radius: 14px;
+  padding: 1.2rem 1.1rem;
+  backdrop-filter: blur(10px);
 }
 
 .stat-number {
-  font-family: var(--font);
+  font-family: var(--hud-mono);
   font-size: clamp(2.8rem, 5vw, 4.4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -897,7 +971,7 @@ img {
 }
 
 .stat-number span[data-count] {
-  color: var(--accent-gold-bright);
+  color: var(--co-navy);
 }
 
 .stat-number .stat-suffix {
@@ -909,11 +983,12 @@ img {
 }
 
 .stat-label {
+  font-family: var(--hud-mono);
   font-size: 0.74rem;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--gray-1);
+  color: var(--hud-muted);
 }
 
 /* ── marquee ── */
@@ -922,6 +997,8 @@ img {
   padding: 4rem 0;
   overflow: hidden;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .marquee-text {
@@ -943,10 +1020,31 @@ img {
   padding: var(--section-pad) 0;
   background: var(--surface);
   border-top: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.cards-section::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(1, 61, 91, 0.08) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cards-section > * {
+  position: relative;
+  z-index: 1;
 }
 
 .cards-section h2 {
-  font-family: var(--font);
+  font-family: var(--hud-mono);
   font-size: clamp(1.85rem, 4vw, 3rem);
   font-weight: 600;
   line-height: 1.1;
@@ -969,18 +1067,15 @@ img {
   border-radius: var(--card-radius);
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
-  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    border-color 0.35s ease;
+  border: 1px solid var(--hud-border);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: none;
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
 .card-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
-  border-color: rgba(15, 23, 42, 0.12);
+  transform: translateY(-3px);
+  border-color: rgba(1, 61, 91, 0.28);
 }
 
 /* Top: white field + card art */
@@ -989,7 +1084,7 @@ img {
   align-items: center;
   justify-content: center;
   padding: 1.25rem 1.25rem 0.75rem;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.55);
 }
 
 .card-visual img {
@@ -1007,28 +1102,29 @@ img {
   align-items: stretch;
   text-align: left;
   padding: 1rem 1.35rem 1.35rem;
-  background: var(--card-body-bg);
+  background: rgba(255, 255, 255, 0.55);
   border-top: 1px solid rgba(15, 23, 42, 0.06);
   border-radius: 0 0 var(--card-radius) var(--card-radius);
 }
 
 .card-item h3 {
-  font-family: var(--font);
+  font-family: var(--hud-mono);
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   line-height: 1.2;
   text-transform: uppercase;
   margin: 0 0 0.5rem;
-  color: #1a1a1a;
+  color: rgba(15, 23, 42, 0.92);
 }
 
 .card-item p {
   margin: 0;
+  font-family: var(--hud-mono);
   font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.45;
-  color: var(--card-body-text-muted);
+  color: rgba(15, 23, 42, 0.62);
 }
 
 /* ── cta ── */
@@ -1040,6 +1136,26 @@ img {
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
   text-align: center;
   border-top: 1px solid var(--border-subtle);
+}
+
+.cta-section::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(1, 61, 91, 0.08) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-section > * {
+  position: relative;
+  z-index: 1;
 }
 
 .cta-section h2 {
