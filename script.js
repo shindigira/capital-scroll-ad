@@ -3,13 +3,11 @@ gsap.registerPlugin(ScrollTrigger);
 const FRAME_COUNT = 146;
 /** Pixels of scroll mapped to the frame strip (must match frameIndexFromProgress). */
 const SCRUB_HEIGHT = FRAME_COUNT * 64;
-/** Extra pinned distance after scrub to hold on final frame. */
-const HOLD_HEIGHT_PX = 220;
 const FRAME_PATH = (i) => `frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
 
-/** Total pinned distance for the sequence: scrub + viewport hold. */
+/** Total scroll span for the sequence section: scrub + one viewport (hold). Recomputed on resize. */
 function getSequenceTotalHeight() {
-	return SCRUB_HEIGHT + HOLD_HEIGHT_PX;
+	return SCRUB_HEIGHT + window.innerHeight;
 }
 
 const canvas = document.getElementById("sequence-canvas");
@@ -27,21 +25,6 @@ const loaderBarEl = document.querySelector("[data-loader-bar]");
 
 const state = { frame: 0 };
 const images = [];
-
-/** Coalesce bursty scroll updates into one canvas draw per animation frame. */
-let renderQueued = false;
-let pendingFrame = 0;
-
-function requestDraw(frame) {
-	pendingFrame = frame;
-	if (renderQueued) return;
-
-	renderQueued = true;
-	requestAnimationFrame(() => {
-		renderQueued = false;
-		drawFrame(pendingFrame);
-	});
-}
 
 function setLoaderProgress(loaded, total) {
 	if (!loaderProgressEl || !loaderBarEl || total < 1) return;
@@ -126,7 +109,6 @@ function resizeCanvas(retryCount = 0) {
 	const dpr = Math.min(window.devicePixelRatio || 1, 2);
 	const w = canvas.clientWidth;
 	const h = canvas.clientHeight;
-
 	/* Pin / layout on mobile can briefly report 0×0; retry next frame before giving up */
 	if (w < 2 || h < 2) {
 		if (retryCount < 5) {
@@ -134,12 +116,11 @@ function resizeCanvas(retryCount = 0) {
 		}
 		return;
 	}
-
 	/* Same box model as drawFrame (avoid rect vs client mismatch + unfilled edge rows) */
 	canvas.width = Math.max(1, Math.round(w * dpr));
 	canvas.height = Math.max(1, Math.round(h * dpr));
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-	drawFrame(state.frame);
+	drawFrame(Math.round(state.frame));
 }
 
 /* ── callout timing ── */
@@ -155,10 +136,10 @@ function rangeVisibility(frame, start, end) {
 	);
 }
 
-function setCallout(el, intensity, dir, frame) {
+function setCallout(el, intensity, dir) {
 	if (!el) return;
 	const t = gsap.parseEase("power2.out")(intensity);
-	const drift = Math.sin(frame * 0.05) * 2;
+	const drift = Math.sin(state.frame * 0.07) * 3;
 	gsap.set(el, {
 		opacity: t,
 		y: (1 - t) * 18 + drift,
@@ -172,19 +153,16 @@ function updateCallouts(f) {
 		calloutEls.barkley,
 		rangeVisibility(f, PHASES.barkley.start, PHASES.barkley.end),
 		-1,
-		f,
 	);
 	setCallout(
 		calloutEls.fairbank,
 		rangeVisibility(f, PHASES.fairbank.start, PHASES.fairbank.end),
 		1,
-		f,
 	);
 	setCallout(
 		calloutEls.trusted,
 		rangeVisibility(f, PHASES.trusted.start, PHASES.trusted.end),
 		-1,
-		f,
 	);
 }
 
@@ -369,11 +347,11 @@ function setupScrollStory() {
 	gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
 
 	function frameIndexFromProgress(progress) {
-		const sequenceTotalHeight = getSequenceTotalHeight();
+		const totalHeight = getSequenceTotalHeight();
 		const animProgress = gsap.utils.clamp(
 			0,
 			1,
-			(progress * sequenceTotalHeight) / SCRUB_HEIGHT,
+			(progress * totalHeight) / SCRUB_HEIGHT,
 		);
 		return Math.min(
 			FRAME_COUNT - 1,
@@ -381,12 +359,11 @@ function setupScrollStory() {
 		);
 	}
 
-	function syncSequenceToProgress(progress, forceRedraw = false) {
+	function syncSequenceToProgress(progress, forceRedraw) {
 		const next = frameIndexFromProgress(progress);
-		if (!forceRedraw && next === state.frame) return;
-
+		if (!forceRedraw && next === Math.round(state.frame)) return;
 		state.frame = next;
-		requestDraw(next);
+		resizeCanvas();
 		updateCallouts(next);
 	}
 
@@ -398,10 +375,8 @@ function setupScrollStory() {
 		pin: ".sequence-pin",
 		pinSpacing: false,
 		anticipatePin: 1,
-		scrub: 0.35,
-		invalidateOnRefresh: true,
 		onUpdate: (self) => {
-			syncSequenceToProgress(self.progress);
+			syncSequenceToProgress(self.progress, false);
 		},
 		onRefresh: (self) => {
 			syncSequenceToProgress(self.progress, true);
@@ -410,12 +385,6 @@ function setupScrollStory() {
 			syncSequenceToProgress(self.progress, true);
 		},
 		onEnterBack: (self) => {
-			syncSequenceToProgress(self.progress, true);
-		},
-		onLeave: (self) => {
-			syncSequenceToProgress(self.progress, true);
-		},
-		onLeaveBack: (self) => {
 			syncSequenceToProgress(self.progress, true);
 		},
 	});
@@ -525,7 +494,6 @@ function init() {
 		setupScrollStory();
 		animateStats();
 		ScrollTrigger.refresh();
-
 		/* Browser scroll restoration often lands after first paint — refresh again */
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
