@@ -3,11 +3,13 @@ gsap.registerPlugin(ScrollTrigger);
 const FRAME_COUNT = 146;
 /** Pixels of scroll mapped to the frame strip (must match frameIndexFromProgress). */
 const SCRUB_HEIGHT = FRAME_COUNT * 64;
+/** Extra pinned distance after scrub to hold on final frame. */
+const HOLD_HEIGHT_PX = 220;
 const FRAME_PATH = (i) => `frames/frame_${String(i + 1).padStart(4, "0")}.webp`;
 
-/** Total scroll span for the sequence section: scrub + one viewport (hold). Recomputed on resize. */
+/** Total pinned distance for the sequence: scrub + viewport hold. */
 function getSequenceTotalHeight() {
-	return SCRUB_HEIGHT + window.innerHeight;
+	return SCRUB_HEIGHT + HOLD_HEIGHT_PX;
 }
 
 const canvas = document.getElementById("sequence-canvas");
@@ -25,6 +27,21 @@ const loaderBarEl = document.querySelector("[data-loader-bar]");
 
 const state = { frame: 0 };
 const images = [];
+
+/** Coalesce bursty scroll updates into one canvas draw per animation frame. */
+let renderQueued = false;
+let pendingFrame = 0;
+
+function requestDraw(frame) {
+	pendingFrame = frame;
+	if (renderQueued) return;
+
+	renderQueued = true;
+	requestAnimationFrame(() => {
+		renderQueued = false;
+		drawFrame(pendingFrame);
+	});
+}
 
 function setLoaderProgress(loaded, total) {
 	if (!loaderProgressEl || !loaderBarEl || total < 1) return;
@@ -47,7 +64,9 @@ function hideLoader() {
 	}
 	loaderEl.classList.add("is-hidden");
 	document.body.classList.remove("is-loading");
-	loaderEl.addEventListener("transitionend", () => loaderEl.remove(), { once: true });
+	loaderEl.addEventListener("transitionend", () => loaderEl.remove(), {
+		once: true,
+	});
 }
 
 function getCanvasFillColor() {
@@ -117,7 +136,7 @@ function resizeCanvas(retryCount = 0) {
 	canvas.width = Math.max(1, Math.round(w * dpr));
 	canvas.height = Math.max(1, Math.round(h * dpr));
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-	drawFrame(Math.round(state.frame));
+	drawFrame(state.frame);
 }
 
 /* ── callout timing ── */
@@ -133,10 +152,10 @@ function rangeVisibility(frame, start, end) {
 	);
 }
 
-function setCallout(el, intensity, dir) {
+function setCallout(el, intensity, dir, frame) {
 	if (!el) return;
 	const t = gsap.parseEase("power2.out")(intensity);
-	const drift = Math.sin(state.frame * 0.07) * 3;
+	const drift = Math.sin(frame * 0.05) * 2;
 	gsap.set(el, {
 		opacity: t,
 		y: (1 - t) * 18 + drift,
@@ -150,16 +169,19 @@ function updateCallouts(f) {
 		calloutEls.barkley,
 		rangeVisibility(f, PHASES.barkley.start, PHASES.barkley.end),
 		-1,
+		f,
 	);
 	setCallout(
 		calloutEls.fairbank,
 		rangeVisibility(f, PHASES.fairbank.start, PHASES.fairbank.end),
 		1,
+		f,
 	);
 	setCallout(
 		calloutEls.trusted,
 		rangeVisibility(f, PHASES.trusted.start, PHASES.trusted.end),
 		-1,
+		f,
 	);
 }
 
@@ -298,7 +320,11 @@ function animateHero() {
 		.call(initHeroTyped, [], ">+0.06")
 		.from(".hero-body", { y: 24, opacity: 0, duration: 0.7 }, "-=0.5")
 		.from(".scroll-cue", { opacity: 0, duration: 0.6 }, "-=0.3")
-		.from(".scroll-cue-line", { scaleY: 0, duration: 0.8, ease: "power2.inOut" }, "-=0.4")
+		.from(
+			".scroll-cue-line",
+			{ scaleY: 0, duration: 0.8, ease: "power2.inOut" },
+			"-=0.4",
+		)
 		.call(initHeroSceneMotion, [], ">-0.2");
 }
 
@@ -334,11 +360,11 @@ function setupScrollStory() {
 	gsap.set(".sequence-section", { height: getSequenceTotalHeight() });
 
 	function frameIndexFromProgress(progress) {
-		const totalHeight = getSequenceTotalHeight();
+		const sequenceTotalHeight = getSequenceTotalHeight();
 		const animProgress = gsap.utils.clamp(
 			0,
 			1,
-			(progress * totalHeight) / SCRUB_HEIGHT,
+			(progress * sequenceTotalHeight) / SCRUB_HEIGHT,
 		);
 		return Math.min(
 			FRAME_COUNT - 1,
@@ -346,11 +372,12 @@ function setupScrollStory() {
 		);
 	}
 
-	function syncSequenceToProgress(progress, forceRedraw) {
+	function syncSequenceToProgress(progress, forceRedraw = false) {
 		const next = frameIndexFromProgress(progress);
-		if (!forceRedraw && next === Math.round(state.frame)) return;
+		if (!forceRedraw && next === state.frame) return;
+
 		state.frame = next;
-		resizeCanvas();
+		requestDraw(next);
 		updateCallouts(next);
 	}
 
@@ -365,7 +392,7 @@ function setupScrollStory() {
 		invalidateOnRefresh: true,
 		fastScrollEnd: true,
 		onUpdate: (self) => {
-			syncSequenceToProgress(self.progress, false);
+			syncSequenceToProgress(self.progress);
 		},
 		onRefresh: (self) => {
 			syncSequenceToProgress(self.progress, true);
@@ -374,6 +401,12 @@ function setupScrollStory() {
 			syncSequenceToProgress(self.progress, true);
 		},
 		onEnterBack: (self) => {
+			syncSequenceToProgress(self.progress, true);
+		},
+		onLeave: (self) => {
+			syncSequenceToProgress(self.progress, true);
+		},
+		onLeaveBack: (self) => {
 			syncSequenceToProgress(self.progress, true);
 		},
 	});
